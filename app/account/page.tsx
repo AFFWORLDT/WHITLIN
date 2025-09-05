@@ -1,9 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
 import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -20,32 +19,39 @@ import {
   Shield,
   ShoppingBag,
   Star,
-  Calendar
+  Calendar,
+  Loader2
 } from "lucide-react"
+import { toast } from "sonner"
 
-// Mock data - in real app this would come from API
-const userData = {
+interface UserAccountData {
   profile: {
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "+1 (555) 123-4567",
-    joinDate: "2024-01-10",
-    totalOrders: 5,
-    totalSpent: 1299.95
-  },
-  recentOrders: [
-    { id: "ORD-001", date: "2024-01-15", total: 299.99, status: "completed", items: 2 },
-    { id: "ORD-002", date: "2024-01-10", total: 199.99, status: "shipped", items: 1 },
-    { id: "ORD-003", date: "2024-01-05", total: 399.99, status: "completed", items: 3 }
-  ],
-  wishlist: [
-    { id: 1, name: "KeraGold Expert Liss System", price: 299.99, image: "/images/expert-liss-system.jpeg" },
-    { id: 2, name: "KeraGold Inforcer Range", price: 199.99, image: "/images/inforcer-range.jpeg" }
-  ],
-  addresses: [
-    { id: 1, type: "Home", address: "123 Main St, New York, NY 10001", isDefault: true },
-    { id: 2, type: "Work", address: "456 Business Ave, New York, NY 10002", isDefault: false }
-  ]
+    name: string
+    email: string
+    phone: string
+    joinDate: string
+    totalOrders: number
+    totalSpent: number
+  }
+  recentOrders: Array<{
+    id: string
+    date: string
+    total: number
+    status: string
+    items: number
+  }>
+  wishlist: Array<{
+    id: number
+    name: string
+    price: number
+    image: string
+  }>
+  addresses: Array<{
+    id: number
+    type: string
+    address: string
+    isDefault: boolean
+  }>
 }
 
 const getStatusColor = (status: string) => {
@@ -61,15 +67,69 @@ export default function AccountPage() {
   const { user, logout } = useAuth()
   const router = useRouter()
   const [activeTab, setActiveTab] = useState("overview")
+  const [userData, setUserData] = useState<UserAccountData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!user) {
       router.push("/login")
+      return
     }
+
+    const fetchUserData = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch(`/api/user/account?userId=${user.id}`)
+        const data = await response.json()
+        
+        if (data.success) {
+          setUserData(data.data)
+        } else {
+          setError(data.error || 'Failed to fetch account data')
+          toast.error(data.error || 'Failed to fetch account data')
+        }
+      } catch (err) {
+        console.error('Error fetching user data:', err)
+        setError('An unexpected error occurred while fetching account data')
+        toast.error('An unexpected error occurred while fetching account data')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchUserData()
   }, [user, router])
 
   if (!user) {
     return null
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+          <p className="text-muted-foreground">Loading account data...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error || !userData) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-destructive mb-4">{error || 'Failed to load account data'}</p>
+          <button 
+            onClick={() => window.location.reload()} 
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+          >
+            Retry
+          </button>
+        </div>
+      </div>
+    )
   }
 
   const tabs = [
@@ -150,7 +210,7 @@ export default function AccountPage() {
                         <CreditCard className="h-4 w-4 text-muted-foreground" />
                       </CardHeader>
                       <CardContent>
-                        <div className="text-2xl font-bold">${userData.profile.totalSpent}</div>
+                        <div className="text-2xl font-bold">AED {userData.profile.totalSpent.toFixed(2)}</div>
                       </CardContent>
                     </Card>
 
@@ -180,7 +240,7 @@ export default function AccountPage() {
                               <div className="text-sm text-muted-foreground">{order.date} • {order.items} items</div>
                             </div>
                             <div className="text-right">
-                              <div className="font-medium">${order.total}</div>
+                              <div className="font-medium">AED {order.total.toFixed(2)}</div>
                               <Badge className={getStatusColor(order.status)}>
                                 {order.status}
                               </Badge>
@@ -216,7 +276,7 @@ export default function AccountPage() {
                             </div>
                           </div>
                           <div className="text-right">
-                            <div className="font-medium">${order.total}</div>
+                            <div className="font-medium">AED {order.total.toFixed(2)}</div>
                             <Badge className={getStatusColor(order.status)}>
                               {order.status}
                             </Badge>
@@ -243,7 +303,7 @@ export default function AccountPage() {
                           </div>
                           <div className="flex-1">
                             <div className="font-medium">{item.name}</div>
-                            <div className="text-sm text-muted-foreground">${item.price}</div>
+                            <div className="text-sm text-muted-foreground">AED {item.price.toFixed(2)}</div>
                           </div>
                           <Button size="sm">Add to Cart</Button>
                         </div>

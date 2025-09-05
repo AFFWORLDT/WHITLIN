@@ -66,7 +66,18 @@ export default function RegisterPage() {
 
       if (data.success) {
         toast.success("Account created successfully!")
-        login(data.user)
+        // Set user data in localStorage and cookie
+        const userData = {
+          id: data.data._id,
+          name: data.data.name,
+          email: data.data.email,
+          role: data.data.role
+        }
+        localStorage.setItem("keragold_user", JSON.stringify(userData))
+        document.cookie = `keragold_user=${JSON.stringify(userData)}; path=/; max-age=86400`
+        
+        // Call login function to update context
+        await login(formData.email, formData.password)
         router.push('/')
       } else {
         toast.error(data.error || "Registration failed")
