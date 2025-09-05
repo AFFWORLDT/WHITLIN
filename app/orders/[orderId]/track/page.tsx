@@ -1,26 +1,60 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useAuth } from "@/lib/auth-context"
-import { useRouter, useParams } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { useParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { 
-  ArrowLeft,
-  Loader2,
-  Truck,
-  MapPin,
+  ArrowLeft, 
+  Package, 
+  Truck, 
+  MapPin, 
   Clock,
   CheckCircle,
-  Package,
-  Calendar,
-  Navigation,
-  RefreshCw
+  Circle,
+  Calendar
 } from "lucide-react"
-import { Header } from "@/components/header"
-import { toast } from "sonner"
 import Link from "next/link"
+import { useAuth } from "@/lib/auth-context"
+import { toast } from "sonner"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
+
+interface Order {
+  _id: string
+  orderNumber: string
+  user: {
+    _id: string
+    name: string
+    email: string
+  }
+  items: Array<{
+    product: string
+    name: string
+    price: number
+    quantity: number
+    image: string
+    total: number
+  }>
+  totalAmount: number
+  shippingAddress: {
+    name: string
+    address: string
+    city: string
+    state: string
+    zipCode: string
+    country: string
+    phone: string
+  }
+  paymentMethod: string
+  paymentStatus: string
+  status: string
+  notes: string
+  trackingNumber: string
+  createdAt: string
+  updatedAt: string
+}
 
 interface TrackingEvent {
   id: string
@@ -31,359 +65,236 @@ interface TrackingEvent {
   completed: boolean
 }
 
-interface OrderTracking {
-  orderId: string
-  orderNumber: string
-  status: string
-  trackingNumber: string
-  estimatedDelivery: string
-  actualDelivery: string | null
-  carrier: string
-  events: TrackingEvent[]
-  currentLocation: string
-  progress: number
-}
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "completed": return "bg-green-100 text-green-800 border-green-200"
-    case "shipped": return "bg-blue-100 text-blue-800 border-blue-200"
-    case "in_transit": return "bg-blue-100 text-blue-800 border-blue-200"
-    case "out_for_delivery": return "bg-orange-100 text-orange-800 border-orange-200"
-    case "pending": return "bg-yellow-100 text-yellow-800 border-yellow-200"
-    case "processing": return "bg-purple-100 text-purple-800 border-purple-200"
-    default: return "bg-gray-100 text-gray-800 border-gray-200"
-  }
-}
-
-const getEventIcon = (status: string) => {
-  switch (status) {
-    case "order_placed": return <Package className="h-5 w-5" />
-    case "processing": return <Clock className="h-5 w-5" />
-    case "shipped": return <Truck className="h-5 w-5" />
-    case "in_transit": return <Navigation className="h-5 w-5" />
-    case "out_for_delivery": return <Truck className="h-5 w-5" />
-    case "delivered": return <CheckCircle className="h-5 w-5" />
-    default: return <Clock className="h-5 w-5" />
-  }
-}
-
-const getEventColor = (completed: boolean) => {
-  return completed 
-    ? "bg-green-500 text-white" 
-    : "bg-gray-200 text-gray-600"
-}
-
-// Mock tracking data - in real app this would come from shipping carrier API
-const generateTrackingEvents = (orderStatus: string): TrackingEvent[] => {
-  const baseEvents = [
-    {
-      id: "1",
-      status: "order_placed",
-      description: "Order placed successfully",
-      location: "KeraGold Pro Warehouse",
-      timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-      completed: true
-    },
-    {
-      id: "2",
-      status: "processing",
-      description: "Order is being processed",
-      location: "KeraGold Pro Warehouse",
-      timestamp: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
-      completed: true
-    }
-  ]
-
-  if (orderStatus === "shipped" || orderStatus === "in_transit" || orderStatus === "out_for_delivery" || orderStatus === "completed") {
-    baseEvents.push({
-      id: "3",
-      status: "shipped",
-      description: "Package shipped from warehouse",
-      location: "KeraGold Pro Warehouse",
-      timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
-      completed: true
-    })
-  }
-
-  if (orderStatus === "in_transit" || orderStatus === "out_for_delivery" || orderStatus === "completed") {
-    baseEvents.push({
-      id: "4",
-      status: "in_transit",
-      description: "Package in transit",
-      location: "Dubai Distribution Center",
-      timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-      completed: true
-    })
-  }
-
-  if (orderStatus === "out_for_delivery" || orderStatus === "completed") {
-    baseEvents.push({
-      id: "5",
-      status: "out_for_delivery",
-      description: "Package out for delivery",
-      location: "Local Delivery Hub",
-      timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-      completed: true
-    })
-  }
-
-  if (orderStatus === "completed") {
-    baseEvents.push({
-      id: "6",
-      status: "delivered",
-      description: "Package delivered successfully",
-      location: "Delivery Address",
-      timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      completed: true
-    })
-  }
-
-  return baseEvents
-}
-
 export default function OrderTrackingPage() {
-  const { user } = useAuth()
-  const router = useRouter()
   const params = useParams()
-  const [tracking, setTracking] = useState<OrderTracking | null>(null)
+  const { user } = useAuth()
+  const [order, setOrder] = useState<Order | null>(null)
+  const [trackingEvents, setTrackingEvents] = useState<TrackingEvent[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [refreshing, setRefreshing] = useState(false)
+
+  const orderId = params.orderId as string
 
   useEffect(() => {
-    if (!user) {
-      router.push("/login")
-      return
-    }
-
-    const fetchTrackingInfo = async () => {
+    const fetchOrder = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/api/user/orders/${params.orderId}`)
+        const response = await fetch(`/api/user/orders/${orderId}`)
         const data = await response.json()
         
         if (data.success) {
-          const order = data.data
-          
-          // Generate tracking events based on order status
-          const events = generateTrackingEvents(order.status)
-          
-          const trackingInfo: OrderTracking = {
-            orderId: order.orderId,
-            orderNumber: order.id,
-            status: order.status,
-            trackingNumber: order.trackingNumber || `TRK${order.id.replace('ORD-', '')}`,
-            estimatedDelivery: order.estimatedDelivery || new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-            actualDelivery: order.actualDelivery,
-            carrier: "KeraGold Express",
-            events: events,
-            currentLocation: events[events.length - 1]?.location || "Processing Center",
-            progress: events.filter(e => e.completed).length / events.length * 100
-          }
-          
-          setTracking(trackingInfo)
+          setOrder(data.data)
+          generateTrackingEvents(data.data)
         } else {
-          setError(data.error || 'Failed to fetch tracking information')
-          toast.error(data.error || 'Failed to fetch tracking information')
+          setError(data.error || 'Failed to fetch order details')
+          toast.error(data.error || 'Failed to fetch order details')
         }
       } catch (err) {
-        console.error('Error fetching tracking info:', err)
-        setError('An unexpected error occurred while fetching tracking information')
-        toast.error('An unexpected error occurred while fetching tracking information')
+        console.error('Error fetching order:', err)
+        setError('An unexpected error occurred')
+        toast.error('An unexpected error occurred')
       } finally {
         setLoading(false)
       }
     }
 
-    if (params.orderId) {
-      fetchTrackingInfo()
+    if (orderId) {
+      fetchOrder()
     }
-  }, [user, router, params.orderId])
+  }, [orderId])
 
-  const handleRefresh = async () => {
-    setRefreshing(true)
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    setRefreshing(false)
-    toast.success('Tracking information updated')
+  const generateTrackingEvents = (order: Order) => {
+    const orderDate = new Date(order.createdAt)
+    const events: TrackingEvent[] = [
+      {
+        id: '1',
+        status: 'Order Placed',
+        description: 'Your order has been placed successfully',
+        location: 'Online Store',
+        timestamp: orderDate.toISOString(),
+        completed: true
+      },
+      {
+        id: '2',
+        status: 'Order Confirmed',
+        description: 'Your order has been confirmed and is being prepared',
+        location: 'Warehouse',
+        timestamp: new Date(orderDate.getTime() + 2 * 60 * 60 * 1000).toISOString(), // 2 hours later
+        completed: order.status !== 'pending'
+      },
+      {
+        id: '3',
+        status: 'Processing',
+        description: 'Your order is being processed and packed',
+        location: 'Warehouse',
+        timestamp: new Date(orderDate.getTime() + 4 * 60 * 60 * 1000).toISOString(), // 4 hours later
+        completed: ['processing', 'shipped', 'delivered'].includes(order.status)
+      },
+      {
+        id: '4',
+        status: 'Shipped',
+        description: 'Your order has been shipped and is on its way',
+        location: 'Shipping Center',
+        timestamp: new Date(orderDate.getTime() + 24 * 60 * 60 * 1000).toISOString(), // 1 day later
+        completed: ['shipped', 'delivered'].includes(order.status)
+      },
+      {
+        id: '5',
+        status: 'Out for Delivery',
+        description: 'Your order is out for delivery',
+        location: order.shippingAddress.city,
+        timestamp: new Date(orderDate.getTime() + 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days later
+        completed: order.status === 'delivered'
+      },
+      {
+        id: '6',
+        status: 'Delivered',
+        description: 'Your order has been delivered successfully',
+        location: order.shippingAddress.address,
+        timestamp: new Date(orderDate.getTime() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days later
+        completed: order.status === 'delivered'
+      }
+    ]
+    
+    setTrackingEvents(events)
   }
 
-  if (!user) {
-    return null
+  const getStatusIcon = (event: TrackingEvent) => {
+    if (event.completed) {
+      return <CheckCircle className="h-6 w-6 text-green-500" />
+    }
+    return <Circle className="h-6 w-6 text-gray-300" />
+  }
+
+  const getStatusColor = (status: string) => {
+    switch (status.toLowerCase()) {
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800'
+      case 'confirmed':
+        return 'bg-blue-100 text-blue-800'
+      case 'processing':
+        return 'bg-purple-100 text-purple-800'
+      case 'shipped':
+        return 'bg-indigo-100 text-indigo-800'
+      case 'delivered':
+        return 'bg-green-100 text-green-800'
+      case 'cancelled':
+        return 'bg-red-100 text-red-800'
+      default:
+        return 'bg-gray-100 text-gray-800'
+    }
+  }
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gray-50">
         <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
-            <div className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-                <p className="text-muted-foreground">Loading tracking information...</p>
-              </div>
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading tracking information...</p>
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     )
   }
 
-  if (error || !tracking) {
+  if (error || !order) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gray-50">
         <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
-            <div className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <p className="text-destructive mb-4">{error || 'Failed to load tracking information'}</p>
-                <div className="flex gap-2 justify-center">
-                  <button 
-                    onClick={() => window.location.reload()} 
-                    className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-                  >
-                    Retry
-                  </button>
-                  <Link href="/orders">
-                    <Button variant="outline">
-                      <ArrowLeft className="h-4 w-4 mr-2" />
-                      Back to Orders
-                    </Button>
-                  </Link>
-                </div>
-              </div>
+            <div className="text-center py-12">
+              <Truck className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Tracking Not Found</h1>
+              <p className="text-gray-600 mb-8">
+                {error || "The tracking information you're looking for doesn't exist."}
+              </p>
+              <Link href="/orders">
+                <Button>
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Orders
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       <Header />
-      
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-4 mb-4">
-              <Link href={`/orders/${tracking.orderId}`}>
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center space-x-4">
+              <Link href={`/orders/${order._id}`}>
                 <Button variant="outline" size="sm">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Order
                 </Button>
               </Link>
-              <Button 
-                onClick={handleRefresh} 
-                disabled={refreshing}
-                variant="outline"
-                size="sm"
-                className="ml-auto"
-              >
-                {refreshing ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <RefreshCw className="h-4 w-4 mr-2" />
-                )}
-                {refreshing ? 'Updating...' : 'Refresh'}
-              </Button>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Order Tracking</h1>
+                <p className="text-gray-600">Order #{order.orderNumber}</p>
+              </div>
             </div>
-            
-            <div className="text-center">
-              <h1 className="text-3xl font-bold mb-2">Track Your Package</h1>
-              <p className="text-muted-foreground">Order #{tracking.orderNumber}</p>
+            <div className="text-right">
+              <Badge className={getStatusColor(order.status)}>
+                {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+              </Badge>
+              <p className="text-sm text-gray-600 mt-1">
+                Tracking: {order.trackingNumber}
+              </p>
             </div>
           </div>
 
-          {/* Tracking Overview */}
-          <Card className="mb-8">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center">
-                    <Truck className="h-5 w-5 mr-2" />
-                    Tracking Information
-                  </CardTitle>
-                  <CardDescription>
-                    Tracking Number: {tracking.trackingNumber}
-                  </CardDescription>
-                </div>
-                <Badge className={`${getStatusColor(tracking.status)} border`}>
-                  {tracking.status.replace('_', ' ').toUpperCase()}
-                </Badge>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary mb-1">
-                    {Math.round(tracking.progress)}%
-                  </div>
-                  <div className="text-sm text-muted-foreground">Progress</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary mb-1">
-                    {tracking.carrier}
-                  </div>
-                  <div className="text-sm text-muted-foreground">Carrier</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-primary mb-1">
-                    {tracking.actualDelivery ? 
-                      new Date(tracking.actualDelivery).toLocaleDateString() : 
-                      new Date(tracking.estimatedDelivery).toLocaleDateString()
-                    }
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {tracking.actualDelivery ? 'Delivered' : 'Estimated Delivery'}
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Progress Bar */}
-          <Card className="mb-8">
-            <CardContent className="pt-6">
-              <div className="space-y-4">
-                <div className="flex justify-between text-sm">
-                  <span>Order Progress</span>
-                  <span>{Math.round(tracking.progress)}% Complete</span>
-                </div>
-                <div className="w-full bg-gray-200 rounded-full h-2">
-                  <div 
-                    className="bg-primary h-2 rounded-full transition-all duration-500 ease-out"
-                    style={{ width: `${tracking.progress}%` }}
-                  ></div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Current Status */}
+          {/* Order Summary */}
           <Card className="mb-8">
             <CardHeader>
               <CardTitle className="flex items-center">
-                <MapPin className="h-5 w-5 mr-2" />
-                Current Status
+                <Package className="h-5 w-5 mr-2" />
+                Order Summary
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center space-x-4">
-                <div className={`p-3 rounded-full ${getEventColor(tracking.events[tracking.events.length - 1]?.completed || false)}`}>
-                  {getEventIcon(tracking.events[tracking.events.length - 1]?.status || 'processing')}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-2">Order Details</h4>
+                  <p className="text-sm text-gray-600">Order Number: {order.orderNumber}</p>
+                  <p className="text-sm text-gray-600">Total Amount: AED {order.totalAmount.toFixed(2)}</p>
+                  <p className="text-sm text-gray-600">Items: {order.items.length}</p>
                 </div>
                 <div>
-                  <div className="font-medium">
-                    {tracking.events[tracking.events.length - 1]?.description || 'Processing'}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {tracking.currentLocation}
-                  </div>
+                  <h4 className="font-medium text-gray-900 mb-2">Shipping Address</h4>
+                  <p className="text-sm text-gray-600">{order.shippingAddress.name}</p>
+                  <p className="text-sm text-gray-600">{order.shippingAddress.address}</p>
+                  <p className="text-sm text-gray-600">
+                    {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-medium text-gray-900 mb-2">Contact Information</h4>
+                  <p className="text-sm text-gray-600">{order.user.email}</p>
+                  <p className="text-sm text-gray-600">{order.shippingAddress.phone}</p>
                 </div>
               </div>
             </CardContent>
@@ -393,68 +304,85 @@ export default function OrderTrackingPage() {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
-                <Clock className="h-5 w-5 mr-2" />
+                <Truck className="h-5 w-5 mr-2" />
                 Tracking Timeline
               </CardTitle>
-              <CardDescription>
-                Detailed tracking history for your package
-              </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="space-y-6">
-                {tracking.events.map((event, index) => (
+                {trackingEvents.map((event, index) => (
                   <div key={event.id} className="flex items-start space-x-4">
-                    <div className={`p-2 rounded-full ${getEventColor(event.completed)}`}>
-                      {getEventIcon(event.status)}
+                    <div className="flex-shrink-0">
+                      {getStatusIcon(event)}
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between">
-                        <div className="font-medium">{event.description}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {new Date(event.timestamp).toLocaleDateString()} at{' '}
-                          {new Date(event.timestamp).toLocaleTimeString([], { 
-                            hour: '2-digit', 
-                            minute: '2-digit' 
-                          })}
-                        </div>
+                        <h4 className={`font-medium ${event.completed ? 'text-gray-900' : 'text-gray-500'}`}>
+                          {event.status}
+                        </h4>
+                        <span className="text-sm text-gray-500">
+                          {formatDate(event.timestamp)}
+                        </span>
                       </div>
-                      <div className="text-sm text-muted-foreground mt-1">
+                      <p className={`text-sm mt-1 ${event.completed ? 'text-gray-600' : 'text-gray-400'}`}>
+                        {event.description}
+                      </p>
+                      <div className="flex items-center mt-2 text-sm text-gray-500">
+                        <MapPin className="h-4 w-4 mr-1" />
                         {event.location}
                       </div>
                     </div>
+                    {index < trackingEvents.length - 1 && (
+                      <div className="absolute left-6 mt-8 w-0.5 h-12 bg-gray-200"></div>
+                    )}
                   </div>
                 ))}
               </div>
             </CardContent>
           </Card>
 
-          {/* Delivery Information */}
-          {tracking.actualDelivery && (
-            <Card className="mt-8">
-              <CardHeader>
-                <CardTitle className="flex items-center text-green-600">
-                  <CheckCircle className="h-5 w-5 mr-2" />
-                  Package Delivered
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center">
-                  <div className="text-lg font-medium mb-2">
-                    Your package was delivered successfully!
-                  </div>
-                  <div className="text-muted-foreground">
-                    Delivered on {new Date(tracking.actualDelivery).toLocaleDateString()} at{' '}
-                    {new Date(tracking.actualDelivery).toLocaleTimeString([], { 
-                      hour: '2-digit', 
-                      minute: '2-digit' 
-                    })}
+          {/* Estimated Delivery */}
+          <Card className="mt-8">
+            <CardContent className="pt-6">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <Clock className="h-8 w-8 text-yellow-500" />
+                  <div>
+                    <h3 className="font-semibold text-lg">Estimated Delivery</h3>
+                    <p className="text-gray-600">
+                      {order.status === 'delivered' 
+                        ? 'Delivered on ' + formatDate(order.updatedAt)
+                        : 'Expected delivery within 3-5 business days'
+                      }
+                    </p>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
-          )}
+                <div className="text-right">
+                  <p className="text-sm text-gray-500">Order Date</p>
+                  <p className="font-medium">{formatDate(order.createdAt)}</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Action Buttons */}
+          <div className="flex justify-center space-x-4 mt-8">
+            <Link href={`/orders/${order._id}`}>
+              <Button variant="outline">
+                <Package className="h-4 w-4 mr-2" />
+                View Order Details
+              </Button>
+            </Link>
+            <Link href={`/orders/${order._id}/invoice`}>
+              <Button variant="outline">
+                <Calendar className="h-4 w-4 mr-2" />
+                Download Invoice
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }

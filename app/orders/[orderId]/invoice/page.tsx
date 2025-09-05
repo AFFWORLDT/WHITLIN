@@ -1,40 +1,35 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useAuth } from "@/lib/auth-context"
-import { useRouter, useParams } from "next/navigation"
-import { Card, CardContent } from "@/components/ui/card"
+import { useParams } from "next/navigation"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { 
-  Download,
-  ArrowLeft,
-  Loader2,
-  FileText,
-  Building,
-  User,
+  Download, 
+  ArrowLeft, 
+  FileText, 
+  MapPin, 
+  Phone, 
   Mail,
-  Phone,
-  MapPin,
   Calendar,
-  CreditCard,
   Package
 } from "lucide-react"
-import { Header } from "@/components/header"
-import { toast } from "sonner"
 import Link from "next/link"
-import Image from "next/image"
+import { useAuth } from "@/lib/auth-context"
+import { toast } from "sonner"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
 
 interface OrderItem {
-  id: string
+  product: string
   name: string
-  quantity: number
   price: number
-  total: number
+  quantity: number
   image: string
-  description: string
-  category: string
+  total: number
 }
 
 interface ShippingAddress {
@@ -47,71 +42,40 @@ interface ShippingAddress {
   phone: string
 }
 
-interface OrderDetails {
-  id: string
-  orderId: string
-  date: string
-  status: string
-  total: number
-  subtotal: number
-  tax: number
-  shipping: number
-  discount: number
-  paymentMethod: string
-  paymentStatus: string
-  items: OrderItem[]
-  shippingAddress: ShippingAddress
-  billingAddress: ShippingAddress
-  trackingNumber: string | null
-  estimatedDelivery: string | null
-  actualDelivery: string | null
-  notes: string
-  customer: {
+interface Order {
+  _id: string
+  orderNumber: string
+  user: {
+    _id: string
     name: string
     email: string
-    phone: string
   }
-}
-
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case "completed": return "bg-green-100 text-green-800"
-    case "shipped": return "bg-blue-100 text-blue-800"
-    case "pending": return "bg-yellow-100 text-yellow-800"
-    case "cancelled": return "bg-red-100 text-red-800"
-    case "processing": return "bg-purple-100 text-purple-800"
-    default: return "bg-gray-100 text-gray-800"
-  }
-}
-
-const getPaymentStatusColor = (status: string) => {
-  switch (status) {
-    case "paid": return "bg-green-100 text-green-800"
-    case "pending": return "bg-yellow-100 text-yellow-800"
-    case "failed": return "bg-red-100 text-red-800"
-    default: return "bg-gray-100 text-gray-800"
-  }
+  items: OrderItem[]
+  totalAmount: number
+  shippingAddress: ShippingAddress
+  paymentMethod: string
+  paymentStatus: string
+  status: string
+  notes: string
+  trackingNumber: string
+  createdAt: string
+  updatedAt: string
 }
 
 export default function InvoicePage() {
-  const { user } = useAuth()
-  const router = useRouter()
   const params = useParams()
-  const [order, setOrder] = useState<OrderDetails | null>(null)
+  const { user } = useAuth()
+  const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
-  const [downloading, setDownloading] = useState(false)
+
+  const orderId = params.orderId as string
 
   useEffect(() => {
-    if (!user) {
-      router.push("/login")
-      return
-    }
-
-    const fetchOrderDetails = async () => {
+    const fetchOrder = async () => {
       try {
         setLoading(true)
-        const response = await fetch(`/api/user/orders/${params.orderId}`)
+        const response = await fetch(`/api/user/orders/${orderId}`)
         const data = await response.json()
         
         if (data.success) {
@@ -121,436 +85,362 @@ export default function InvoicePage() {
           toast.error(data.error || 'Failed to fetch order details')
         }
       } catch (err) {
-        console.error('Error fetching order details:', err)
-        setError('An unexpected error occurred while fetching order details')
-        toast.error('An unexpected error occurred while fetching order details')
+        console.error('Error fetching order:', err)
+        setError('An unexpected error occurred')
+        toast.error('An unexpected error occurred')
       } finally {
         setLoading(false)
       }
     }
 
-    if (params.orderId) {
-      fetchOrderDetails()
+    if (orderId) {
+      fetchOrder()
     }
-  }, [user, router, params.orderId])
+  }, [orderId])
 
-  const handleDownloadInvoice = async () => {
-    if (!order) return
-    
-    try {
-      setDownloading(true)
-      
-      // Create a new window for printing
-      const printWindow = window.open('', '_blank')
-      if (!printWindow) {
-        toast.error('Please allow popups to download the invoice')
-        return
-      }
+  const handlePrint = () => {
+    window.print()
+  }
 
-      // Generate HTML content for the invoice
+  const handleDownload = () => {
+    // Create a printable version
+    const printWindow = window.open('', '_blank')
+    if (printWindow && order) {
       const invoiceHTML = `
         <!DOCTYPE html>
         <html>
         <head>
-          <title>Invoice #${order.id} - KeraGold Pro</title>
+          <title>Invoice - ${order.orderNumber}</title>
           <style>
-            body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: white; }
-            .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #f3f4f6; padding-bottom: 20px; }
-            .logo { font-size: 24px; font-weight: bold; color: #1f2937; margin-bottom: 10px; }
-            .invoice-title { font-size: 28px; font-weight: bold; color: #1f2937; margin-bottom: 5px; }
-            .invoice-number { font-size: 16px; color: #6b7280; }
-            .content { display: flex; justify-content: space-between; margin-bottom: 30px; }
-            .left-column, .right-column { width: 48%; }
+            body { font-family: Arial, sans-serif; margin: 20px; }
+            .header { text-align: center; margin-bottom: 30px; }
+            .company-name { font-size: 24px; font-weight: bold; color: #f59e0b; }
+            .invoice-title { font-size: 20px; margin: 10px 0; }
+            .invoice-details { display: flex; justify-content: space-between; margin-bottom: 30px; }
             .section { margin-bottom: 20px; }
-            .section-title { font-size: 18px; font-weight: bold; color: #1f2937; margin-bottom: 10px; }
-            .section-content { color: #374151; line-height: 1.6; }
-            .items-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
-            .items-table th, .items-table td { padding: 12px; text-align: left; border-bottom: 1px solid #e5e7eb; }
-            .items-table th { background-color: #f9fafb; font-weight: bold; color: #1f2937; }
-            .items-table .text-right { text-align: right; }
-            .summary { background-color: #f9fafb; padding: 20px; border-radius: 8px; }
-            .summary-row { display: flex; justify-content: space-between; margin-bottom: 8px; }
-            .summary-row.total { font-weight: bold; font-size: 18px; border-top: 2px solid #e5e7eb; padding-top: 10px; margin-top: 10px; }
-            .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
-            .status-completed { background-color: #dcfce7; color: #166534; }
-            .status-shipped { background-color: #dbeafe; color: #1e40af; }
-            .status-pending { background-color: #fef3c7; color: #92400e; }
-            .footer { margin-top: 40px; text-align: center; color: #6b7280; font-size: 14px; border-top: 1px solid #e5e7eb; padding-top: 20px; }
-            @media print { body { margin: 0; } .no-print { display: none; } }
+            .section h3 { border-bottom: 2px solid #f59e0b; padding-bottom: 5px; }
+            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+            th { background-color: #f59e0b; color: white; }
+            .total { font-weight: bold; font-size: 18px; }
+            .footer { margin-top: 30px; text-align: center; color: #666; }
           </style>
         </head>
         <body>
           <div class="header">
-            <div class="logo">KeraGold Pro</div>
+            <div class="company-name">KeraGold Pro</div>
             <div class="invoice-title">INVOICE</div>
-            <div class="invoice-number">Invoice #${order.id}</div>
+            <div>Order #${order.orderNumber}</div>
           </div>
-
-          <div class="content">
-            <div class="left-column">
-              <div class="section">
-                <div class="section-title">Bill To:</div>
-                <div class="section-content">
-                  <strong>${order.customer.name}</strong><br>
-                  ${order.customer.email}<br>
-                  ${order.customer.phone || 'N/A'}
-                </div>
-              </div>
-              
-              <div class="section">
-                <div class="section-title">Shipping Address:</div>
-                <div class="section-content">
-                  <strong>${order.shippingAddress.name}</strong><br>
-                  ${order.shippingAddress.address}<br>
-                  ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.zipCode}<br>
-                  ${order.shippingAddress.country}
-                </div>
-              </div>
+          
+          <div class="invoice-details">
+            <div>
+              <strong>Bill To:</strong><br>
+              ${order.user.name}<br>
+              ${order.user.email}
             </div>
-
-            <div class="right-column">
-              <div class="section">
-                <div class="section-title">Invoice Details:</div>
-                <div class="section-content">
-                  <strong>Invoice Date:</strong> ${order.date}<br>
-                  <strong>Order Status:</strong> <span class="status-badge status-${order.status}">${order.status.toUpperCase()}</span><br>
-                  <strong>Payment Method:</strong> ${order.paymentMethod}<br>
-                  <strong>Payment Status:</strong> <span class="status-badge status-${order.paymentStatus}">${order.paymentStatus.toUpperCase()}</span>
-                </div>
-              </div>
+            <div>
+              <strong>Invoice Date:</strong><br>
+              ${new Date(order.createdAt).toLocaleDateString()}<br>
+              <strong>Order Date:</strong><br>
+              ${new Date(order.createdAt).toLocaleDateString()}
             </div>
           </div>
-
-          <table class="items-table">
-            <thead>
-              <tr>
-                <th>Item</th>
-                <th>Description</th>
-                <th class="text-right">Qty</th>
-                <th class="text-right">Price</th>
-                <th class="text-right">Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              ${order.items.map(item => `
+          
+          <div class="section">
+            <h3>Shipping Address</h3>
+            ${order.shippingAddress.name}<br>
+            ${order.shippingAddress.address}<br>
+            ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.zipCode}<br>
+            ${order.shippingAddress.country}<br>
+            Phone: ${order.shippingAddress.phone}
+          </div>
+          
+          <div class="section">
+            <h3>Order Items</h3>
+            <table>
+              <thead>
                 <tr>
-                  <td><strong>${item.name}</strong></td>
-                  <td>${item.description}</td>
-                  <td class="text-right">${item.quantity}</td>
-                  <td class="text-right">AED ${item.price.toFixed(2)}</td>
-                  <td class="text-right">AED ${(item.price * item.quantity).toFixed(2)}</td>
+                  <th>Item</th>
+                  <th>Price</th>
+                  <th>Qty</th>
+                  <th>Total</th>
                 </tr>
-              `).join('')}
-            </tbody>
-          </table>
-
-          <div class="summary">
-            <div class="summary-row">
-              <span>Subtotal:</span>
-              <span>AED ${order.subtotal.toFixed(2)}</span>
-            </div>
-            ${order.discount > 0 ? `
-            <div class="summary-row">
-              <span>Discount:</span>
-              <span>-AED ${order.discount.toFixed(2)}</span>
-            </div>
-            ` : ''}
-            <div class="summary-row">
-              <span>Shipping:</span>
-              <span>AED ${order.shipping.toFixed(2)}</span>
-            </div>
-            <div class="summary-row">
-              <span>Tax:</span>
-              <span>AED ${order.tax.toFixed(2)}</span>
-            </div>
-            <div class="summary-row total">
-              <span>Total:</span>
-              <span>AED ${order.total.toFixed(2)}</span>
-            </div>
+              </thead>
+              <tbody>
+                ${order.items.map(item => `
+                  <tr>
+                    <td>${item.name}</td>
+                    <td>AED ${item.price.toFixed(2)}</td>
+                    <td>${item.quantity}</td>
+                    <td>AED ${item.total.toFixed(2)}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+              <tfoot>
+                <tr class="total">
+                  <td colspan="3">Total Amount</td>
+                  <td>AED ${order.totalAmount.toFixed(2)}</td>
+                </tr>
+              </tfoot>
+            </table>
           </div>
-
+          
+          <div class="section">
+            <h3>Payment Information</h3>
+            <strong>Payment Method:</strong> ${order.paymentMethod.replace('_', ' ').toUpperCase()}<br>
+            <strong>Payment Status:</strong> ${order.paymentStatus.toUpperCase()}<br>
+            <strong>Tracking Number:</strong> ${order.trackingNumber}
+          </div>
+          
           <div class="footer">
             <p>Thank you for your business!</p>
-            <p>KeraGold Pro - Premium Hair Care Solutions</p>
-            <p>Generated on ${new Date().toLocaleDateString()}</p>
+            <p>KeraGold Pro - Premium Hair Care Products</p>
           </div>
         </body>
         </html>
       `
-
       printWindow.document.write(invoiceHTML)
       printWindow.document.close()
-      
-      // Wait for content to load then print
-      printWindow.onload = () => {
-        printWindow.print()
-        printWindow.close()
-      }
-      
-      toast.success('Invoice downloaded successfully!')
-    } catch (error) {
-      console.error('Error downloading invoice:', error)
-      toast.error('Failed to download invoice')
-    } finally {
-      setDownloading(false)
+      printWindow.print()
     }
   }
 
-  if (!user) {
-    return null
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
   }
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gray-50">
         <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
-            <div className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
-                <p className="text-muted-foreground">Loading invoice...</p>
-              </div>
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+              <p className="text-gray-600">Loading invoice...</p>
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     )
   }
 
   if (error || !order) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-gray-50">
         <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
-            <div className="flex items-center justify-center py-12">
-              <div className="text-center">
-                <p className="text-destructive mb-4">{error || 'Failed to load invoice'}</p>
-                <div className="flex gap-2 justify-center">
-                  <button 
-                    onClick={() => window.location.reload()} 
-                    className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-                  >
-                    Retry
-                  </button>
-                  <Link href="/orders">
-                    <Button variant="outline">
-                      <ArrowLeft className="h-4 w-4 mr-2" />
-                      Back to Orders
-                    </Button>
-                  </Link>
-                </div>
-              </div>
+            <div className="text-center py-12">
+              <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Invoice Not Found</h1>
+              <p className="text-gray-600 mb-8">
+                {error || "The invoice you're looking for doesn't exist."}
+              </p>
+              <Link href="/orders">
+                <Button>
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Back to Orders
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
+        <Footer />
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gray-50">
       <Header />
-      
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-4 mb-4">
-              <Link href={`/orders/${order.orderId}`}>
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center space-x-4">
+              <Link href={`/orders/${order._id}`}>
                 <Button variant="outline" size="sm">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Back to Order
                 </Button>
               </Link>
-              <Button 
-                onClick={handleDownloadInvoice} 
-                disabled={downloading}
-                className="ml-auto"
-              >
-                {downloading ? (
-                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                ) : (
-                  <Download className="h-4 w-4 mr-2" />
-                )}
-                {downloading ? 'Generating...' : 'Download Invoice'}
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Invoice</h1>
+                <p className="text-gray-600">Order #{order.orderNumber}</p>
+              </div>
+            </div>
+            <div className="flex space-x-2">
+              <Button onClick={handlePrint} variant="outline" size="sm">
+                <FileText className="h-4 w-4 mr-2" />
+                Print
+              </Button>
+              <Button onClick={handleDownload} size="sm">
+                <Download className="h-4 w-4 mr-2" />
+                Download PDF
               </Button>
             </div>
           </div>
 
           {/* Invoice Content */}
-          <Card className="overflow-hidden">
-            <CardContent className="p-0">
-              {/* Invoice Header */}
-              <div className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground p-8 text-center">
-                <div className="text-4xl font-bold mb-2">KeraGold Pro</div>
-                <div className="text-2xl font-semibold mb-1">INVOICE</div>
-                <div className="text-lg opacity-90">Invoice #{order.id}</div>
-              </div>
+          <div className="bg-white rounded-lg shadow-lg p-8 print:shadow-none print:p-4">
+            {/* Invoice Header */}
+            <div className="text-center mb-8 border-b pb-8">
+              <h1 className="text-4xl font-bold text-yellow-600 mb-2">KeraGold Pro</h1>
+              <h2 className="text-2xl font-semibold text-gray-900 mb-2">INVOICE</h2>
+              <p className="text-gray-600">Premium Hair Care Products</p>
+            </div>
 
-              <div className="p-8">
-                {/* Invoice Details */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4 flex items-center">
-                      <User className="h-5 w-5 mr-2" />
-                      Bill To
-                    </h3>
-                    <div className="space-y-1">
-                      <p className="font-medium">{order.customer.name}</p>
-                      <p className="flex items-center text-muted-foreground">
-                        <Mail className="h-4 w-4 mr-1" />
-                        {order.customer.email}
-                      </p>
-                      {order.customer.phone && (
-                        <p className="flex items-center text-muted-foreground">
-                          <Phone className="h-4 w-4 mr-1" />
-                          {order.customer.phone}
-                        </p>
-                      )}
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className="text-lg font-semibold mb-4 flex items-center">
-                      <FileText className="h-5 w-5 mr-2" />
-                      Invoice Details
-                    </h3>
-                    <div className="space-y-2">
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Invoice Date:</span>
-                        <span className="font-medium">{order.date}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Order Status:</span>
-                        <Badge className={getStatusColor(order.status)}>
-                          {order.status.toUpperCase()}
-                        </Badge>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Payment Method:</span>
-                        <span className="font-medium">{order.paymentMethod}</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-muted-foreground">Payment Status:</span>
-                        <Badge className={getPaymentStatusColor(order.paymentStatus)}>
-                          {order.paymentStatus.toUpperCase()}
-                        </Badge>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Shipping Address */}
-                <div className="mb-8">
-                  <h3 className="text-lg font-semibold mb-4 flex items-center">
-                    <MapPin className="h-5 w-5 mr-2" />
-                    Shipping Address
-                  </h3>
-                  <div className="bg-muted/50 p-4 rounded-lg">
-                    <p className="font-medium">{order.shippingAddress.name}</p>
-                    <p>{order.shippingAddress.address}</p>
-                    <p>{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}</p>
-                    <p>{order.shippingAddress.country}</p>
-                    {order.shippingAddress.phone && (
-                      <p className="flex items-center mt-2">
-                        <Phone className="h-4 w-4 mr-1" />
-                        {order.shippingAddress.phone}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Items Table */}
-                <div className="mb-8">
-                  <h3 className="text-lg font-semibold mb-4 flex items-center">
-                    <Package className="h-5 w-5 mr-2" />
-                    Items Ordered
-                  </h3>
-                  <div className="overflow-x-auto">
-                    <table className="w-full border-collapse">
-                      <thead>
-                        <tr className="border-b">
-                          <th className="text-left py-3 px-4 font-semibold">Item</th>
-                          <th className="text-left py-3 px-4 font-semibold">Description</th>
-                          <th className="text-right py-3 px-4 font-semibold">Qty</th>
-                          <th className="text-right py-3 px-4 font-semibold">Price</th>
-                          <th className="text-right py-3 px-4 font-semibold">Total</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {order.items.map((item, index) => (
-                          <tr key={index} className="border-b">
-                            <td className="py-3 px-4">
-                              <div className="flex items-center space-x-3">
-                                <div className="relative w-12 h-12 rounded-lg overflow-hidden bg-muted">
-                                  <Image
-                                    src={item.image}
-                                    alt={item.name}
-                                    fill
-                                    className="object-cover"
-                                  />
-                                </div>
-                                <span className="font-medium">{item.name}</span>
-                              </div>
-                            </td>
-                            <td className="py-3 px-4 text-muted-foreground">
-                              {item.description}
-                            </td>
-                            <td className="py-3 px-4 text-right">{item.quantity}</td>
-                            <td className="py-3 px-4 text-right">AED {item.price.toFixed(2)}</td>
-                            <td className="py-3 px-4 text-right font-medium">
-                              AED {(item.price * item.quantity).toFixed(2)}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-
-                {/* Order Summary */}
-                <div className="bg-muted/50 p-6 rounded-lg">
-                  <h3 className="text-lg font-semibold mb-4">Order Summary</h3>
-                  <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span>Subtotal:</span>
-                      <span>AED {order.subtotal.toFixed(2)}</span>
-                    </div>
-                    {order.discount > 0 && (
-                      <div className="flex justify-between text-green-600">
-                        <span>Discount:</span>
-                        <span>-AED {order.discount.toFixed(2)}</span>
-                      </div>
-                    )}
-                    <div className="flex justify-between">
-                      <span>Shipping:</span>
-                      <span>AED {order.shipping.toFixed(2)}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span>Tax:</span>
-                      <span>AED {order.tax.toFixed(2)}</span>
-                    </div>
-                    <Separator className="my-2" />
-                    <div className="flex justify-between text-lg font-bold">
-                      <span>Total:</span>
-                      <span>AED {order.total.toFixed(2)}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Footer */}
-                <div className="mt-8 text-center text-muted-foreground">
-                  <p className="text-lg font-medium mb-2">Thank you for your business!</p>
-                  <p>KeraGold Pro - Premium Hair Care Solutions</p>
-                  <p className="text-sm mt-2">Generated on {new Date().toLocaleDateString()}</p>
+            {/* Invoice Details */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              <div>
+                <h3 className="font-semibold text-lg mb-4 text-gray-900">Bill To:</h3>
+                <div className="space-y-1">
+                  <p className="font-medium">{order.user.name}</p>
+                  <p className="text-gray-600 flex items-center">
+                    <Mail className="h-4 w-4 mr-2" />
+                    {order.user.email}
+                  </p>
                 </div>
               </div>
-            </CardContent>
-          </Card>
+              <div>
+                <h3 className="font-semibold text-lg mb-4 text-gray-900">Invoice Details:</h3>
+                <div className="space-y-1">
+                  <p className="flex items-center">
+                    <Calendar className="h-4 w-4 mr-2" />
+                    <span className="font-medium">Invoice Date:</span>
+                    <span className="ml-2">{formatDate(order.createdAt)}</span>
+                  </p>
+                  <p className="flex items-center">
+                    <Package className="h-4 w-4 mr-2" />
+                    <span className="font-medium">Order Number:</span>
+                    <span className="ml-2">{order.orderNumber}</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Shipping Address */}
+            <div className="mb-8">
+              <h3 className="font-semibold text-lg mb-4 text-gray-900 flex items-center">
+                <MapPin className="h-5 w-5 mr-2" />
+                Shipping Address:
+              </h3>
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <p className="font-medium">{order.shippingAddress.name}</p>
+                <p className="text-gray-600">{order.shippingAddress.address}</p>
+                <p className="text-gray-600">
+                  {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.zipCode}
+                </p>
+                <p className="text-gray-600">{order.shippingAddress.country}</p>
+                <p className="text-gray-600 flex items-center">
+                  <Phone className="h-4 w-4 mr-2" />
+                  {order.shippingAddress.phone}
+                </p>
+              </div>
+            </div>
+
+            {/* Order Items */}
+            <div className="mb-8">
+              <h3 className="font-semibold text-lg mb-4 text-gray-900">Order Items:</h3>
+              <div className="overflow-x-auto">
+                <table className="w-full border-collapse border border-gray-300">
+                  <thead>
+                    <tr className="bg-yellow-50">
+                      <th className="border border-gray-300 px-4 py-2 text-left">Item</th>
+                      <th className="border border-gray-300 px-4 py-2 text-left">Price</th>
+                      <th className="border border-gray-300 px-4 py-2 text-center">Qty</th>
+                      <th className="border border-gray-300 px-4 py-2 text-right">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {order.items.map((item, index) => (
+                      <tr key={index} className="hover:bg-gray-50">
+                        <td className="border border-gray-300 px-4 py-2">
+                          <div className="flex items-center space-x-3">
+                            <div className="relative w-12 h-12 flex-shrink-0">
+                              <Image
+                                src={item.image}
+                                alt={item.name}
+                                fill
+                                className="object-cover rounded"
+                              />
+                            </div>
+                            <span className="font-medium">{item.name}</span>
+                          </div>
+                        </td>
+                        <td className="border border-gray-300 px-4 py-2">AED {item.price.toFixed(2)}</td>
+                        <td className="border border-gray-300 px-4 py-2 text-center">{item.quantity}</td>
+                        <td className="border border-gray-300 px-4 py-2 text-right font-medium">
+                          AED {item.total.toFixed(2)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr className="bg-yellow-50 font-bold">
+                      <td colSpan={3} className="border border-gray-300 px-4 py-2 text-right">
+                        Total Amount:
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2 text-right text-lg">
+                        AED {order.totalAmount.toFixed(2)}
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+
+            {/* Payment Information */}
+            <div className="mb-8">
+              <h3 className="font-semibold text-lg mb-4 text-gray-900">Payment Information:</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <p><span className="font-medium">Payment Method:</span> {order.paymentMethod.replace('_', ' ').toUpperCase()}</p>
+                  <p><span className="font-medium">Payment Status:</span> 
+                    <Badge className={`ml-2 ${order.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                      {order.paymentStatus.toUpperCase()}
+                    </Badge>
+                  </p>
+                </div>
+                <div>
+                  <p><span className="font-medium">Tracking Number:</span> {order.trackingNumber}</p>
+                  <p><span className="font-medium">Order Status:</span> 
+                    <Badge className={`ml-2 ${order.status === 'delivered' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                      {order.status.toUpperCase()}
+                    </Badge>
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Notes */}
+            {order.notes && (
+              <div className="mb-8">
+                <h3 className="font-semibold text-lg mb-4 text-gray-900">Order Notes:</h3>
+                <p className="text-gray-600 bg-gray-50 p-4 rounded-lg">{order.notes}</p>
+              </div>
+            )}
+
+            {/* Footer */}
+            <div className="text-center pt-8 border-t">
+              <p className="text-gray-600 mb-2">Thank you for your business!</p>
+              <p className="text-sm text-gray-500">
+                KeraGold Pro - Premium Hair Care Products
+              </p>
+            </div>
+          </div>
         </div>
       </div>
+      <Footer />
     </div>
   )
 }
