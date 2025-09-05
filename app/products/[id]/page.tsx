@@ -95,7 +95,17 @@ export default function ProductDetailsPage() {
   }, [user, product])
 
   const handleAddToCart = () => {
-    if (!product) return
+    if (!product) {
+      console.log('No product found')
+      return
+    }
+
+    console.log('Adding to cart:', {
+      id: product._id,
+      name: product.name,
+      price: product.price,
+      quantity
+    })
 
     const size = product.attributes.find(attr => attr.name.toLowerCase() === 'size')?.value || 'Standard'
     
@@ -104,7 +114,7 @@ export default function ProductDetailsPage() {
         id: product._id,
         name: product.name,
         price: product.price,
-        image: product.images[0] || "/placeholder.svg",
+        image: product.images && product.images.length > 0 ? product.images[0] : "/placeholder.svg",
         size: size,
         range: product.category.name,
       })

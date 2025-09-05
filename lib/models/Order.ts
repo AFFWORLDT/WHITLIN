@@ -2,8 +2,11 @@ import mongoose, { Schema, Document } from 'mongoose'
 
 export interface IOrderItem {
   product: mongoose.Types.ObjectId
+  name: string
   quantity: number
   price: number
+  image: string
+  total: number
 }
 
 export interface IShippingAddress {
@@ -16,9 +19,9 @@ export interface IShippingAddress {
 
 export interface IOrder extends Document {
   orderNumber: string
-  customer: mongoose.Types.ObjectId
+  user: mongoose.Types.ObjectId
   items: IOrderItem[]
-  total: number
+  totalAmount: number
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
   shippingAddress: IShippingAddress
   paymentMethod: string
@@ -35,12 +38,25 @@ const OrderItemSchema = new Schema({
     ref: 'Product',
     required: true
   },
+  name: {
+    type: String,
+    required: true
+  },
   quantity: {
     type: Number,
     required: true,
     min: 1
   },
   price: {
+    type: Number,
+    required: true,
+    min: 0
+  },
+  image: {
+    type: String,
+    required: true
+  },
+  total: {
     type: Number,
     required: true,
     min: 0
@@ -76,13 +92,13 @@ const OrderSchema: Schema = new Schema({
     required: true,
     unique: true
   },
-  customer: {
+  user: {
     type: Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
   items: [OrderItemSchema],
-  total: {
+  totalAmount: {
     type: Number,
     required: true,
     min: 0
@@ -98,7 +114,7 @@ const OrderSchema: Schema = new Schema({
   },
   paymentMethod: {
     type: String,
-    default: 'stripe'
+    default: 'cash_on_delivery'
   },
   paymentStatus: {
     type: String,
@@ -117,7 +133,7 @@ const OrderSchema: Schema = new Schema({
 
 // Index for better query performance
 OrderSchema.index({ orderNumber: 1 })
-OrderSchema.index({ customer: 1 })
+OrderSchema.index({ user: 1 })
 OrderSchema.index({ status: 1 })
 OrderSchema.index({ createdAt: -1 })
 

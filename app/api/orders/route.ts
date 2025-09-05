@@ -8,15 +8,31 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB()
     
+    const requestBody = await request.json()
+    console.log('Order API - Request body:', JSON.stringify(requestBody, null, 2))
+    
     const {
       userId,
       items,
       shippingAddress,
       paymentMethod = 'cash_on_delivery',
       notes = ''
-    } = await request.json()
+    } = requestBody
+    
+    console.log('Order API - Extracted data:', {
+      userId,
+      itemsCount: items?.length,
+      shippingAddress,
+      paymentMethod,
+      notes
+    })
     
     if (!userId || !items || !shippingAddress) {
+      console.log('Order API - Missing required fields:', {
+        hasUserId: !!userId,
+        hasItems: !!items,
+        hasShippingAddress: !!shippingAddress
+      })
       return NextResponse.json(
         { success: false, error: 'Missing required fields' },
         { status: 400 }
@@ -65,6 +81,17 @@ export async function POST(request: NextRequest) {
       })
     }
     
+    // Transform shipping address to match Order model schema
+    const transformedShippingAddress = {
+      street: shippingAddress.address, // Map address to street
+      city: shippingAddress.city,
+      state: shippingAddress.state,
+      zipCode: shippingAddress.zipCode,
+      country: shippingAddress.country
+    }
+    
+    console.log('Order API - Transformed shipping address:', transformedShippingAddress)
+    
     // Generate order number
     const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 6).toUpperCase()}`
     
@@ -74,12 +101,22 @@ export async function POST(request: NextRequest) {
       user: userId,
       items: orderItems,
       totalAmount,
-      shippingAddress,
+      shippingAddress: transformedShippingAddress,
       paymentMethod,
       paymentStatus: paymentMethod === 'cash_on_delivery' ? 'pending' : 'pending',
       status: 'pending',
       notes,
       trackingNumber: `TRK-${Date.now()}-${Math.random().toString(36).substr(2, 8).toUpperCase()}`
+    })
+    
+    console.log('Order API - Order object before save:', {
+      orderNumber: order.orderNumber,
+      user: order.user,
+      itemsCount: order.items.length,
+      totalAmount: order.totalAmount,
+      shippingAddress: order.shippingAddress,
+      paymentMethod: order.paymentMethod,
+      status: order.status
     })
     
     await order.save()
@@ -117,9 +154,25 @@ export async function POST(request: NextRequest) {
     }, { status: 201 })
     
   } catch (error) {
-    console.error('Error creating order:', error)
+    console.error('Order API - Error creating order:', error)
+    
+    // Log detailed error information
+    if (error instanceof Error) {
+      console.error('Order API - Error message:', error.message)
+      console.error('Order API - Error stack:', error.stack)
+    }
+    
+    // Check if it's a validation error
+    if (error && typeof error === 'object' && 'errors' in error) {
+      console.error('Order API - Validation errors:', error.errors)
+    }
+    
     return NextResponse.json(
-      { success: false, error: 'Failed to create order' },
+      { 
+        success: false, 
+        error: 'Failed to create order',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     )
   }

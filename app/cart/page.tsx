@@ -44,6 +44,7 @@ export default function CartPage() {
     phone: ''
   })
   const [notes, setNotes] = useState('')
+  const [savedAddress, setSavedAddress] = useState<any>(null)
 
   useEffect(() => {
     if (user?.name) {
@@ -52,6 +53,35 @@ export default function CartPage() {
         name: user.name
       }))
     }
+  }, [user])
+
+  useEffect(() => {
+    const fetchSavedAddress = async () => {
+      if (!user?.id) return
+      
+      try {
+        const response = await fetch(`/api/user/addresses?userId=${user.id}`)
+        const data = await response.json()
+        
+        if (data.success && data.data.length > 0) {
+          const defaultAddress = data.data[0] // Get first saved address
+          setSavedAddress(defaultAddress)
+          setShippingAddress({
+            name: defaultAddress.name,
+            address: defaultAddress.address,
+            city: defaultAddress.city,
+            state: defaultAddress.state,
+            zipCode: defaultAddress.zipCode,
+            country: defaultAddress.country,
+            phone: '' // Phone not saved in address
+          })
+        }
+      } catch (err) {
+        console.error('Error fetching saved address:', err)
+      }
+    }
+
+    fetchSavedAddress()
   }, [user])
 
   const handleQuantityChange = (id: string, newQuantity: number) => {
@@ -93,6 +123,35 @@ export default function CartPage() {
     setPlacingOrder(true)
 
     try {
+      // Save address if it's different from saved address
+      if (!savedAddress || 
+          savedAddress.address !== shippingAddress.address ||
+          savedAddress.city !== shippingAddress.city ||
+          savedAddress.state !== shippingAddress.state ||
+          savedAddress.zipCode !== shippingAddress.zipCode) {
+        
+        try {
+          await fetch(`/api/user/addresses?userId=${user.id}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              type: 'Home',
+              name: shippingAddress.name,
+              address: shippingAddress.address,
+              city: shippingAddress.city,
+              state: shippingAddress.state,
+              zipCode: shippingAddress.zipCode,
+              country: shippingAddress.country
+            })
+          })
+        } catch (err) {
+          console.error('Error saving address:', err)
+          // Continue with order even if address saving fails
+        }
+      }
+
       const orderData = {
         userId: user.id,
         items: state.items.map(item => ({
@@ -104,6 +163,8 @@ export default function CartPage() {
         notes
       }
 
+      console.log('Cart - Order data being sent:', JSON.stringify(orderData, null, 2))
+
       const response = await fetch('/api/orders', {
         method: 'POST',
         headers: {
@@ -112,13 +173,17 @@ export default function CartPage() {
         body: JSON.stringify(orderData)
       })
 
+      console.log('Cart - Order API response status:', response.status)
+
       const data = await response.json()
+      console.log('Cart - Order API response data:', data)
 
       if (data.success) {
         toast.success("Order placed successfully!")
         clearCart()
         router.push(`/orders/${data.data.orderId}`)
       } else {
+        console.error('Cart - Order failed:', data.error, data.details)
         toast.error(data.error || "Failed to place order")
       }
     } catch (error) {

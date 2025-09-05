@@ -10,7 +10,7 @@ export async function GET(
     await connectDB()
     
     const { id } = await params
-    const product = await Product.findById(id).lean()
+    const product = await Product.findById(id).populate('category', 'name slug').lean()
     
     if (!product) {
       return NextResponse.json(
