@@ -25,6 +25,7 @@ export interface IUser {
     totalSpent: number
     lastOrderDate?: string
   }
+  wishlist?: string[]
   createdAt?: Date
   updatedAt?: Date
 }
@@ -92,7 +93,11 @@ const UserSchema = new Schema<IUser>({
       default: 0
     },
     lastOrderDate: Date
-  }
+  },
+  wishlist: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Product'
+  }]
 }, {
   timestamps: true
 })

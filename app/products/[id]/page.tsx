@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Star, ShoppingCart, Heart, Share2, Truck, Shield, RotateCcw, Loader2 } from "lucide-react"
 import { useCart } from "@/lib/cart-context"
+import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
@@ -40,7 +41,10 @@ export default function ProductDetailsPage() {
   const [error, setError] = useState<string | null>(null)
   const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
+  const [isInWishlist, setIsInWishlist] = useState(false)
+  const [addingToWishlist, setAddingToWishlist] = useState(false)
   const { addItem } = useCart()
+  const { user } = useAuth()
 
   // Fetch product details
   useEffect(() => {
@@ -67,6 +71,29 @@ export default function ProductDetailsPage() {
     }
   }, [productId])
 
+  // Check if product is in wishlist
+  useEffect(() => {
+    const checkWishlistStatus = async () => {
+      if (!user || !product) return
+
+      try {
+        const response = await fetch(`/api/user/wishlist?userId=${user.id}`)
+        const data = await response.json()
+        
+        if (data.success) {
+          console.log('Wishlist data for status check:', data.data)
+          const isInWishlist = data.data.some((item: any) => item.id === product._id)
+          console.log('Is product in wishlist:', isInWishlist)
+          setIsInWishlist(isInWishlist)
+        }
+      } catch (err) {
+        console.error('Error checking wishlist status:', err)
+      }
+    }
+
+    checkWishlistStatus()
+  }, [user, product])
+
   const handleAddToCart = () => {
     if (!product) return
 
@@ -84,6 +111,76 @@ export default function ProductDetailsPage() {
     }
     
     toast.success(`${quantity}x ${product.name} added to cart!`)
+  }
+
+  const handleAddToWishlist = async () => {
+    if (!user) {
+      toast.error("Please login to add items to wishlist")
+      return
+    }
+
+    if (!product) return
+
+    try {
+      setAddingToWishlist(true)
+      
+      const response = await fetch('/api/user/wishlist', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId: user.id,
+          productId: product._id
+        })
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        console.log('Product added to wishlist successfully')
+        setIsInWishlist(true)
+        toast.success(`${product.name} added to wishlist!`)
+      } else {
+        console.log('Failed to add to wishlist:', data.error)
+        toast.error(data.error || 'Failed to add to wishlist')
+      }
+    } catch (err) {
+      console.error('Error adding to wishlist:', err)
+      toast.error('Failed to add to wishlist')
+    } finally {
+      setAddingToWishlist(false)
+    }
+  }
+
+  const handleShare = async () => {
+    if (!product) return
+
+    const shareData = {
+      title: product.name,
+      text: `Check out this amazing product: ${product.name}`,
+      url: window.location.href
+    }
+
+    try {
+      if (navigator.share && navigator.canShare(shareData)) {
+        await navigator.share(shareData)
+        toast.success("Product shared successfully!")
+      } else {
+        // Fallback: Copy to clipboard
+        await navigator.clipboard.writeText(window.location.href)
+        toast.success("Product link copied to clipboard!")
+      }
+    } catch (err) {
+      console.error('Error sharing:', err)
+      // Fallback: Copy to clipboard
+      try {
+        await navigator.clipboard.writeText(window.location.href)
+        toast.success("Product link copied to clipboard!")
+      } catch (clipboardErr) {
+        toast.error("Failed to share product")
+      }
+    }
   }
 
   const getProductAttribute = (name: string) => {
@@ -264,11 +361,24 @@ export default function ProductDetailsPage() {
             </div>
 
             <div className="flex gap-2">
-              <Button variant="outline" className="flex-1">
-                <Heart className="h-4 w-4 mr-2" />
-                Add to Wishlist
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={handleAddToWishlist}
+                disabled={addingToWishlist || isInWishlist}
+              >
+                {addingToWishlist ? (
+                  <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                ) : (
+                  <Heart className={`h-4 w-4 mr-2 ${isInWishlist ? 'fill-red-500 text-red-500' : ''}`} />
+                )}
+                {isInWishlist ? 'In Wishlist' : 'Add to Wishlist'}
               </Button>
-              <Button variant="outline" className="flex-1">
+              <Button 
+                variant="outline" 
+                className="flex-1"
+                onClick={handleShare}
+              >
                 <Share2 className="h-4 w-4 mr-2" />
                 Share
               </Button>

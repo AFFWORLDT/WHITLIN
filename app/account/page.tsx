@@ -264,25 +264,51 @@ export default function AccountPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      {userData.recentOrders.map((order) => (
-                        <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
-                          <div className="flex items-center space-x-4">
-                            <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
-                              <Package className="h-6 w-6 text-muted-foreground" />
+                      {userData.recentOrders.length > 0 ? (
+                        <>
+                          {userData.recentOrders.slice(0, 3).map((order) => (
+                            <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
+                              <div className="flex items-center space-x-4">
+                                <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
+                                  <Package className="h-6 w-6 text-muted-foreground" />
+                                </div>
+                                <div>
+                                  <div className="font-medium">{order.id}</div>
+                                  <div className="text-sm text-muted-foreground">{order.date} • {order.items} items</div>
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className="font-medium">AED {order.total.toFixed(2)}</div>
+                                <Badge className={getStatusColor(order.status)}>
+                                  {order.status}
+                                </Badge>
+                              </div>
                             </div>
-                            <div>
-                              <div className="font-medium">{order.id}</div>
-                              <div className="text-sm text-muted-foreground">{order.date} • {order.items} items</div>
-                            </div>
+                          ))}
+                          <div className="text-center pt-4">
+                            <Link href="/orders">
+                              <Button variant="outline">
+                                <Package className="h-4 w-4 mr-2" />
+                                View All Orders
+                              </Button>
+                            </Link>
                           </div>
-                          <div className="text-right">
-                            <div className="font-medium">AED {order.total.toFixed(2)}</div>
-                            <Badge className={getStatusColor(order.status)}>
-                              {order.status}
-                            </Badge>
-                          </div>
+                        </>
+                      ) : (
+                        <div className="text-center py-8">
+                          <Package className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                          <h3 className="text-lg font-medium mb-2">No orders yet</h3>
+                          <p className="text-muted-foreground mb-4">
+                            You haven't placed any orders yet
+                          </p>
+                          <Link href="/">
+                            <Button>
+                              <Package className="h-4 w-4 mr-2" />
+                              Start Shopping
+                            </Button>
+                          </Link>
                         </div>
-                      ))}
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -295,19 +321,18 @@ export default function AccountPage() {
                     <CardDescription>Products you've saved for later</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {userData.wishlist.map((item) => (
-                        <div key={item.id} className="flex items-center space-x-4 p-4 border rounded-lg">
-                          <div className="w-16 h-16 bg-muted rounded-lg flex items-center justify-center">
-                            <Package className="h-8 w-8 text-muted-foreground" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="font-medium">{item.name}</div>
-                            <div className="text-sm text-muted-foreground">AED {item.price.toFixed(2)}</div>
-                          </div>
-                          <Button size="sm">Add to Cart</Button>
-                        </div>
-                      ))}
+                    <div className="text-center py-8">
+                      <Heart className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-medium mb-2">Manage Your Wishlist</h3>
+                      <p className="text-muted-foreground mb-4">
+                        View and manage all your saved products
+                      </p>
+                      <Link href="/wishlist">
+                        <Button>
+                          <Heart className="h-4 w-4 mr-2" />
+                          Go to Wishlist
+                        </Button>
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>
@@ -320,94 +345,45 @@ export default function AccountPage() {
                     <CardDescription>Manage your shipping addresses</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-4">
-                      {userData.addresses.map((address) => (
-                        <div key={address.id} className="flex items-center justify-between p-4 border rounded-lg">
-                          <div>
-                            <div className="font-medium flex items-center space-x-2">
-                              <span>{address.type}</span>
-                              {address.isDefault && (
-                                <Badge variant="secondary">Default</Badge>
-                              )}
-                            </div>
-                            <div className="text-sm text-muted-foreground">{address.address}</div>
-                          </div>
-                          <Button variant="outline" size="sm">Edit</Button>
-                        </div>
-                      ))}
+                    <div className="text-center py-8">
+                      <MapPin className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-medium mb-2">Manage Your Addresses</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Add, edit, and organize your shipping addresses
+                      </p>
+                      <Link href="/addresses">
+                        <Button>
+                          <MapPin className="h-4 w-4 mr-2" />
+                          Manage Addresses
+                        </Button>
+                      </Link>
                     </div>
-                    <Button className="w-full mt-4">
-                      Add New Address
-                    </Button>
                   </CardContent>
                 </Card>
               )}
 
               {activeTab === "settings" && (
-                <div className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Profile Settings</CardTitle>
-                      <CardDescription>Update your personal information</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div>
-                          <label className="text-sm font-medium">Name</label>
-                          <p className="text-sm text-muted-foreground">{user.name}</p>
-                        </div>
-                        <div>
-                          <label className="text-sm font-medium">Email</label>
-                          <p className="text-sm text-muted-foreground">{user.email}</p>
-                        </div>
-                      </div>
-                      <Button variant="outline">Edit Profile</Button>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Security</CardTitle>
-                      <CardDescription>Manage your account security</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <Button variant="outline" className="w-full">
-                        Change Password
-                      </Button>
-                      <Button variant="outline" className="w-full">
-                        Enable Two-Factor Authentication
-                      </Button>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Notifications</CardTitle>
-                      <CardDescription>Manage your notification preferences</CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="font-medium">Email Notifications</div>
-                          <div className="text-sm text-muted-foreground">Receive updates about your orders</div>
-                        </div>
-                        <Button variant="outline" size="sm">Configure</Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Danger Zone</CardTitle>
-                      <CardDescription>Irreversible actions</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <Button variant="destructive" onClick={logout} className="w-full">
-                        Sign Out
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </div>
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Account Settings</CardTitle>
+                    <CardDescription>Manage your account preferences and security</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-center py-8">
+                      <Settings className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-medium mb-2">Account Settings</h3>
+                      <p className="text-muted-foreground mb-4">
+                        Update your profile, change password, and manage preferences
+                      </p>
+                      <Link href="/settings">
+                        <Button>
+                          <Settings className="h-4 w-4 mr-2" />
+                          Go to Settings
+                        </Button>
+                      </Link>
+                    </div>
+                  </CardContent>
+                </Card>
               )}
             </div>
           </div>

@@ -1,9 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useAuth } from "@/lib/auth-context"
 import { useRouter } from "next/navigation"
-import { useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -15,50 +14,33 @@ import {
   Eye,
   Download,
   Calendar,
-  MapPin
+  MapPin,
+  Loader2,
+  RotateCcw
 } from "lucide-react"
 import { Header } from "@/components/header"
+import { toast } from "sonner"
+import Link from "next/link"
 
-// Mock data - in real app this would come from API
-const orders = [
-  {
-    id: "ORD-001",
-    date: "2024-01-15",
-    status: "completed",
-    total: 299.99,
-    items: [
-      { name: "KeraGold Expert Liss System", quantity: 1, price: 299.99 }
-    ],
-    shippingAddress: "123 Main St, New York, NY 10001",
-    trackingNumber: "TRK123456789",
-    estimatedDelivery: "2024-01-18"
-  },
-  {
-    id: "ORD-002",
-    date: "2024-01-10",
-    status: "shipped",
-    total: 199.99,
-    items: [
-      { name: "KeraGold Inforcer Range", quantity: 1, price: 199.99 }
-    ],
-    shippingAddress: "123 Main St, New York, NY 10001",
-    trackingNumber: "TRK987654321",
-    estimatedDelivery: "2024-01-16"
-  },
-  {
-    id: "ORD-003",
-    date: "2024-01-05",
-    status: "pending",
-    total: 399.99,
-    items: [
-      { name: "KeraGold Nourishing System", quantity: 1, price: 249.99 },
-      { name: "KeraGold Repair Range", quantity: 1, price: 149.99 }
-    ],
-    shippingAddress: "123 Main St, New York, NY 10001",
-    trackingNumber: null,
-    estimatedDelivery: "2024-01-20"
-  }
-]
+interface OrderItem {
+  name: string
+  quantity: number
+  price: number
+  image: string
+}
+
+interface Order {
+  id: string
+  date: string
+  status: string
+  total: number
+  items: OrderItem[]
+  shippingAddress: string
+  trackingNumber: string | null
+  estimatedDelivery: string | null
+  paymentMethod: string
+  orderId: string
+}
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -82,16 +64,83 @@ const getStatusIcon = (status: string) => {
 export default function OrdersPage() {
   const { user } = useAuth()
   const router = useRouter()
-  const [selectedOrder, setSelectedOrder] = useState<string | null>(null)
+  const [orders, setOrders] = useState<Order[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!user) {
       router.push("/login")
+      return
     }
+
+    const fetchOrders = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch(`/api/user/orders?userId=${user.id}`)
+        const data = await response.json()
+        
+        if (data.success) {
+          setOrders(data.data)
+        } else {
+          setError(data.error || 'Failed to fetch orders')
+          toast.error(data.error || 'Failed to fetch orders')
+        }
+      } catch (err) {
+        console.error('Error fetching orders:', err)
+        setError('An unexpected error occurred while fetching orders')
+        toast.error('An unexpected error occurred while fetching orders')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchOrders()
   }, [user, router])
 
   if (!user) {
     return null
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4" />
+                <p className="text-muted-foreground">Loading your orders...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-center justify-center py-12">
+              <div className="text-center">
+                <p className="text-destructive mb-4">{error}</p>
+                <button 
+                  onClick={() => window.location.reload()} 
+                  className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+                >
+                  Retry
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -118,7 +167,7 @@ export default function OrdersPage() {
                       </CardDescription>
                     </div>
                     <div className="text-right">
-                      <div className="text-lg font-bold">${order.total}</div>
+                      <div className="text-lg font-bold">AED {order.total.toFixed(2)}</div>
                       <Badge className={getStatusColor(order.status)}>
                         <div className="flex items-center space-x-1">
                           {getStatusIcon(order.status)}
@@ -145,7 +194,7 @@ export default function OrdersPage() {
                             </div>
                             <div className="text-right">
                               <div>Qty: {item.quantity}</div>
-                              <div className="font-medium">${item.price}</div>
+                              <div className="font-medium">AED {item.price.toFixed(2)}</div>
                             </div>
                           </div>
                         ))}
@@ -180,25 +229,32 @@ export default function OrdersPage() {
 
                     {/* Order Actions */}
                     <div className="flex flex-wrap gap-2 pt-4 border-t">
-                      <Button variant="outline" size="sm">
-                        <Eye className="h-4 w-4 mr-2" />
-                        View Details
-                      </Button>
+                      <Link href={`/orders/${order.orderId}`}>
+                        <Button variant="outline" size="sm">
+                          <Eye className="h-4 w-4 mr-2" />
+                          View Details
+                        </Button>
+                      </Link>
                       
                       {order.trackingNumber && (
-                        <Button variant="outline" size="sm">
-                          <Truck className="h-4 w-4 mr-2" />
-                          Track Package
-                        </Button>
+                        <Link href={`/orders/${order.orderId}/track`}>
+                          <Button variant="outline" size="sm">
+                            <Truck className="h-4 w-4 mr-2" />
+                            Track Package
+                          </Button>
+                        </Link>
                       )}
                       
-                      <Button variant="outline" size="sm">
-                        <Download className="h-4 w-4 mr-2" />
-                        Download Invoice
-                      </Button>
+                      <Link href={`/orders/${order.orderId}/invoice`}>
+                        <Button variant="outline" size="sm">
+                          <Download className="h-4 w-4 mr-2" />
+                          Download Invoice
+                        </Button>
+                      </Link>
                       
                       {order.status === "completed" && (
                         <Button variant="outline" size="sm">
+                          <RotateCcw className="h-4 w-4 mr-2" />
                           Reorder
                         </Button>
                       )}
