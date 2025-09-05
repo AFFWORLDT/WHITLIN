@@ -1,0 +1,42 @@
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+
+export function HeroSection() {
+  return (
+    <section className="relative h-[70vh] min-h-[500px] flex items-center justify-center overflow-hidden">
+      <div className="absolute inset-0">
+        <Image
+          src="/images/keragold-hero.png"
+          alt="KeraGold Pro Professional Hair Care"
+          fill
+          className="object-cover"
+          priority
+        />
+        <div className="absolute inset-0 bg-black/30" />
+      </div>
+
+      <div className="relative z-10 text-center text-white max-w-4xl mx-auto px-4">
+        <h1 className="font-serif text-4xl md:text-6xl font-bold mb-6 text-balance">
+          Professional Hair Care
+          <span className="block text-primary">Redefined</span>
+        </h1>
+        <p className="text-lg md:text-xl mb-8 text-pretty max-w-2xl mx-auto opacity-90">
+          Transform your hair with our luxury keratin and hyaluronic acid treatments. Professional results,
+          salon-quality care.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8">
+            Shop Now
+          </Button>
+          <Button
+            size="lg"
+            variant="outline"
+            className="border-white text-white hover:bg-white hover:text-black bg-transparent"
+          >
+            View Collections
+          </Button>
+        </div>
+      </div>
+    </section>
+  )
+}
