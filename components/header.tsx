@@ -66,6 +66,11 @@ export function Header() {
                   <DropdownMenuItem asChild>
                     <Link href="/orders">Order History</Link>
                   </DropdownMenuItem>
+                  {user?.role === "admin" && (
+                    <DropdownMenuItem asChild>
+                      <Link href="/admin">Admin Panel</Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem onClick={logout} className="text-red-600">
                     <LogOut className="h-4 w-4 mr-2" />
                     Sign Out
@@ -119,6 +124,11 @@ export function Header() {
                   <Link href="/account" className="text-foreground hover:text-primary transition-colors">
                     My Account
                   </Link>
+                  {user?.role === "admin" && (
+                    <Link href="/admin" className="text-foreground hover:text-primary transition-colors">
+                      Admin Panel
+                    </Link>
+                  )}
                   <button onClick={logout} className="text-left text-red-600 hover:text-red-700 transition-colors">
                     Sign Out
                   </button>

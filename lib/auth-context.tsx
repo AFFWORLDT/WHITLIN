@@ -27,7 +27,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check for existing session on mount
     const savedUser = localStorage.getItem("keragold_user")
     if (savedUser) {
-      setUser(JSON.parse(savedUser))
+      try {
+        const userData = JSON.parse(savedUser)
+        setUser(userData)
+        // Also set cookie for middleware
+        document.cookie = `keragold_user=${savedUser}; path=/; max-age=86400` // 24 hours
+      } catch (error) {
+        console.error('Error parsing user data:', error)
+        localStorage.removeItem("keragold_user")
+      }
     }
     setIsLoading(false)
   }, [])
@@ -35,63 +43,100 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true)
 
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    try {
+      const response = await fetch('/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      })
 
-    // Check if user exists in localStorage
-    const users = JSON.parse(localStorage.getItem("keragold_users") || "[]")
-    const existingUser = users.find((u: any) => u.email === email && u.password === password)
+      const data = await response.json()
 
-    if (existingUser) {
-      const userData = { id: existingUser.id, email: existingUser.email, name: existingUser.name }
-      setUser(userData)
-      localStorage.setItem("keragold_user", JSON.stringify(userData))
+      if (data.success) {
+        const userData = {
+          id: data.data._id,
+          name: data.data.name,
+          email: data.data.email,
+          role: data.data.role
+        }
+        setUser(userData)
+        const userDataString = JSON.stringify(userData)
+        localStorage.setItem("keragold_user", userDataString)
+        // Set cookie for middleware
+        document.cookie = `keragold_user=${userDataString}; path=/; max-age=86400` // 24 hours
+        setIsLoading(false)
+        return true
+      } else {
+        setIsLoading(false)
+        return false
+      }
+    } catch (error) {
+      console.error('Login error:', error)
       setIsLoading(false)
-      return true
+      return false
     }
-
-    setIsLoading(false)
-    return false
   }
 
   const signup = async (email: string, password: string, name: string): Promise<boolean> => {
     setIsLoading(true)
 
-    // Simulate API call delay
-    await new Promise((resolve) => setTimeout(resolve, 1000))
+    try {
+      const response = await fetch('/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ name, email, password }),
+      })
 
-    // Check if user already exists
-    const users = JSON.parse(localStorage.getItem("keragold_users") || "[]")
-    const existingUser = users.find((u: any) => u.email === email)
+      const data = await response.json()
 
-    if (existingUser) {
+      if (data.success) {
+        const userData = {
+          id: data.data._id,
+          name: data.data.name,
+          email: data.data.email,
+          role: data.data.role
+        }
+        setUser(userData)
+        localStorage.setItem("keragold_user", JSON.stringify(userData))
+        setIsLoading(false)
+        return true
+      } else {
+        setIsLoading(false)
+        return false
+      }
+    } catch (error) {
+      console.error('Signup error:', error)
       setIsLoading(false)
       return false
     }
-
-    // Create new user
-    const newUser = {
-      id: Date.now().toString(),
-      email,
-      password,
-      name,
-    }
-
-    users.push(newUser)
-    localStorage.setItem("keragold_users", JSON.stringify(users))
-
-    // Auto login after signup
-    const userData = { id: newUser.id, email: newUser.email, name: newUser.name }
-    setUser(userData)
-    localStorage.setItem("keragold_user", JSON.stringify(userData))
-
-    setIsLoading(false)
-    return true
   }
+
+  // Initialize with admin user for testing
+  useEffect(() => {
+    const users = JSON.parse(localStorage.getItem("keragold_users") || "[]")
+    const adminExists = users.find((u: any) => u.email === "admin@keragold.com")
+    
+    if (!adminExists) {
+      const adminUser = {
+        id: "admin-001",
+        email: "admin@keragold.com",
+        password: "admin123",
+        name: "Admin User",
+      }
+      users.push(adminUser)
+      localStorage.setItem("keragold_users", JSON.stringify(users))
+    }
+  }, [])
 
   const logout = () => {
     setUser(null)
     localStorage.removeItem("keragold_user")
+    // Clear cookie
+    document.cookie = "keragold_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
   }
 
   return <AuthContext.Provider value={{ user, login, signup, logout, isLoading }}>{children}</AuthContext.Provider>

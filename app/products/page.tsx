@@ -1,0 +1,314 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import Link from "next/link"
+import Image from "next/image"
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Input } from "@/components/ui/input"
+import { Star, ShoppingCart, Filter, Grid, List, Loader2 } from "lucide-react"
+import { useCart } from "@/lib/cart-context"
+import { toast } from "sonner"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
+
+interface Product {
+  _id: string
+  name: string
+  price: number
+  originalPrice?: number
+  description: string
+  images: string[]
+  category: {
+    name: string
+  }
+  attributes: Array<{
+    name: string
+    value: string
+  }>
+  isActive: boolean
+  createdAt: string
+}
+
+interface Category {
+  _id: string
+  name: string
+  slug: string
+}
+
+export default function ProductsPage() {
+  const [products, setProducts] = useState<Product[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("all")
+  const [sortBy, setSortBy] = useState("newest")
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid")
+  const { addItem } = useCart()
+
+  // Fetch products and categories
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [productsResponse, categoriesResponse] = await Promise.all([
+          fetch('/api/products'),
+          fetch('/api/categories?active=true')
+        ])
+
+        const productsData = await productsResponse.json()
+        const categoriesData = await categoriesResponse.json()
+
+        if (productsData.success) {
+          setProducts(productsData.data)
+        } else {
+          setError(productsData.error || 'Failed to fetch products')
+        }
+
+        if (categoriesData.success) {
+          setCategories(categoriesData.data)
+        }
+      } catch (err) {
+        console.error('Error fetching data:', err)
+        setError('An unexpected error occurred while fetching data')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  const handleAddToCart = (product: Product) => {
+    const size = product.attributes.find(attr => attr.name.toLowerCase() === 'size')?.value || 'Standard'
+    
+    addItem({
+      id: product._id,
+      name: product.name,
+      price: product.price,
+      image: product.images[0] || "/placeholder.svg",
+      size: size,
+      range: product.category.name,
+    })
+    
+    toast.success(`${product.name} added to cart!`)
+  }
+
+  const getProductSize = (product: Product) => {
+    return product.attributes.find(attr => attr.name.toLowerCase() === 'size')?.value || 'Standard'
+  }
+
+  const getProductBadge = (product: Product) => {
+    if (product.originalPrice && product.originalPrice > product.price) {
+      return "Sale"
+    }
+    return "New"
+  }
+
+  // Filter and sort products
+  const filteredProducts = products
+    .filter(product => {
+      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           product.description.toLowerCase().includes(searchTerm.toLowerCase())
+      const matchesCategory = selectedCategory === "all" || product.category.name === selectedCategory
+      return matchesSearch && matchesCategory && product.isActive
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case "price-low":
+          return a.price - b.price
+        case "price-high":
+          return b.price - a.price
+        case "name":
+          return a.name.localeCompare(b.name)
+        case "newest":
+        default:
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      }
+    })
+
+  if (loading) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <div className="flex justify-center items-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+        <Footer />
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen">
+        <Header />
+        <div className="container mx-auto px-4 py-16">
+          <div className="text-center">
+            <h1 className="text-2xl font-bold text-destructive mb-4">Error Loading Products</h1>
+            <p className="text-muted-foreground mb-6">{error}</p>
+            <Button onClick={() => window.location.reload()}>Retry</Button>
+          </div>
+        </div>
+        <Footer />
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen">
+      <Header />
+      
+      <main className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-4">All Products</h1>
+          <p className="text-muted-foreground">
+            Discover our complete range of professional hair care products
+          </p>
+        </div>
+
+        {/* Filters and Search */}
+        <div className="flex flex-col lg:flex-row gap-4 mb-8">
+          <div className="flex-1">
+            <div className="relative">
+              <Input
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+              <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            </div>
+          </div>
+          
+          <div className="flex gap-4">
+            <select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+              className="px-3 py-2 border border-input bg-background rounded-md text-sm"
+            >
+              <option value="all">All Categories</option>
+              {categories.map(category => (
+                <option key={category._id} value={category.name}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+            
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="px-3 py-2 border border-input bg-background rounded-md text-sm"
+            >
+              <option value="newest">Newest First</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="name">Name: A to Z</option>
+            </select>
+            
+            <div className="flex border border-input rounded-md">
+              <Button
+                variant={viewMode === "grid" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("grid")}
+              >
+                <Grid className="h-4 w-4" />
+              </Button>
+              <Button
+                variant={viewMode === "list" ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setViewMode("list")}
+              >
+                <List className="h-4 w-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* Products Grid/List */}
+        {filteredProducts.length === 0 ? (
+          <div className="text-center py-16">
+            <p className="text-muted-foreground text-lg">No products found</p>
+            <p className="text-muted-foreground">Try adjusting your search or filters</p>
+          </div>
+        ) : (
+          <div className={
+            viewMode === "grid" 
+              ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              : "space-y-4"
+          }>
+            {filteredProducts.map((product) => (
+              <Card key={product._id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-border/50">
+                <Link href={`/products/${product._id}`}>
+                  <div className="relative aspect-square overflow-hidden cursor-pointer">
+                    <Image
+                      src={product.images[0] || "/placeholder.svg"}
+                      alt={product.name}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
+                      {getProductBadge(product)}
+                    </Badge>
+                    <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded text-xs font-medium">
+                      {getProductSize(product)}
+                    </div>
+                  </div>
+                </Link>
+
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-1 mb-2">
+                    {[...Array(5)].map((_, i) => (
+                      <Star
+                        key={i}
+                        className={`h-4 w-4 ${
+                          i < 4 ? "fill-primary text-primary" : "text-muted-foreground"
+                        }`}
+                      />
+                    ))}
+                    <span className="text-sm text-muted-foreground ml-1">(4.8)</span>
+                  </div>
+
+                  <Link href={`/products/${product._id}`}>
+                    <h3 className="font-serif text-lg font-semibold mb-1 text-balance hover:text-primary transition-colors cursor-pointer">
+                      {product.name}
+                    </h3>
+                  </Link>
+                  <p className="text-xs text-primary font-medium mb-1">{product.category.name} Range</p>
+                  <p className="text-sm text-muted-foreground mb-3 text-pretty line-clamp-2">
+                    {product.description}
+                  </p>
+
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xl font-bold">AED {product.price}</span>
+                      {product.originalPrice && (
+                        <span className="text-sm text-muted-foreground line-through">AED {product.originalPrice}</span>
+                      )}
+                    </div>
+                    <Button
+                      size="sm"
+                      className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                      onClick={() => handleAddToCart(product)}
+                    >
+                      <ShoppingCart className="h-4 w-4 mr-1" />
+                      Add to Cart
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        )}
+
+        {/* Results Count */}
+        <div className="mt-8 text-center text-muted-foreground">
+          Showing {filteredProducts.length} of {products.length} products
+        </div>
+      </main>
+
+      <Footer />
+    </div>
+  )
+}
