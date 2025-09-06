@@ -103,7 +103,7 @@ const UserSchema = new Schema<IUser>({
 })
 
 // Indexes for better performance
-UserSchema.index({ email: 1 }, { unique: true })
+// email index is automatically created by unique: true
 UserSchema.index({ role: 1 })
 UserSchema.index({ status: 1 })
 UserSchema.index({ createdAt: -1 })

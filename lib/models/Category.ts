@@ -92,7 +92,7 @@ CategorySchema.pre('save', function(next) {
 })
 
 // Indexes for better performance
-CategorySchema.index({ slug: 1 }, { unique: true })
+// slug index is automatically created by unique: true
 CategorySchema.index({ isActive: 1 })
 CategorySchema.index({ sortOrder: 1 })
 CategorySchema.index({ parent: 1 })

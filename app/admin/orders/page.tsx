@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -28,7 +29,9 @@ import {
   CheckCircle,
   Clock,
   XCircle,
-  Loader2
+  Loader2,
+  CreditCard,
+  ArrowLeft
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -47,7 +50,7 @@ interface Order {
     price: number
   }>
   totalAmount: number
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
+  status: 'pending' | 'confirmed' | 'processing' | 'packed' | 'shipped' | 'out_for_delivery' | 'delivered' | 'cancelled' | 'returned' | 'refunded'
   shippingAddress: {
     street: string
     city: string
@@ -63,9 +66,14 @@ const getStatusColor = (status: string) => {
   switch (status) {
     case "delivered": return "bg-green-100 text-green-800"
     case "pending": return "bg-yellow-100 text-yellow-800"
-    case "processing": return "bg-blue-100 text-blue-800"
-    case "shipped": return "bg-purple-100 text-purple-800"
+    case "confirmed": return "bg-blue-100 text-blue-800"
+    case "processing": return "bg-indigo-100 text-indigo-800"
+    case "packed": return "bg-purple-100 text-purple-800"
+    case "shipped": return "bg-cyan-100 text-cyan-800"
+    case "out_for_delivery": return "bg-orange-100 text-orange-800"
     case "cancelled": return "bg-red-100 text-red-800"
+    case "returned": return "bg-pink-100 text-pink-800"
+    case "refunded": return "bg-gray-100 text-gray-800"
     default: return "bg-gray-100 text-gray-800"
   }
 }
@@ -74,9 +82,14 @@ const getStatusIcon = (status: string) => {
   switch (status) {
     case "delivered": return <CheckCircle className="h-4 w-4" />
     case "pending": return <Clock className="h-4 w-4" />
+    case "confirmed": return <CheckCircle className="h-4 w-4" />
     case "processing": return <Package className="h-4 w-4" />
+    case "packed": return <Package className="h-4 w-4" />
     case "shipped": return <Truck className="h-4 w-4" />
+    case "out_for_delivery": return <Truck className="h-4 w-4" />
     case "cancelled": return <XCircle className="h-4 w-4" />
+    case "returned": return <ArrowLeft className="h-4 w-4" />
+    case "refunded": return <CreditCard className="h-4 w-4" />
     default: return <Package className="h-4 w-4" />
   }
 }
@@ -85,14 +98,20 @@ const getStatusText = (status: string) => {
   switch (status) {
     case "delivered": return "Delivered"
     case "pending": return "Pending"
+    case "confirmed": return "Confirmed"
     case "processing": return "Processing"
+    case "packed": return "Packed"
     case "shipped": return "Shipped"
+    case "out_for_delivery": return "Out for Delivery"
     case "cancelled": return "Cancelled"
+    case "returned": return "Returned"
+    case "refunded": return "Refunded"
     default: return "Unknown"
   }
 }
 
 export default function OrdersPage() {
+  const router = useRouter()
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -132,11 +151,37 @@ export default function OrdersPage() {
     return matchesSearch && matchesStatus
   })
 
-  const statuses = ["all", "pending", "processing", "shipped", "delivered", "cancelled"]
+  const statuses = ["all", "pending", "confirmed", "processing", "packed", "shipped", "out_for_delivery", "delivered", "cancelled", "returned", "refunded"]
 
   const totalRevenue = (orders || [])
     .filter(order => order.status === "delivered")
     .reduce((sum, order) => sum + order.totalAmount, 0)
+
+  const updateOrderStatus = async (orderId: string, newStatus: string) => {
+    try {
+      const response = await fetch(`/api/orders/${orderId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ status: newStatus }),
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setOrders(orders.map(order => 
+          order._id === orderId ? { ...order, status: newStatus as any } : order
+        ))
+        toast.success(`Order status updated to ${getStatusText(newStatus)}`)
+      } else {
+        toast.error(data.error || 'Failed to update order status')
+      }
+    } catch (err) {
+      console.error('Error updating order status:', err)
+      toast.error('An unexpected error occurred while updating order status')
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -297,24 +342,42 @@ export default function OrdersPage() {
                           </Button>
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
-                          <DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => router.push(`/admin/orders/${order._id}`)}>
                             <Eye className="h-4 w-4 mr-2" />
                             View Details
                           </DropdownMenuItem>
                           {order.status === "pending" && (
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => updateOrderStatus(order._id, "confirmed")}>
+                              <CheckCircle className="h-4 w-4 mr-2" />
+                              Mark as Confirmed
+                            </DropdownMenuItem>
+                          )}
+                          {order.status === "confirmed" && (
+                            <DropdownMenuItem onClick={() => updateOrderStatus(order._id, "processing")}>
                               <Package className="h-4 w-4 mr-2" />
                               Mark as Processing
                             </DropdownMenuItem>
                           )}
                           {order.status === "processing" && (
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => updateOrderStatus(order._id, "packed")}>
+                              <Package className="h-4 w-4 mr-2" />
+                              Mark as Packed
+                            </DropdownMenuItem>
+                          )}
+                          {order.status === "packed" && (
+                            <DropdownMenuItem onClick={() => updateOrderStatus(order._id, "shipped")}>
                               <Truck className="h-4 w-4 mr-2" />
                               Mark as Shipped
                             </DropdownMenuItem>
                           )}
                           {order.status === "shipped" && (
-                            <DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => updateOrderStatus(order._id, "out_for_delivery")}>
+                              <Truck className="h-4 w-4 mr-2" />
+                              Mark as Out for Delivery
+                            </DropdownMenuItem>
+                          )}
+                          {order.status === "out_for_delivery" && (
+                            <DropdownMenuItem onClick={() => updateOrderStatus(order._id, "delivered")}>
                               <CheckCircle className="h-4 w-4 mr-2" />
                               Mark as Delivered
                             </DropdownMenuItem>
