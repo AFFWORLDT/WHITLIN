@@ -14,7 +14,8 @@ import {
   X,
   LogOut,
   User,
-  Tags
+  Tags,
+  Mail
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth-context"
@@ -25,6 +26,7 @@ const adminNavItems = [
   { href: "/admin/categories", icon: Tags, label: "Categories" },
   { href: "/admin/orders", icon: ShoppingCart, label: "Orders" },
   { href: "/admin/users", icon: Users, label: "Users" },
+  { href: "/admin/newsletter", icon: Mail, label: "Newsletter" },
   { href: "/admin/analytics", icon: BarChart3, label: "Analytics" },
   { href: "/admin/settings", icon: Settings, label: "Settings" },
 ]

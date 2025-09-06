@@ -4,6 +4,7 @@ import User from '@/lib/models/User'
 import bcrypt from 'bcryptjs'
 import { authRateLimit } from '@/lib/rate-limit'
 import { validateRequestBody, registerSchema } from '@/lib/validation'
+import { sendNewUserNotification, sendWelcomeEmail } from '@/lib/email-service'
 
 export async function POST(request: NextRequest) {
   try {
@@ -68,6 +69,28 @@ export async function POST(request: NextRequest) {
     })
     
     await newUser.save()
+    
+    // Send email notifications
+    try {
+      // Send notification to admin
+      await sendNewUserNotification({
+        name: newUser.name,
+        email: newUser.email,
+        phone: newUser.phone,
+        registrationDate: new Date().toLocaleString()
+      })
+      
+      // Send welcome email to user
+      await sendWelcomeEmail({
+        name: newUser.name,
+        email: newUser.email
+      })
+      
+      console.log('Email notifications sent successfully for new user:', newUser.email)
+    } catch (emailError) {
+      console.error('Error sending email notifications:', emailError)
+      // Don't fail registration if email fails
+    }
     
     // Return user data (without password)
     const userData = {

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -35,6 +35,7 @@ interface Product {
 
 export default function ProductDetailsPage() {
   const params = useParams()
+  const router = useRouter()
   const productId = params.id as string
   const [product, setProduct] = useState<Product | null>(null)
   const [loading, setLoading] = useState(true)
@@ -121,6 +122,41 @@ export default function ProductDetailsPage() {
     })
     
     toast.success(`${quantity}x ${product.name} added to cart!`)
+  }
+
+  const handleBuyNow = () => {
+    if (!product) {
+      console.log('No product found')
+      return
+    }
+
+    console.log('Buy now clicked:', {
+      id: product._id,
+      name: product.name,
+      price: product.price,
+      quantity
+    })
+
+    const size = product.attributes.find(attr => attr.name.toLowerCase() === 'size')?.value || 'Standard'
+    
+    // Add to cart first
+    addItem({
+      id: product._id,
+      name: product.name,
+      price: product.price,
+      image: product.images && product.images.length > 0 ? product.images[0] : "/placeholder.svg",
+      size: size,
+      range: product.category.name,
+      quantity: quantity
+    })
+    
+    // Show success message
+    toast.success(`${quantity}x ${product.name} added to cart! Redirecting to checkout...`)
+    
+    // Redirect to checkout after a short delay
+    setTimeout(() => {
+      router.push('/cart')
+    }, 1000)
   }
 
   const handleAddToWishlist = async () => {
@@ -366,6 +402,12 @@ export default function ProductDetailsPage() {
                 >
                   <ShoppingCart className="h-4 w-4 mr-2" />
                   Add to Cart
+                </Button>
+                <Button
+                  onClick={handleBuyNow}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold"
+                >
+                  ⚡ Buy Now
                 </Button>
               </div>
             </div>

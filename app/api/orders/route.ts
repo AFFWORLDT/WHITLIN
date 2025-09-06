@@ -14,6 +14,10 @@ export async function POST(request: NextRequest) {
     const {
       userId,
       items,
+      subtotal,
+      shipping,
+      tax,
+      totalAmount,
       shippingAddress,
       paymentMethod = 'cash_on_delivery',
       notes = ''
@@ -58,7 +62,7 @@ export async function POST(request: NextRequest) {
     const productMap = new Map(products.map(p => [p._id.toString(), p]))
     
     // Validate products and calculate totals
-    let totalAmount = 0
+    let calculatedSubtotal = 0
     let orderItems = []
     
     for (const item of items) {
@@ -78,7 +82,7 @@ export async function POST(request: NextRequest) {
       }
       
       const itemTotal = product.price * item.quantity
-      totalAmount += itemTotal
+      calculatedSubtotal += itemTotal
       
       orderItems.push({
         product: product._id,
@@ -89,6 +93,11 @@ export async function POST(request: NextRequest) {
         total: itemTotal
       })
     }
+    
+    // Calculate final totals
+    const calculatedShipping = shipping || (calculatedSubtotal > 100 ? 0 : 10)
+    const calculatedTax = tax || (calculatedSubtotal * 0.05)
+    const calculatedTotal = (calculatedSubtotal + calculatedShipping + calculatedTax)
     
     // Transform shipping address to match Order model schema
     const transformedShippingAddress = {
@@ -109,11 +118,17 @@ export async function POST(request: NextRequest) {
       orderNumber,
       user: userId,
       items: orderItems,
-      totalAmount,
+      subtotal: subtotal || calculatedSubtotal,
+      shipping: calculatedShipping,
+      tax: calculatedTax,
+      discount: 0,
+      totalAmount: totalAmount || calculatedTotal,
       shippingAddress: transformedShippingAddress,
       paymentMethod,
       paymentStatus: paymentMethod === 'cash_on_delivery' ? 'pending' : 'pending',
       status: 'pending',
+      priority: 'normal',
+      source: 'website',
       notes,
       trackingNumber: `TRK-${Date.now()}-${Math.random().toString(36).substr(2, 8).toUpperCase()}`
     })
@@ -147,7 +162,7 @@ export async function POST(request: NextRequest) {
     console.log('Order created successfully:', {
       orderNumber: order.orderNumber,
       userId,
-      totalAmount,
+      totalAmount: order.totalAmount,
       itemsCount: orderItems.length
     })
     
@@ -156,7 +171,7 @@ export async function POST(request: NextRequest) {
       data: {
         orderId: order._id,
         orderNumber: order.orderNumber,
-        totalAmount,
+        totalAmount: order.totalAmount,
         status: order.status,
         trackingNumber: order.trackingNumber
       },

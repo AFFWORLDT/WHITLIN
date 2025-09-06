@@ -2,19 +2,24 @@ import { Schema, model, models } from 'mongoose'
 
 export interface IUser {
   _id?: string
-  name: string
+  name?: string
+  firstName?: string
+  lastName?: string
   email: string
   password: string
-  role: 'customer' | 'admin'
+  role: 'customer' | 'admin' | 'user'
   status: 'active' | 'inactive' | 'suspended'
   phone?: string
-  address?: {
+  isEmailVerified?: boolean
+  addresses?: Array<{
+    type: string
     street: string
     city: string
     state: string
     zipCode: string
     country: string
-  }
+    isDefault: boolean
+  }>
   preferences?: {
     emailNotifications: boolean
     smsNotifications: boolean
@@ -26,6 +31,11 @@ export interface IUser {
     lastOrderDate?: string
   }
   wishlist?: string[]
+  resetPassword?: {
+    otp: string
+    expiresAt: Date
+    isUsed: boolean
+  }
   createdAt?: Date
   updatedAt?: Date
 }
@@ -33,7 +43,14 @@ export interface IUser {
 const UserSchema = new Schema<IUser>({
   name: {
     type: String,
-    required: [true, 'Name is required'],
+    trim: true
+  },
+  firstName: {
+    type: String,
+    trim: true
+  },
+  lastName: {
+    type: String,
     trim: true
   },
   email: {
@@ -50,7 +67,7 @@ const UserSchema = new Schema<IUser>({
   },
   role: {
     type: String,
-    enum: ['customer', 'admin'],
+    enum: ['customer', 'admin', 'user'],
     default: 'customer'
   },
   status: {
@@ -62,6 +79,25 @@ const UserSchema = new Schema<IUser>({
     type: String,
     trim: true
   },
+  isEmailVerified: {
+    type: Boolean,
+    default: false
+  },
+  addresses: [{
+    type: {
+      type: String,
+      default: 'shipping'
+    },
+    street: String,
+    city: String,
+    state: String,
+    zipCode: String,
+    country: String,
+    isDefault: {
+      type: Boolean,
+      default: false
+    }
+  }],
   address: {
     street: String,
     city: String,
@@ -97,7 +133,15 @@ const UserSchema = new Schema<IUser>({
   wishlist: [{
     type: Schema.Types.ObjectId,
     ref: 'Product'
-  }]
+  }],
+  resetPassword: {
+    otp: String,
+    expiresAt: Date,
+    isUsed: {
+      type: Boolean,
+      default: false
+    }
+  }
 }, {
   timestamps: true
 })

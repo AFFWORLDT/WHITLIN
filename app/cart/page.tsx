@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, CreditCard, Truck, MapPin, Zap, Clock, Shield, CheckCircle } from "lucide-react"
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, CreditCard, Truck, MapPin, Zap, Clock, Shield, CheckCircle, User } from "lucide-react"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
@@ -46,7 +46,9 @@ export default function CartPage() {
     phone: ''
   })
   const [notes, setNotes] = useState('')
-  const [savedAddress, setSavedAddress] = useState<any>(null)
+  const [savedAddresses, setSavedAddresses] = useState<any[]>([])
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null)
+  const [showAddressSelector, setShowAddressSelector] = useState(false)
   const [orderProgress, setOrderProgress] = useState(0)
 
   // Memoized calculations for better performance
@@ -58,13 +60,24 @@ export default function CartPage() {
     return subtotal > 100 ? 0 : 10 // Free shipping over AED 100
   }, [subtotal])
 
+  const tax = useMemo(() => {
+    return subtotal * 0.05 // 5% tax
+  }, [subtotal])
+
   const total = useMemo(() => {
-    return subtotal + shipping
-  }, [subtotal, shipping])
+    return subtotal + shipping + tax
+  }, [subtotal, shipping, tax])
 
   const canExpressCheckout = useMemo(() => {
-    return savedAddress && savedAddress.address && savedAddress.city
-  }, [savedAddress])
+    return true // Express checkout is always available for logged-in users
+  }, [])
+
+  const selectedAddress = useMemo(() => {
+    if (selectedAddressId) {
+      return savedAddresses.find(addr => addr._id === selectedAddressId)
+    }
+    return savedAddresses.find(addr => addr.isDefault) || savedAddresses[0] || null
+  }, [savedAddresses, selectedAddressId])
 
   useEffect(() => {
     if (user?.name) {
@@ -76,7 +89,7 @@ export default function CartPage() {
   }, [user])
 
   useEffect(() => {
-    const fetchSavedAddress = async () => {
+    const fetchSavedAddresses = async () => {
       if (!user?.id) return
       
       try {
@@ -84,8 +97,13 @@ export default function CartPage() {
         const data = await response.json()
         
         if (data.success && data.data.length > 0) {
-          const defaultAddress = data.data[0] // Get first saved address
-          setSavedAddress(defaultAddress)
+          setSavedAddresses(data.data)
+          
+          // Set default address if available
+          const defaultAddress = data.data.find((addr: any) => addr.isDefault) || data.data[0]
+          setSelectedAddressId(defaultAddress._id)
+          
+          // Pre-fill form with default address
           setShippingAddress({
             name: defaultAddress.name,
             address: defaultAddress.address,
@@ -97,11 +115,11 @@ export default function CartPage() {
           })
         }
       } catch (err) {
-        console.error('Error fetching saved address:', err)
+        console.error('Error fetching saved addresses:', err)
       }
     }
 
-    fetchSavedAddress()
+    fetchSavedAddresses()
   }, [user])
 
   const handleQuantityChange = (id: string, newQuantity: number) => {
@@ -113,18 +131,21 @@ export default function CartPage() {
   }
 
   const handleCheckout = () => {
-    if (!user) {
-      toast.error("Please sign in to proceed with checkout")
-      router.push('/login')
-      return
-    }
-    
     if (state.items.length === 0) {
       toast.error("Your cart is empty")
       return
     }
 
     setShowCheckout(true)
+  }
+
+  const handleGuestCheckout = () => {
+    if (state.items.length === 0) {
+      toast.error("Your cart is empty")
+      return
+    }
+
+    router.push('/checkout/guest')
   }
 
   // Super fast express checkout
@@ -147,23 +168,33 @@ export default function CartPage() {
       setOrderProgress(25)
       let finalAddress = shippingAddress
 
-      if (savedAddress) {
+      if (selectedAddress) {
+        // Use selected address if available
         finalAddress = {
-          name: savedAddress.name,
-          address: savedAddress.address,
-          city: savedAddress.city,
-          state: savedAddress.state,
-          zipCode: savedAddress.zipCode,
-          country: savedAddress.country,
-          phone: user.phone || ''
+          name: selectedAddress.name,
+          address: selectedAddress.address,
+          city: selectedAddress.city,
+          state: selectedAddress.state,
+          zipCode: selectedAddress.zipCode,
+          country: selectedAddress.country,
+          phone: (user as any).phone || ''
         }
+      } else if (shippingAddress.name && shippingAddress.address && shippingAddress.city) {
+        // Use current form address if filled
+        finalAddress = shippingAddress
       } else {
-        // Quick validation for express checkout
-        if (!shippingAddress.name || !shippingAddress.address || !shippingAddress.city) {
-          toast.error("Please fill in at least name, address, and city for express checkout")
-          setExpressCheckout(false)
-          return
+        // Use default address from user profile or create minimal address
+        finalAddress = {
+          name: user.name || (user as any).firstName || 'Customer',
+          address: 'Address to be confirmed',
+          city: 'City to be confirmed',
+          state: 'State to be confirmed',
+          zipCode: '000000',
+          country: 'India',
+          phone: (user as any).phone || '0000000000'
         }
+        
+        toast.info("Order placed! We'll contact you for address confirmation.")
       }
 
       // Step 2: Create order data
@@ -174,6 +205,10 @@ export default function CartPage() {
           productId: item.id,
           quantity: item.quantity
         })),
+        subtotal: subtotal,
+        shipping: shipping,
+        tax: tax,
+        totalAmount: total,
         shippingAddress: finalAddress,
         paymentMethod: 'cash_on_delivery',
         notes: 'Express Checkout'
@@ -208,7 +243,7 @@ export default function CartPage() {
       setExpressCheckout(false)
       setOrderProgress(0)
     }
-  }, [user, state.items, shippingAddress, savedAddress, clearCart, router])
+  }, [user, state.items, shippingAddress, selectedAddress, clearCart, router])
 
   const handlePlaceOrder = async () => {
     if (!user) {
@@ -229,11 +264,11 @@ export default function CartPage() {
     try {
       // Step 1: Save address
       setOrderProgress(20)
-      if (!savedAddress || 
-          savedAddress.address !== shippingAddress.address ||
-          savedAddress.city !== shippingAddress.city ||
-          savedAddress.state !== shippingAddress.state ||
-          savedAddress.zipCode !== shippingAddress.zipCode) {
+      if (!selectedAddress || 
+          selectedAddress.address !== shippingAddress.address ||
+          selectedAddress.city !== shippingAddress.city ||
+          selectedAddress.state !== shippingAddress.state ||
+          selectedAddress.zipCode !== shippingAddress.zipCode) {
         
         try {
           await fetch(`/api/user/addresses?userId=${user.id}`, {
@@ -265,6 +300,10 @@ export default function CartPage() {
           productId: item.id,
           quantity: item.quantity
         })),
+        subtotal: subtotal,
+        shipping: shipping,
+        tax: tax,
+        totalAmount: total,
         shippingAddress,
         paymentMethod: 'cash_on_delivery',
         notes
@@ -442,6 +481,10 @@ export default function CartPage() {
                       {shipping === 0 ? 'Free' : `AED ${shipping.toFixed(2)}`}
                     </span>
                   </div>
+                  <div className="flex justify-between">
+                    <span>Tax</span>
+                    <span>AED {tax.toFixed(2)}</span>
+                  </div>
                   {shipping === 0 && (
                     <div className="text-xs text-green-600 bg-green-50 p-2 rounded">
                       <Shield className="h-3 w-3 inline mr-1" />
@@ -456,33 +499,91 @@ export default function CartPage() {
                   
                   {!showCheckout ? (
                     <div className="space-y-3">
-                      {/* Express Checkout Button */}
-                      <Button 
-                        onClick={handleExpressCheckout}
-                        disabled={expressCheckout || !canExpressCheckout}
-                        className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
-                        size="lg"
-                      >
-                        {expressCheckout ? (
-                          <div className="flex items-center">
-                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                            Express Checkout...
+                      {user ? (
+                        <>
+                          {/* Express Checkout Button - Only for logged in users */}
+                          <Button 
+                            onClick={handleExpressCheckout}
+                            disabled={expressCheckout || !canExpressCheckout}
+                            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
+                            size="lg"
+                          >
+                            {expressCheckout ? (
+                              <div className="flex items-center">
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                Express Checkout...
+                              </div>
+                            ) : (
+                              <div className="flex items-center">
+                                <Zap className="h-5 w-5 mr-2" />
+                                Express Checkout
+                              </div>
+                            )}
+                          </Button>
+                          
+                          <div className="text-center">
+                            <Badge variant="secondary" className="text-xs">
+                              <Zap className="h-3 w-3 mr-1" />
+                              {selectedAddress ? `Using: ${selectedAddress.name}` : 'Address confirmation required'}
+                            </Badge>
                           </div>
-                        ) : (
-                          <div className="flex items-center">
-                            <Zap className="h-5 w-5 mr-2" />
-                            Express Checkout
+
+                          <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                              <span className="w-full border-t" />
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                              <span className="bg-white px-2 text-gray-500">or</span>
+                            </div>
                           </div>
-                        )}
-                      </Button>
-                      
-                      {savedAddress && (
-                        <div className="text-center">
-                          <Badge variant="secondary" className="text-xs">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            Using saved address
-                          </Badge>
-                        </div>
+                          
+                          <Button 
+                            onClick={handleCheckout}
+                            className="w-full bg-yellow-500 hover:bg-yellow-600 text-white"
+                            size="lg"
+                          >
+                            <CreditCard className="h-5 w-5 mr-2" />
+                            Regular Checkout
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          {/* Guest Checkout - For non-logged in users */}
+                          <Button 
+                            onClick={handleGuestCheckout}
+                            className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-semibold"
+                            size="lg"
+                          >
+                            <div className="flex items-center">
+                              <User className="h-5 w-5 mr-2" />
+                              Continue as Guest
+                            </div>
+                          </Button>
+                          
+                          <div className="text-center">
+                            <p className="text-sm text-gray-500 mb-2">
+                              No account needed • We'll create one for you
+                            </p>
+                          </div>
+
+                          <div className="relative">
+                            <div className="absolute inset-0 flex items-center">
+                              <span className="w-full border-t" />
+                            </div>
+                            <div className="relative flex justify-center text-xs uppercase">
+                              <span className="bg-white px-2 text-gray-500">or</span>
+                            </div>
+                          </div>
+                          
+                          <Button 
+                            onClick={() => router.push('/login')}
+                            className="w-full bg-yellow-500 hover:bg-yellow-600 text-white"
+                            size="lg"
+                          >
+                            <CreditCard className="h-5 w-5 mr-2" />
+                            Sign In to Checkout
+                          </Button>
+                        </>
                       )}
                       
                       {/* Trust Signals */}
@@ -496,24 +597,6 @@ export default function CartPage() {
                           Fast Delivery
                         </div>
                       </div>
-                      
-                      <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                          <span className="w-full border-t" />
-                        </div>
-                        <div className="relative flex justify-center text-xs uppercase">
-                          <span className="bg-white px-2 text-gray-500">or</span>
-                        </div>
-                      </div>
-                      
-                      <Button 
-                        onClick={handleCheckout}
-                        className="w-full bg-yellow-500 hover:bg-yellow-600 text-white"
-                        size="lg"
-                      >
-                        <CreditCard className="h-5 w-5 mr-2" />
-                        Regular Checkout
-                      </Button>
                     </div>
                   ) : (
                     <div className="space-y-4">
@@ -558,13 +641,83 @@ export default function CartPage() {
                 </CardContent>
               </Card>
 
+              {/* Address Selector */}
+              {showCheckout && savedAddresses.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <MapPin className="h-5 w-5 mr-2" />
+                        Saved Addresses
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowAddressSelector(!showAddressSelector)}
+                      >
+                        {showAddressSelector ? 'Hide' : 'Change'}
+                      </Button>
+                    </CardTitle>
+                  </CardHeader>
+                  {showAddressSelector && (
+                    <CardContent className="space-y-3">
+                      {savedAddresses.map((address) => (
+                        <div
+                          key={address._id}
+                          className={`p-3 border rounded-lg cursor-pointer transition-colors ${
+                            selectedAddressId === address._id
+                              ? 'border-blue-500 bg-blue-50'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}
+                          onClick={() => {
+                            setSelectedAddressId(address._id)
+                            setShippingAddress({
+                              name: address.name,
+                              address: address.address,
+                              city: address.city,
+                              state: address.state,
+                              zipCode: address.zipCode,
+                              country: address.country,
+                              phone: ''
+                            })
+                            setShowAddressSelector(false)
+                          }}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div>
+                              <div className="font-medium">{address.name}</div>
+                              <div className="text-sm text-gray-600">
+                                {address.address}, {address.city}, {address.state} {address.zipCode}
+                              </div>
+                              <div className="text-xs text-gray-500">{address.country}</div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {address.isDefault && (
+                                <Badge variant="secondary" className="text-xs">
+                                  Default
+                                </Badge>
+                              )}
+                              {selectedAddressId === address._id && (
+                                <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                                  <div className="w-2 h-2 bg-white rounded-full"></div>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </CardContent>
+                  )}
+                </Card>
+              )}
+
               {/* Shipping Address Form */}
               {showCheckout && (
                 <Card>
                   <CardHeader>
                     <CardTitle className="flex items-center">
                       <MapPin className="h-5 w-5 mr-2" />
-                      Shipping Address
+                      {savedAddresses.length > 0 ? 'Edit Address' : 'Shipping Address'}
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -650,6 +803,56 @@ export default function CartPage() {
                         placeholder="Any special instructions for your order"
                         rows={2}
                       />
+                    </div>
+
+                    {/* Save Address Option */}
+                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div>
+                        <div className="font-medium text-sm">Save this address</div>
+                        <div className="text-xs text-gray-600">Save for future orders</div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={async () => {
+                          if (!user?.id) return
+                          try {
+                            const response = await fetch(`/api/user/addresses?userId=${user.id}`, {
+                              method: 'POST',
+                              headers: {
+                                'Content-Type': 'application/json'
+                              },
+                              body: JSON.stringify({
+                                type: 'Home',
+                                name: shippingAddress.name,
+                                address: shippingAddress.address,
+                                city: shippingAddress.city,
+                                state: shippingAddress.state,
+                                zipCode: shippingAddress.zipCode,
+                                country: shippingAddress.country,
+                                isDefault: savedAddresses.length === 0 // Set as default if first address
+                              })
+                            })
+                            
+                            if (response.ok) {
+                              toast.success('Address saved successfully!')
+                              // Refresh addresses
+                              const data = await response.json()
+                              if (data.success) {
+                                setSavedAddresses(prev => [...prev, data.data])
+                                if (savedAddresses.length === 0) {
+                                  setSelectedAddressId(data.data._id)
+                                }
+                              }
+                            }
+                          } catch (error) {
+                            toast.error('Failed to save address')
+                          }
+                        }}
+                        disabled={!shippingAddress.name || !shippingAddress.address || !shippingAddress.city}
+                      >
+                        Save Address
+                      </Button>
                     </div>
                   </CardContent>
                 </Card>

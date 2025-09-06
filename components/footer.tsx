@@ -1,9 +1,54 @@
+"use client"
+
+import { useState } from "react"
 import Link from "next/link"
-import { Instagram, Facebook, Twitter, Mail } from "lucide-react"
+import { Instagram, Facebook, Twitter, Mail, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { toast } from "sonner"
 
 export function Footer() {
+  const [email, setEmail] = useState("")
+  const [isSubscribing, setIsSubscribing] = useState(false)
+
+  const handleNewsletterSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!email.trim()) {
+      toast.error("Please enter your email address")
+      return
+    }
+
+    setIsSubscribing(true)
+
+    try {
+      const response = await fetch('/api/newsletter/subscribe', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email: email.trim(),
+          source: 'website'
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        toast.success("Successfully subscribed to our newsletter!")
+        setEmail("")
+      } else {
+        toast.error(data.error || "Failed to subscribe to newsletter")
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error)
+      toast.error("An unexpected error occurred. Please try again.")
+    } finally {
+      setIsSubscribing(false)
+    }
+  }
+
   return (
     <footer className="bg-black text-white">
       <div className="container mx-auto px-4 py-12">
@@ -82,15 +127,28 @@ export function Footer() {
           <div>
             <h3 className="font-serif text-lg font-semibold mb-4">Stay Connected</h3>
             <p className="text-gray-400 text-sm mb-4">Get the latest updates on new products and exclusive offers.</p>
-            <div className="flex gap-2 mb-4">
+            <form onSubmit={handleNewsletterSubscribe} className="flex gap-2 mb-4">
               <Input
+                type="email"
                 placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500"
+                disabled={isSubscribing}
+                required
               />
-              <Button className="bg-primary hover:bg-primary/90 text-black">
-                <Mail className="h-4 w-4" />
+              <Button 
+                type="submit"
+                className="bg-primary hover:bg-primary/90 text-black"
+                disabled={isSubscribing}
+              >
+                {isSubscribing ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Mail className="h-4 w-4" />
+                )}
               </Button>
-            </div>
+            </form>
             <div className="flex space-x-4">
               <Button variant="ghost" size="icon" className="text-gray-400 hover:text-primary">
                 <Instagram className="h-5 w-5" />
