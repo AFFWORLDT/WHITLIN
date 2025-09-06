@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -80,53 +80,61 @@ export default function ProductsPage() {
     fetchData()
   }, [])
 
-  const handleAddToCart = (product: Product) => {
-    const size = product.attributes.find(attr => attr.name.toLowerCase() === 'size')?.value || 'Standard'
+  const handleAddToCart = useCallback((product: Product) => {
+    const size = product.attributes?.find(attr => attr.name.toLowerCase() === 'size')?.value || 'Standard'
     
     addItem({
       id: product._id,
       name: product.name,
       price: product.price,
-      image: product.images[0] || "/placeholder.svg",
+      image: product.images?.[0] || "/placeholder.svg",
       size: size,
-      range: product.category.name,
+      range: product.category?.name || 'General',
     })
     
     toast.success(`${product.name} added to cart!`)
-  }
+  }, [addItem])
 
-  const getProductSize = (product: Product) => {
-    return product.attributes.find(attr => attr.name.toLowerCase() === 'size')?.value || 'Standard'
-  }
+  const getProductSize = useCallback((product: Product) => {
+    return product.attributes?.find(attr => attr.name.toLowerCase() === 'size')?.value || 'Standard'
+  }, [])
 
-  const getProductBadge = (product: Product) => {
+  const getProductBadge = useCallback((product: Product) => {
     if (product.originalPrice && product.originalPrice > product.price) {
       return "Sale"
     }
-    return "New"
-  }
+    if (product.isNewProduct) {
+      return "New"
+    }
+    if (product.isBestSeller) {
+      return "Best Seller"
+    }
+    return null
+  }, [])
 
-  // Filter and sort products
-  const filteredProducts = products
-    .filter(product => {
-      const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           product.description.toLowerCase().includes(searchTerm.toLowerCase())
-      const matchesCategory = selectedCategory === "all" || product.category.name === selectedCategory
-      return matchesSearch && matchesCategory && product.isActive
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case "price-low":
-          return a.price - b.price
-        case "price-high":
-          return b.price - a.price
-        case "name":
-          return a.name.localeCompare(b.name)
-        case "newest":
-        default:
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      }
-    })
+  // Memoized filtered and sorted products
+  const filteredProducts = useMemo(() => {
+    return products
+      .filter(product => {
+        const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                             product.description.toLowerCase().includes(searchTerm.toLowerCase())
+        const matchesCategory = selectedCategory === "all" || product.category._id === selectedCategory
+        return matchesSearch && matchesCategory && product.status === 'active'
+      })
+      .sort((a, b) => {
+        switch (sortBy) {
+          case "price-low":
+            return a.price - b.price
+          case "price-high":
+            return b.price - a.price
+          case "name":
+            return a.name.localeCompare(b.name)
+          case "newest":
+          default:
+            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        }
+      })
+  }, [products, searchTerm, selectedCategory, sortBy])
 
   if (loading) {
     return (

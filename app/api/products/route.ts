@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import Product from '@/lib/models/Product'
+import Category from '@/lib/models/Category'
+import { withCache, cacheKeys, cacheTTL } from '@/lib/cache'
+import { createErrorResponse } from '@/lib/error-handler'
 
 export async function GET(request: NextRequest) {
   try {
-    await connectDB()
-    
     const { searchParams } = new URL(request.url)
     const category = searchParams.get('category')
     const search = searchParams.get('search')
@@ -15,12 +16,20 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
 
+    // Create cache key
+    const cacheKey = cacheKeys.products(
+      `${category || 'all'}-${search || ''}-${sort || 'newest'}-${minPrice || ''}-${maxPrice || ''}-${page}-${limit}`
+    )
+
+    // Try to get from cache first
+    const result = await withCache(cacheKey, cacheTTL.products, async () => {
+      await connectDB()
+
     // Build filter object
-    const filter: any = {}
+    const filter: any = { status: 'active' }
 
     if (category && category !== 'all') {
       // Find category by slug or name
-      const Category = require('@/lib/models/Category').default
       const categoryDoc = await Category.findOne({
         $or: [
           { slug: category },
@@ -77,21 +86,25 @@ export async function GET(request: NextRequest) {
       .limit(limit)
       .lean()
 
-    const total = await Product.countDocuments(filter)
+      const total = await Product.countDocuments(filter)
+
+      return {
+        products,
+        total,
+        page,
+        pages: Math.ceil(total / limit)
+      }
+    })
 
     return NextResponse.json({
       success: true,
-      data: products,
-      total,
-      page,
-      pages: Math.ceil(total / limit)
+      data: result.products,
+      total: result.total,
+      page: result.page,
+      pages: result.pages
     })
   } catch (error) {
-    console.error('Error fetching products:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch products' },
-      { status: 500 }
-    )
+    return createErrorResponse(error, 'Failed to fetch products')
   }
 }
 
@@ -117,10 +130,6 @@ export async function POST(request: NextRequest) {
       data: newProduct
     }, { status: 201 })
   } catch (error) {
-    console.error('Error creating product:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to create product' },
-      { status: 500 }
-    )
+    return createErrorResponse(error, 'Failed to create product')
   }
 }

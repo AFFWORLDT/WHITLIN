@@ -112,7 +112,7 @@ export default function ProductsPage() {
         setStats({ total, active, outOfStock, totalValue })
         
         // Extract unique categories
-        const uniqueCategories = Array.from(new Set(data.data.map(p => p.category)))
+        const uniqueCategories = Array.from(new Set(data.data.map(p => p.category?.name || p.category || 'Unknown')))
         setCategories(uniqueCategories)
       } else {
         toast.error("Failed to fetch products")
@@ -154,7 +154,8 @@ export default function ProductsPage() {
   const filteredProducts = products.filter(product => {
     const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          product.sku.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === "all" || product.category === selectedCategory
+    const productCategory = product.category?.name || product.category || 'Unknown'
+    const matchesCategory = selectedCategory === "all" || productCategory === selectedCategory
     return matchesSearch && matchesCategory
   })
 
@@ -255,8 +256,8 @@ export default function ProductsPage() {
                 className="w-full px-3 py-2 border border-input bg-background rounded-md text-sm"
               >
                 <option value="all">All Categories</option>
-                {categories.map(category => (
-                  <option key={category} value={category}>
+                {categories.map((category, index) => (
+                  <option key={index} value={category}>
                     {category}
                   </option>
                 ))}
@@ -332,7 +333,7 @@ export default function ProductsPage() {
                     </TableCell>
                     <TableCell className="font-mono text-sm">{product.sku}</TableCell>
                     <TableCell>
-                      <Badge variant="outline">{product.category}</Badge>
+                      <Badge variant="outline">{product.category?.name || product.category || 'Unknown'}</Badge>
                     </TableCell>
                     <TableCell className="font-medium">AED {product.price}</TableCell>
                     <TableCell>

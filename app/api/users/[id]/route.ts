@@ -1,44 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-
-// Mock data - in real app this would come from database
-let users = [
-  {
-    id: "user-001",
-    name: "John Doe",
-    email: "john@example.com",
-    role: "customer",
-    status: "active",
-    phone: "+1 (555) 123-4567",
-    address: {
-      street: "123 Main St",
-      city: "New York",
-      state: "NY",
-      zipCode: "10001",
-      country: "US"
-    },
-    preferences: {
-      emailNotifications: true,
-      smsNotifications: false,
-      marketingEmails: true
-    },
-    stats: {
-      totalOrders: 5,
-      totalSpent: 1299.95,
-      lastOrderDate: "2024-01-15"
-    },
-    createdAt: "2024-01-10T08:00:00Z",
-    updatedAt: "2024-01-15T10:30:00Z"
-  }
-]
+import connectDB from '@/lib/mongodb'
+import User from '@/lib/models/User'
+import Order from '@/lib/models/Order'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const userId = params.id
-    const user = users.find(u => u.id === userId)
-
+    await connectDB()
+    const { id } = await params
+    
+    const user = await User.findById(id).select('-password').lean()
+    
     if (!user) {
       return NextResponse.json(
         { success: false, error: 'User not found' },
@@ -46,11 +20,33 @@ export async function GET(
       )
     }
 
+    // Get user's order stats
+    const orderStats = await Order.aggregate([
+      { $match: { user: user._id } },
+      { $group: {
+          _id: null,
+          totalOrders: { $sum: 1 },
+          totalSpent: { $sum: '$totalAmount' },
+          lastOrderDate: { $max: '$createdAt' }
+        }
+      }
+    ])
+
+    const stats = orderStats[0] || { totalOrders: 0, totalSpent: 0, lastOrderDate: null }
+
     return NextResponse.json({
       success: true,
-      data: user
+      data: {
+        ...user,
+        stats: {
+          totalOrders: stats.totalOrders,
+          totalSpent: stats.totalSpent,
+          lastOrderDate: stats.lastOrderDate
+        }
+      }
     })
   } catch (error) {
+    console.error('Error fetching user:', error)
     return NextResponse.json(
       { success: false, error: 'Failed to fetch user' },
       { status: 500 }

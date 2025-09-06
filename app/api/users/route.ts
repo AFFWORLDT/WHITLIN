@@ -18,7 +18,7 @@ export async function GET(request: NextRequest) {
     }
     
     if (status && status !== 'all') {
-      query.isActive = status === 'active'
+      query.status = status
     }
     
     const users = await User.find(query)

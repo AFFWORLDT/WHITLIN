@@ -91,4 +91,10 @@ CategorySchema.pre('save', function(next) {
   next()
 })
 
+// Indexes for better performance
+CategorySchema.index({ slug: 1 }, { unique: true })
+CategorySchema.index({ isActive: 1 })
+CategorySchema.index({ sortOrder: 1 })
+CategorySchema.index({ parent: 1 })
+
 export default models.Category || model<ICategory>('Category', CategorySchema)

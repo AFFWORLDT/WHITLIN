@@ -57,9 +57,9 @@ const ProductSchema = new Schema<IProduct>({
     trim: true
   },
   category: {
-    type: String,
-    required: [true, 'Category is required'],
-    trim: true
+    type: Schema.Types.ObjectId,
+    ref: 'Category',
+    required: [true, 'Category is required']
   },
   price: {
     type: Number,
@@ -143,5 +143,13 @@ const ProductSchema = new Schema<IProduct>({
 }, {
   timestamps: true
 })
+
+// Indexes for better performance
+ProductSchema.index({ category: 1 })
+ProductSchema.index({ status: 1 })
+ProductSchema.index({ price: 1 })
+ProductSchema.index({ rating: -1 })
+ProductSchema.index({ createdAt: -1 })
+ProductSchema.index({ name: 'text', description: 'text' }) // Text search index
 
 export default models.Product || model<IProduct>('Product', ProductSchema)

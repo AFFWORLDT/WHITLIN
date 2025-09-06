@@ -21,23 +21,28 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     // Check for existing session on mount
-    const savedUser = localStorage.getItem("keragold_user")
-    if (savedUser) {
-      try {
-        const userData = JSON.parse(savedUser)
-        setUser(userData)
-        // Also set cookie for middleware
-        document.cookie = `keragold_user=${savedUser}; path=/; max-age=86400` // 24 hours
-      } catch (error) {
-        console.error('Error parsing user data:', error)
-        localStorage.removeItem("keragold_user")
+    const checkAuth = async () => {
+      if (typeof window !== 'undefined') {
+        const savedUser = localStorage.getItem("keragold_user")
+        if (savedUser) {
+          try {
+            const userData = JSON.parse(savedUser)
+            setUser(userData)
+            // Also set cookie for middleware
+            document.cookie = `keragold_user=${savedUser}; path=/; max-age=86400` // 24 hours
+          } catch (error) {
+            console.error('Error parsing user data:', error)
+            localStorage.removeItem("keragold_user")
+          }
+        }
       }
     }
-    setIsLoading(false)
+    
+    checkAuth()
   }, [])
 
   const login = async (email: string, password: string): Promise<boolean> => {
@@ -62,10 +67,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           role: data.data.role
         }
         setUser(userData)
-        const userDataString = JSON.stringify(userData)
-        localStorage.setItem("keragold_user", userDataString)
-        // Set cookie for middleware
-        document.cookie = `keragold_user=${userDataString}; path=/; max-age=86400` // 24 hours
+        if (typeof window !== 'undefined') {
+          const userDataString = JSON.stringify(userData)
+          localStorage.setItem("keragold_user", userDataString)
+          // Set cookie for middleware
+          document.cookie = `keragold_user=${userDataString}; path=/; max-age=86400` // 24 hours
+        }
         setIsLoading(false)
         return true
       } else {
@@ -101,7 +108,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           role: data.data.role
         }
         setUser(userData)
-        localStorage.setItem("keragold_user", JSON.stringify(userData))
+        if (typeof window !== 'undefined') {
+          localStorage.setItem("keragold_user", JSON.stringify(userData))
+        }
         setIsLoading(false)
         return true
       } else {
@@ -117,26 +126,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize with admin user for testing
   useEffect(() => {
-    const users = JSON.parse(localStorage.getItem("keragold_users") || "[]")
-    const adminExists = users.find((u: any) => u.email === "admin@keragold.com")
-    
-    if (!adminExists) {
-      const adminUser = {
-        id: "admin-001",
-        email: "admin@keragold.com",
-        password: "admin123",
-        name: "Admin User",
+    if (typeof window !== 'undefined') {
+      const users = JSON.parse(localStorage.getItem("keragold_users") || "[]")
+      const adminExists = users.find((u: any) => u.email === "admin@keragold.com")
+      
+      if (!adminExists) {
+        const adminUser = {
+          id: "admin-001",
+          email: "admin@keragold.com",
+          password: "admin123",
+          name: "Admin User",
+        }
+        users.push(adminUser)
+        localStorage.setItem("keragold_users", JSON.stringify(users))
       }
-      users.push(adminUser)
-      localStorage.setItem("keragold_users", JSON.stringify(users))
     }
   }, [])
 
   const logout = () => {
     setUser(null)
-    localStorage.removeItem("keragold_user")
-    // Clear cookie
-    document.cookie = "keragold_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem("keragold_user")
+      // Clear cookie
+      document.cookie = "keragold_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+    }
   }
 
   return <AuthContext.Provider value={{ user, login, signup, logout, isLoading }}>{children}</AuthContext.Provider>

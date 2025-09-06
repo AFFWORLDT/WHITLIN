@@ -28,21 +28,21 @@ export async function GET(request: NextRequest) {
     }
     
     // Get user's orders
-    const orders = await Order.find({ customer: userId })
+    const orders = await Order.find({ user: userId })
       .sort({ createdAt: -1 })
       .limit(10)
       .lean()
     
     // Calculate stats
     const totalOrders = orders.length
-    const totalSpent = orders.reduce((sum, order) => sum + order.total, 0)
+    const totalSpent = orders.reduce((sum, order) => sum + order.totalAmount, 0)
     const memberSince = user.createdAt.toISOString().split('T')[0]
     
     // Format orders
     const recentOrders = orders.map(order => ({
       id: order.orderNumber,
       date: order.createdAt.toISOString().split('T')[0],
-      total: order.total,
+      total: order.totalAmount,
       status: order.status,
       items: order.items.length
     }))

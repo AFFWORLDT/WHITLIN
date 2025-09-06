@@ -30,7 +30,6 @@ async function connectDB() {
             retryWrites: true,
             w: 'majority',
             heartbeatFrequencyMS: 10000, // Check connection health every 10 seconds
-            serverSelectionRetryDelayMS: 2000, // Delay between retries
             maxStalenessSeconds: 90, // Maximum staleness
           }
 

@@ -2,19 +2,47 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import User from '@/lib/models/User'
 import bcrypt from 'bcryptjs'
+import { authRateLimit } from '@/lib/rate-limit'
+import { validateRequestBody, loginSchema } from '@/lib/validation'
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting
+    const rateLimitResult = authRateLimit(request)
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Too many login attempts. Please try again later.',
+          retryAfter: Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000)
+        },
+        { 
+          status: 429,
+          headers: {
+            'Retry-After': Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000).toString()
+          }
+        }
+      )
+    }
+
     await connectDB()
     
-    const { email, password } = await request.json()
+    const body = await request.json()
     
-    if (!email || !password) {
+    // Validate input
+    const validation = validateRequestBody(loginSchema, body)
+    if (!validation.success) {
       return NextResponse.json(
-        { success: false, error: 'Email and password are required' },
+        { 
+          success: false, 
+          error: validation.error,
+          details: validation.details
+        },
         { status: 400 }
       )
     }
+    
+    const { email, password } = validation.data
     
     // Find user by email
     const user = await User.findOne({ email: email.toLowerCase() })

@@ -102,4 +102,10 @@ const UserSchema = new Schema<IUser>({
   timestamps: true
 })
 
+// Indexes for better performance
+UserSchema.index({ email: 1 }, { unique: true })
+UserSchema.index({ role: 1 })
+UserSchema.index({ status: 1 })
+UserSchema.index({ createdAt: -1 })
+
 export default models.User || model<IUser>('User', UserSchema)

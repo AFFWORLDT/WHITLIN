@@ -2,19 +2,47 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import User from '@/lib/models/User'
 import bcrypt from 'bcryptjs'
+import { authRateLimit } from '@/lib/rate-limit'
+import { validateRequestBody, registerSchema } from '@/lib/validation'
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting
+    const rateLimitResult = authRateLimit(request)
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'Too many registration attempts. Please try again later.',
+          retryAfter: Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000)
+        },
+        { 
+          status: 429,
+          headers: {
+            'Retry-After': Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000).toString()
+          }
+        }
+      )
+    }
+
     await connectDB()
     
-    const { name, email, password } = await request.json()
+    const body = await request.json()
     
-    if (!name || !email || !password) {
+    // Validate input
+    const validation = validateRequestBody(registerSchema, body)
+    if (!validation.success) {
       return NextResponse.json(
-        { success: false, error: 'Name, email and password are required' },
+        { 
+          success: false, 
+          error: validation.error,
+          details: validation.details
+        },
         { status: 400 }
       )
     }
+    
+    const { name, email, password, phone } = validation.data
     
     // Check if user already exists
     const existingUser = await User.findOne({ email: email.toLowerCase() })
@@ -34,6 +62,7 @@ export async function POST(request: NextRequest) {
       name,
       email: email.toLowerCase(),
       password: hashedPassword,
+      phone: phone || '',
       role: 'customer',
       status: 'active'
     })
