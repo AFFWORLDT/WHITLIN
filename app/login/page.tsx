@@ -35,6 +35,10 @@ export default function LoginPage() {
         body: JSON.stringify({ email, password }),
       })
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+
       const data = await response.json()
 
       if (data.success) {
@@ -57,7 +61,13 @@ export default function LoginPage() {
       }
     } catch (error) {
       console.error('Login error:', error)
-      toast.error("An unexpected error occurred")
+      if (error instanceof TypeError && error.message === 'Failed to fetch') {
+        toast.error("Network error. Please check your connection and try again.")
+      } else if (error instanceof Error && error.message.includes('HTTP error')) {
+        toast.error("Server error. Please try again later.")
+      } else {
+        toast.error("Login failed. Please check your credentials and try again.")
+      }
     } finally {
       setLoading(false)
     }

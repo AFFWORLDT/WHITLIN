@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback, useMemo } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
@@ -10,7 +10,8 @@ import { Separator } from "@/components/ui/separator"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, CreditCard, Truck, MapPin } from "lucide-react"
+import { Badge } from "@/components/ui/badge"
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, CreditCard, Truck, MapPin, Zap, Clock, Shield, CheckCircle } from "lucide-react"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
@@ -34,6 +35,7 @@ export default function CartPage() {
   const [loading, setLoading] = useState(false)
   const [placingOrder, setPlacingOrder] = useState(false)
   const [showCheckout, setShowCheckout] = useState(false)
+  const [expressCheckout, setExpressCheckout] = useState(false)
   const [shippingAddress, setShippingAddress] = useState<ShippingAddress>({
     name: user?.name || '',
     address: '',
@@ -45,6 +47,24 @@ export default function CartPage() {
   })
   const [notes, setNotes] = useState('')
   const [savedAddress, setSavedAddress] = useState<any>(null)
+  const [orderProgress, setOrderProgress] = useState(0)
+
+  // Memoized calculations for better performance
+  const subtotal = useMemo(() => {
+    return state.items.reduce((sum, item) => sum + (item.price * item.quantity), 0)
+  }, [state.items])
+
+  const shipping = useMemo(() => {
+    return subtotal > 100 ? 0 : 10 // Free shipping over AED 100
+  }, [subtotal])
+
+  const total = useMemo(() => {
+    return subtotal + shipping
+  }, [subtotal, shipping])
+
+  const canExpressCheckout = useMemo(() => {
+    return savedAddress && savedAddress.address && savedAddress.city
+  }, [savedAddress])
 
   useEffect(() => {
     if (user?.name) {
@@ -107,6 +127,89 @@ export default function CartPage() {
     setShowCheckout(true)
   }
 
+  // Super fast express checkout
+  const handleExpressCheckout = useCallback(async () => {
+    if (!user) {
+      toast.error("Please sign in to place order")
+      return
+    }
+
+    if (state.items.length === 0) {
+      toast.error("Your cart is empty")
+      return
+    }
+
+    setExpressCheckout(true)
+    setOrderProgress(0)
+
+    try {
+      // Step 1: Validate and use saved address
+      setOrderProgress(25)
+      let finalAddress = shippingAddress
+
+      if (savedAddress) {
+        finalAddress = {
+          name: savedAddress.name,
+          address: savedAddress.address,
+          city: savedAddress.city,
+          state: savedAddress.state,
+          zipCode: savedAddress.zipCode,
+          country: savedAddress.country,
+          phone: user.phone || ''
+        }
+      } else {
+        // Quick validation for express checkout
+        if (!shippingAddress.name || !shippingAddress.address || !shippingAddress.city) {
+          toast.error("Please fill in at least name, address, and city for express checkout")
+          setExpressCheckout(false)
+          return
+        }
+      }
+
+      // Step 2: Create order data
+      setOrderProgress(50)
+      const orderData = {
+        userId: user.id,
+        items: state.items.map(item => ({
+          productId: item.id,
+          quantity: item.quantity
+        })),
+        shippingAddress: finalAddress,
+        paymentMethod: 'cash_on_delivery',
+        notes: 'Express Checkout'
+      }
+
+      // Step 3: Place order
+      setOrderProgress(75)
+      const response = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderData)
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setOrderProgress(100)
+        toast.success("🚀 Order placed in seconds! Thank you!")
+        clearCart()
+        setTimeout(() => {
+          router.push(`/orders/${data.data.orderId}`)
+        }, 500)
+      } else {
+        throw new Error(data.error || "Failed to place order")
+      }
+    } catch (error) {
+      console.error('Express checkout error:', error)
+      toast.error("Express checkout failed. Please try again.")
+    } finally {
+      setExpressCheckout(false)
+      setOrderProgress(0)
+    }
+  }, [user, state.items, shippingAddress, savedAddress, clearCart, router])
+
   const handlePlaceOrder = async () => {
     if (!user) {
       toast.error("Please sign in to place order")
@@ -121,9 +224,11 @@ export default function CartPage() {
     }
 
     setPlacingOrder(true)
+    setOrderProgress(0)
 
     try {
-      // Save address if it's different from saved address
+      // Step 1: Save address
+      setOrderProgress(20)
       if (!savedAddress || 
           savedAddress.address !== shippingAddress.address ||
           savedAddress.city !== shippingAddress.city ||
@@ -152,6 +257,8 @@ export default function CartPage() {
         }
       }
 
+      // Step 2: Prepare order data
+      setOrderProgress(50)
       const orderData = {
         userId: user.id,
         items: state.items.map(item => ({
@@ -163,8 +270,8 @@ export default function CartPage() {
         notes
       }
 
-      console.log('Cart - Order data being sent:', JSON.stringify(orderData, null, 2))
-
+      // Step 3: Place order
+      setOrderProgress(80)
       const response = await fetch('/api/orders', {
         method: 'POST',
         headers: {
@@ -173,15 +280,15 @@ export default function CartPage() {
         body: JSON.stringify(orderData)
       })
 
-      console.log('Cart - Order API response status:', response.status)
-
       const data = await response.json()
-      console.log('Cart - Order API response data:', data)
 
       if (data.success) {
+        setOrderProgress(100)
         toast.success("Order placed successfully!")
         clearCart()
-        router.push(`/orders/${data.data.orderId}`)
+        setTimeout(() => {
+          router.push(`/orders/${data.data.orderId}`)
+        }, 500)
       } else {
         console.error('Cart - Order failed:', data.error, data.details)
         toast.error(data.error || "Failed to place order")
@@ -191,6 +298,7 @@ export default function CartPage() {
       toast.error("Failed to place order")
     } finally {
       setPlacingOrder(false)
+      setOrderProgress(0)
     }
   }
 
@@ -198,10 +306,6 @@ export default function CartPage() {
     clearCart()
     toast.success("Cart cleared")
   }
-
-  const subtotal = state.items.reduce((sum, item) => sum + (item.price * item.quantity), 0)
-  const shipping = subtotal > 100 ? 0 : 10 // Free shipping over AED 100
-  const total = subtotal + shipping
 
   if (state.items.length === 0) {
     return (
@@ -334,8 +438,16 @@ export default function CartPage() {
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
-                    <span>{shipping === 0 ? 'Free' : `AED ${shipping.toFixed(2)}`}</span>
+                    <span className={shipping === 0 ? 'text-green-600 font-medium' : ''}>
+                      {shipping === 0 ? 'Free' : `AED ${shipping.toFixed(2)}`}
+                    </span>
                   </div>
+                  {shipping === 0 && (
+                    <div className="text-xs text-green-600 bg-green-50 p-2 rounded">
+                      <Shield className="h-3 w-3 inline mr-1" />
+                      Free shipping on orders over AED 100
+                    </div>
+                  )}
                   <Separator />
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
@@ -343,16 +455,84 @@ export default function CartPage() {
                   </div>
                   
                   {!showCheckout ? (
-                    <Button 
-                      onClick={handleCheckout}
-                      className="w-full bg-yellow-500 hover:bg-yellow-600 text-white"
-                      size="lg"
-                    >
-                      <CreditCard className="h-5 w-5 mr-2" />
-                      Proceed to Checkout
-                    </Button>
+                    <div className="space-y-3">
+                      {/* Express Checkout Button */}
+                      <Button 
+                        onClick={handleExpressCheckout}
+                        disabled={expressCheckout || !canExpressCheckout}
+                        className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
+                        size="lg"
+                      >
+                        {expressCheckout ? (
+                          <div className="flex items-center">
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            Express Checkout...
+                          </div>
+                        ) : (
+                          <div className="flex items-center">
+                            <Zap className="h-5 w-5 mr-2" />
+                            Express Checkout
+                          </div>
+                        )}
+                      </Button>
+                      
+                      {savedAddress && (
+                        <div className="text-center">
+                          <Badge variant="secondary" className="text-xs">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            Using saved address
+                          </Badge>
+                        </div>
+                      )}
+                      
+                      {/* Trust Signals */}
+                      <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
+                        <div className="flex items-center justify-center p-2 bg-gray-50 rounded">
+                          <Shield className="h-3 w-3 mr-1" />
+                          Secure
+                        </div>
+                        <div className="flex items-center justify-center p-2 bg-gray-50 rounded">
+                          <Clock className="h-3 w-3 mr-1" />
+                          Fast Delivery
+                        </div>
+                      </div>
+                      
+                      <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                          <span className="w-full border-t" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                          <span className="bg-white px-2 text-gray-500">or</span>
+                        </div>
+                      </div>
+                      
+                      <Button 
+                        onClick={handleCheckout}
+                        className="w-full bg-yellow-500 hover:bg-yellow-600 text-white"
+                        size="lg"
+                      >
+                        <CreditCard className="h-5 w-5 mr-2" />
+                        Regular Checkout
+                      </Button>
+                    </div>
                   ) : (
                     <div className="space-y-4">
+                      {/* Progress Bar */}
+                      {(placingOrder || expressCheckout) && orderProgress > 0 && (
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-sm">
+                            <span>Processing Order...</span>
+                            <span>{orderProgress}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2">
+                            <div 
+                              className="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full transition-all duration-300"
+                              style={{ width: `${orderProgress}%` }}
+                            ></div>
+                          </div>
+                        </div>
+                      )}
+                      
                       <div className="text-center">
                         <Truck className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
                         <p className="text-sm text-gray-600">Cash on Delivery Available</p>
@@ -364,7 +544,14 @@ export default function CartPage() {
                         className="w-full bg-green-600 hover:bg-green-700 text-white"
                         size="lg"
                       >
-                        {placingOrder ? 'Placing Order...' : 'Place Order (Cash on Delivery)'}
+                        {placingOrder ? (
+                          <div className="flex items-center">
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            Placing Order...
+                          </div>
+                        ) : (
+                          'Place Order (Cash on Delivery)'
+                        )}
                       </Button>
                     </div>
                   )}

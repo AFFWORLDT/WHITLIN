@@ -89,8 +89,7 @@ const ShippingAddressSchema = new Schema({
 const OrderSchema: Schema = new Schema({
   orderNumber: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   user: {
     type: Schema.Types.ObjectId,

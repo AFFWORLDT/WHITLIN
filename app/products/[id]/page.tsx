@@ -109,16 +109,16 @@ export default function ProductDetailsPage() {
 
     const size = product.attributes.find(attr => attr.name.toLowerCase() === 'size')?.value || 'Standard'
     
-    for (let i = 0; i < quantity; i++) {
-      addItem({
-        id: product._id,
-        name: product.name,
-        price: product.price,
-        image: product.images && product.images.length > 0 ? product.images[0] : "/placeholder.svg",
-        size: size,
-        range: product.category.name,
-      })
-    }
+    // Optimized: Add all items at once instead of loop
+    addItem({
+      id: product._id,
+      name: product.name,
+      price: product.price,
+      image: product.images && product.images.length > 0 ? product.images[0] : "/placeholder.svg",
+      size: size,
+      range: product.category.name,
+      quantity: quantity // Pass quantity directly
+    })
     
     toast.success(`${quantity}x ${product.name} added to cart!`)
   }

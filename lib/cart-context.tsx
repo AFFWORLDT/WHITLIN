@@ -19,7 +19,7 @@ interface CartState {
 }
 
 type CartAction =
-  | { type: "ADD_ITEM"; payload: Omit<CartItem, "quantity"> }
+  | { type: "ADD_ITEM"; payload: Omit<CartItem, "quantity"> & { quantity?: number } }
   | { type: "REMOVE_ITEM"; payload: string }
   | { type: "UPDATE_QUANTITY"; payload: { id: string; quantity: number } }
   | { type: "CLEAR_CART" }
@@ -35,14 +35,15 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     case "ADD_ITEM": {
       console.log('Cart reducer ADD_ITEM:', action.payload)
       const existingItem = state.items.find((item) => item.id === action.payload.id)
+      const addQuantity = action.payload.quantity || 1
 
       let newItems: CartItem[]
       if (existingItem) {
         newItems = state.items.map((item) =>
-          item.id === action.payload.id ? { ...item, quantity: item.quantity + 1 } : item,
+          item.id === action.payload.id ? { ...item, quantity: item.quantity + addQuantity } : item,
         )
       } else {
-        newItems = [...state.items, { ...action.payload, quantity: 1 }]
+        newItems = [...state.items, { ...action.payload, quantity: addQuantity }]
       }
 
       const total = newItems.reduce((sum, item) => sum + item.price * item.quantity, 0)

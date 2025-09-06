@@ -16,13 +16,13 @@ export async function GET(request: NextRequest) {
     // Get total revenue
     const revenueResult = await Order.aggregate([
       { $match: { status: { $in: ['delivered', 'shipped', 'processing'] } } },
-      { $group: { _id: null, total: { $sum: '$total' } } }
+      { $group: { _id: null, total: { $sum: '$totalAmount' } } }
     ])
     const totalRevenue = revenueResult.length > 0 ? revenueResult[0].total : 0
     
     // Get recent orders
     const recentOrders = await Order.find()
-      .populate('customer', 'name email')
+      .populate('user', 'name email')
       .sort({ createdAt: -1 })
       .limit(5)
       .lean()
@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
             year: { $year: '$createdAt' },
             month: { $month: '$createdAt' }
           },
-          revenue: { $sum: '$total' },
+          revenue: { $sum: '$totalAmount' },
           orders: { $sum: 1 }
         }
       },
@@ -99,8 +99,8 @@ export async function GET(request: NextRequest) {
         topProducts: topProductsResult,
         recentOrders: recentOrders.map(order => ({
           id: order.orderNumber,
-          customer: order.customer?.name || 'Unknown',
-          total: order.total,
+          customer: order.user?.name || 'Unknown',
+          total: order.totalAmount,
           status: order.status,
           createdAt: order.createdAt
         }))

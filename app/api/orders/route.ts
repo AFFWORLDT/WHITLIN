@@ -39,8 +39,14 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Validate user exists
-    const user = await User.findById(userId)
+    // Optimized: Validate user and products in parallel
+    const [user, products] = await Promise.all([
+      User.findById(userId).select('_id name email').lean(),
+      Product.find({ 
+        _id: { $in: items.map(item => item.productId) } 
+      }).select('_id name price stock image').lean()
+    ])
+    
     if (!user) {
       return NextResponse.json(
         { success: false, error: 'User not found' },
@@ -48,12 +54,15 @@ export async function POST(request: NextRequest) {
       )
     }
     
+    // Create product map for faster lookup
+    const productMap = new Map(products.map(p => [p._id.toString(), p]))
+    
     // Validate products and calculate totals
     let totalAmount = 0
     let orderItems = []
     
     for (const item of items) {
-      const product = await Product.findById(item.productId)
+      const product = productMap.get(item.productId)
       if (!product) {
         return NextResponse.json(
           { success: false, error: `Product ${item.productId} not found` },
@@ -121,18 +130,19 @@ export async function POST(request: NextRequest) {
     
     await order.save()
     
-    // Update product stock
-    for (const item of items) {
-      await Product.findByIdAndUpdate(
+    // Optimized: Update product stock and user in parallel
+    const stockUpdates = items.map(item => 
+      Product.findByIdAndUpdate(
         item.productId,
         { $inc: { stock: -item.quantity } }
       )
-    }
+    )
     
-    // Update user's last order date
-    await User.findByIdAndUpdate(userId, {
+    const userUpdate = User.findByIdAndUpdate(userId, {
       lastOrderDate: new Date()
     })
+    
+    await Promise.all([...stockUpdates, userUpdate])
     
     console.log('Order created successfully:', {
       orderNumber: order.orderNumber,

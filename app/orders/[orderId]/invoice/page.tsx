@@ -112,48 +112,144 @@ export default function InvoicePage() {
         <head>
           <title>Invoice - ${order.orderNumber}</title>
           <style>
-            body { font-family: Arial, sans-serif; margin: 20px; }
-            .header { text-align: center; margin-bottom: 30px; }
-            .company-name { font-size: 24px; font-weight: bold; color: #f59e0b; }
-            .invoice-title { font-size: 20px; margin: 10px 0; }
-            .invoice-details { display: flex; justify-content: space-between; margin-bottom: 30px; }
-            .section { margin-bottom: 20px; }
-            .section h3 { border-bottom: 2px solid #f59e0b; padding-bottom: 5px; }
-            table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-            th { background-color: #f59e0b; color: white; }
-            .total { font-weight: bold; font-size: 18px; }
-            .footer { margin-top: 30px; text-align: center; color: #666; }
+            @page { margin: 0.5in; }
+            body { 
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+              margin: 0; 
+              padding: 20px; 
+              color: #333;
+              line-height: 1.6;
+            }
+            .header { 
+              text-align: center; 
+              margin-bottom: 40px; 
+              border-bottom: 3px solid #f59e0b;
+              padding-bottom: 20px;
+            }
+            .company-name { 
+              font-size: 32px; 
+              font-weight: bold; 
+              color: #f59e0b; 
+              margin-bottom: 5px;
+            }
+            .company-tagline {
+              font-size: 14px;
+              color: #666;
+              margin-bottom: 10px;
+            }
+            .invoice-title { 
+              font-size: 24px; 
+              margin: 10px 0; 
+              color: #1f2937;
+            }
+            .invoice-number {
+              font-size: 18px;
+              color: #6b7280;
+            }
+            .invoice-details { 
+              display: flex; 
+              justify-content: space-between; 
+              margin-bottom: 40px; 
+              background: #f9fafb;
+              padding: 20px;
+              border-radius: 8px;
+            }
+            .section { 
+              margin-bottom: 30px; 
+            }
+            .section h3 { 
+              border-bottom: 2px solid #f59e0b; 
+              padding-bottom: 8px; 
+              color: #1f2937;
+              font-size: 18px;
+              margin-bottom: 15px;
+            }
+            table { 
+              width: 100%; 
+              border-collapse: collapse; 
+              margin: 20px 0; 
+              box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            }
+            th, td { 
+              border: 1px solid #e5e7eb; 
+              padding: 12px; 
+              text-align: left; 
+            }
+            th { 
+              background-color: #f59e0b; 
+              color: white; 
+              font-weight: 600;
+            }
+            tr:nth-child(even) {
+              background-color: #f9fafb;
+            }
+            .total { 
+              font-weight: bold; 
+              font-size: 18px; 
+              background-color: #fef3c7 !important;
+            }
+            .footer { 
+              margin-top: 40px; 
+              text-align: center; 
+              color: #6b7280;
+              border-top: 2px solid #e5e7eb;
+              padding-top: 20px;
+            }
+            .payment-info {
+              background: #f0f9ff;
+              padding: 20px;
+              border-radius: 8px;
+              border-left: 4px solid #0ea5e9;
+            }
+            .status-badge {
+              display: inline-block;
+              padding: 4px 12px;
+              border-radius: 20px;
+              font-size: 12px;
+              font-weight: 600;
+              text-transform: uppercase;
+            }
+            .status-paid { background: #dcfce7; color: #166534; }
+            .status-pending { background: #fef3c7; color: #92400e; }
+            .shipping-address {
+              background: #f9fafb;
+              padding: 15px;
+              border-radius: 6px;
+              border-left: 4px solid #10b981;
+            }
           </style>
         </head>
         <body>
           <div class="header">
             <div class="company-name">KeraGold Pro</div>
+            <div class="company-tagline">Premium Hair Care Products</div>
             <div class="invoice-title">INVOICE</div>
-            <div>Order #${order.orderNumber}</div>
+            <div class="invoice-number">Order #${order.orderNumber}</div>
           </div>
           
           <div class="invoice-details">
             <div>
-              <strong>Bill To:</strong><br>
-              ${order.user.name}<br>
+              <strong style="color: #1f2937; font-size: 16px;">Bill To:</strong><br><br>
+              <strong>${order.user.name}</strong><br>
               ${order.user.email}
             </div>
             <div>
-              <strong>Invoice Date:</strong><br>
-              ${new Date(order.createdAt).toLocaleDateString()}<br>
-              <strong>Order Date:</strong><br>
-              ${new Date(order.createdAt).toLocaleDateString()}
+              <strong style="color: #1f2937; font-size: 16px;">Invoice Details:</strong><br><br>
+              <strong>Invoice Date:</strong> ${new Date(order.createdAt).toLocaleDateString()}<br>
+              <strong>Order Date:</strong> ${new Date(order.createdAt).toLocaleDateString()}<br>
+              <strong>Due Date:</strong> ${new Date(order.createdAt).toLocaleDateString()}
             </div>
           </div>
           
           <div class="section">
             <h3>Shipping Address</h3>
-            ${order.shippingAddress.name}<br>
-            ${order.shippingAddress.address}<br>
-            ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.zipCode}<br>
-            ${order.shippingAddress.country}<br>
-            Phone: ${order.shippingAddress.phone}
+            <div class="shipping-address">
+              <strong>${order.shippingAddress.name}</strong><br>
+              ${order.shippingAddress.address}<br>
+              ${order.shippingAddress.city}, ${order.shippingAddress.state} ${order.shippingAddress.zipCode}<br>
+              ${order.shippingAddress.country}<br>
+              <strong>Phone:</strong> ${order.shippingAddress.phone}
+            </div>
           </div>
           
           <div class="section">
@@ -161,26 +257,26 @@ export default function InvoicePage() {
             <table>
               <thead>
                 <tr>
-                  <th>Item</th>
-                  <th>Price</th>
-                  <th>Qty</th>
+                  <th>Item Description</th>
+                  <th>Unit Price</th>
+                  <th>Quantity</th>
                   <th>Total</th>
                 </tr>
               </thead>
               <tbody>
                 ${order.items.map(item => `
                   <tr>
-                    <td>${item.name}</td>
+                    <td><strong>${item.name}</strong></td>
                     <td>AED ${item.price.toFixed(2)}</td>
-                    <td>${item.quantity}</td>
-                    <td>AED ${item.total.toFixed(2)}</td>
+                    <td style="text-align: center;">${item.quantity}</td>
+                    <td style="text-align: right;">AED ${item.total.toFixed(2)}</td>
                   </tr>
                 `).join('')}
               </tbody>
               <tfoot>
                 <tr class="total">
-                  <td colspan="3">Total Amount</td>
-                  <td>AED ${order.totalAmount.toFixed(2)}</td>
+                  <td colspan="3" style="text-align: right;"><strong>Total Amount:</strong></td>
+                  <td style="text-align: right;">AED ${order.totalAmount.toFixed(2)}</td>
                 </tr>
               </tfoot>
             </table>
@@ -188,14 +284,37 @@ export default function InvoicePage() {
           
           <div class="section">
             <h3>Payment Information</h3>
-            <strong>Payment Method:</strong> ${order.paymentMethod.replace('_', ' ').toUpperCase()}<br>
-            <strong>Payment Status:</strong> ${order.paymentStatus.toUpperCase()}<br>
-            <strong>Tracking Number:</strong> ${order.trackingNumber}
+            <div class="payment-info">
+              <p><strong>Payment Method:</strong> ${order.paymentMethod.replace('_', ' ').toUpperCase()}</p>
+              <p><strong>Payment Status:</strong> 
+                <span class="status-badge ${order.paymentStatus === 'paid' ? 'status-paid' : 'status-pending'}">
+                  ${order.paymentStatus.toUpperCase()}
+                </span>
+              </p>
+              <p><strong>Tracking Number:</strong> ${order.trackingNumber}</p>
+              <p><strong>Order Status:</strong> 
+                <span class="status-badge ${order.status === 'delivered' ? 'status-paid' : 'status-pending'}">
+                  ${order.status.toUpperCase()}
+                </span>
+              </p>
+            </div>
           </div>
           
+          ${order.notes ? `
+          <div class="section">
+            <h3>Order Notes</h3>
+            <div style="background: #f9fafb; padding: 15px; border-radius: 6px; border-left: 4px solid #6b7280;">
+              ${order.notes}
+            </div>
+          </div>
+          ` : ''}
+          
           <div class="footer">
-            <p>Thank you for your business!</p>
+            <p style="font-size: 16px; margin-bottom: 10px;"><strong>Thank you for your business!</strong></p>
             <p>KeraGold Pro - Premium Hair Care Products</p>
+            <p style="font-size: 12px; margin-top: 15px;">
+              For any queries, please contact us at support@keragold.com
+            </p>
           </div>
         </body>
         </html>

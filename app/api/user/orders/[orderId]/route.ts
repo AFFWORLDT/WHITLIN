@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import Order from '@/lib/models/Order'
+import Product from '@/lib/models/Product'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
     await connectDB()
     
-    const { orderId } = params
+    const { orderId } = await params
     
     if (!orderId) {
       return NextResponse.json(
@@ -46,12 +47,12 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { orderId: string } }
+  { params }: { params: Promise<{ orderId: string }> }
 ) {
   try {
     await connectDB()
     
-    const { orderId } = params
+    const { orderId } = await params
     const { status, paymentStatus, notes } = await request.json()
     
     if (!orderId) {

@@ -35,7 +35,7 @@ import { toast } from "sonner"
 interface Order {
   _id: string
   orderNumber: string
-  customer: {
+  user: {
     name: string
     email: string
   }
@@ -46,7 +46,7 @@ interface Order {
     quantity: number
     price: number
   }>
-  total: number
+  totalAmount: number
   status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
   shippingAddress: {
     street: string
@@ -107,7 +107,7 @@ export default function OrdersPage() {
         const data = await response.json()
         
         if (data.success) {
-          setOrders(data.data)
+          setOrders(data.data.orders || [])
         } else {
           setError(data.error || 'Failed to fetch orders')
           toast.error(data.error || 'Failed to fetch orders')
@@ -124,19 +124,19 @@ export default function OrdersPage() {
     fetchOrders()
   }, [])
 
-  const filteredOrders = orders.filter(order => {
+  const filteredOrders = (orders || []).filter(order => {
     const matchesSearch = order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.customer.email.toLowerCase().includes(searchTerm.toLowerCase())
+                         order.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         order.user.email.toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = selectedStatus === "all" || order.status === selectedStatus
     return matchesSearch && matchesStatus
   })
 
   const statuses = ["all", "pending", "processing", "shipped", "delivered", "cancelled"]
 
-  const totalRevenue = orders
+  const totalRevenue = (orders || [])
     .filter(order => order.status === "delivered")
-    .reduce((sum, order) => sum + order.total, 0)
+    .reduce((sum, order) => sum + order.totalAmount, 0)
 
   return (
     <div className="space-y-6">
@@ -272,12 +272,12 @@ export default function OrdersPage() {
                     <TableCell className="font-mono font-medium">{order.orderNumber}</TableCell>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{order.customer.name}</div>
-                        <div className="text-sm text-muted-foreground">{order.customer.email}</div>
+                        <div className="font-medium">{order.user.name}</div>
+                        <div className="text-sm text-muted-foreground">{order.user.email}</div>
                       </div>
                     </TableCell>
                     <TableCell>{order.items.length}</TableCell>
-                    <TableCell className="font-medium">AED {order.total.toFixed(2)}</TableCell>
+                    <TableCell className="font-medium">AED {order.totalAmount.toFixed(2)}</TableCell>
                     <TableCell>
                       <Badge className={getStatusColor(order.status)}>
                         <div className="flex items-center space-x-1">
