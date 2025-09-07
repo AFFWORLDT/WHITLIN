@@ -81,6 +81,8 @@ export default function OrdersPage() {
         const data = await response.json()
         
         if (data.success) {
+          console.log('Orders data:', data.data)
+          console.log('First order shipping address:', data.data[0]?.shippingAddress)
           setOrders(data.data)
         } else {
           setError(data.error || 'Failed to fetch orders')
@@ -167,7 +169,7 @@ export default function OrdersPage() {
                       </CardDescription>
                     </div>
                     <div className="text-right">
-                      <div className="text-lg font-bold">AED {order.total.toFixed(2)}</div>
+                      <div className="text-lg font-bold">AED {(order.total || 0).toFixed(2)}</div>
                       <Badge className={getStatusColor(order.status)}>
                         <div className="flex items-center space-x-1">
                           {getStatusIcon(order.status)}
@@ -194,7 +196,7 @@ export default function OrdersPage() {
                             </div>
                             <div className="text-right">
                               <div>Qty: {item.quantity}</div>
-                              <div className="font-medium">AED {item.price.toFixed(2)}</div>
+                              <div className="font-medium">AED {(item.price || 0).toFixed(2)}</div>
                             </div>
                           </div>
                         ))}
@@ -208,7 +210,12 @@ export default function OrdersPage() {
                           <MapPin className="h-4 w-4 mr-1" />
                           Shipping Address
                         </h4>
-                        <p className="text-sm text-muted-foreground">{order.shippingAddress}</p>
+                        <div className="text-sm text-muted-foreground">
+                          <p>{order.shippingAddress?.name}</p>
+                          <p>{order.shippingAddress?.address}</p>
+                          <p>{order.shippingAddress?.city}, {order.shippingAddress?.state} {order.shippingAddress?.zipCode}</p>
+                          <p>{order.shippingAddress?.country}</p>
+                        </div>
                       </div>
                       
                       {order.trackingNumber && (

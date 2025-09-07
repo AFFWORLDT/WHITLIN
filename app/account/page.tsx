@@ -20,7 +20,8 @@ import {
   ShoppingBag,
   Star,
   Calendar,
-  Loader2
+  Loader2,
+  Eye
 } from "lucide-react"
 import { toast } from "sonner"
 
@@ -235,15 +236,25 @@ export default function AccountPage() {
                       <div className="space-y-4">
                         {userData.recentOrders.map((order) => (
                           <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
-                            <div>
-                              <div className="font-medium">{order.id}</div>
+                            <div className="flex-1">
+                              <Link href={`/orders/${order.id}`} className="font-medium text-primary hover:underline">
+                                {order.id}
+                              </Link>
                               <div className="text-sm text-muted-foreground">{order.date} • {order.items} items</div>
                             </div>
-                            <div className="text-right">
-                              <div className="font-medium">AED {order.total.toFixed(2)}</div>
-                              <Badge className={getStatusColor(order.status)}>
-                                {order.status}
-                              </Badge>
+                            <div className="flex items-center space-x-4">
+                              <div className="text-right">
+                                <div className="font-medium">AED {order.total.toFixed(2)}</div>
+                                <Badge className={getStatusColor(order.status)}>
+                                  {order.status}
+                                </Badge>
+                              </div>
+                              <Link href={`/orders/${order.id}`}>
+                                <Button variant="outline" size="sm">
+                                  <Eye className="h-4 w-4 mr-1" />
+                                  View Details
+                                </Button>
+                              </Link>
                             </div>
                           </div>
                         ))}
@@ -268,20 +279,30 @@ export default function AccountPage() {
                         <>
                           {userData.recentOrders.slice(0, 3).map((order) => (
                             <div key={order.id} className="flex items-center justify-between p-4 border rounded-lg">
-                              <div className="flex items-center space-x-4">
+                              <div className="flex items-center space-x-4 flex-1">
                                 <div className="w-12 h-12 bg-muted rounded-lg flex items-center justify-center">
                                   <Package className="h-6 w-6 text-muted-foreground" />
                                 </div>
                                 <div>
-                                  <div className="font-medium">{order.id}</div>
+                                  <Link href={`/orders/${order.id}`} className="font-medium text-primary hover:underline">
+                                    {order.id}
+                                  </Link>
                                   <div className="text-sm text-muted-foreground">{order.date} • {order.items} items</div>
                                 </div>
                               </div>
-                              <div className="text-right">
-                                <div className="font-medium">AED {order.total.toFixed(2)}</div>
-                                <Badge className={getStatusColor(order.status)}>
-                                  {order.status}
-                                </Badge>
+                              <div className="flex items-center space-x-4">
+                                <div className="text-right">
+                                  <div className="font-medium">AED {order.total.toFixed(2)}</div>
+                                  <Badge className={getStatusColor(order.status)}>
+                                    {order.status}
+                                  </Badge>
+                                </div>
+                                <Link href={`/orders/${order.id}`}>
+                                  <Button variant="outline" size="sm">
+                                    <Eye className="h-4 w-4 mr-1" />
+                                    View Details
+                                  </Button>
+                                </Link>
                               </div>
                             </div>
                           ))}

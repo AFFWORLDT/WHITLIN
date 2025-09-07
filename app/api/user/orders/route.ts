@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     }
     
     // Get user's orders with populated product details
-    const orders = await Order.find({ customer: userId })
+    const orders = await Order.find({ user: userId })
       .populate({
         path: 'items.product',
         select: 'name price image'
@@ -30,9 +30,10 @@ export async function GET(request: NextRequest) {
     // Format orders for frontend
     const formattedOrders = orders.map(order => ({
       id: order.orderNumber,
+      orderNumber: order.orderNumber,
       date: order.createdAt.toISOString().split('T')[0],
       status: order.status,
-      total: order.total,
+      total: order.totalAmount,
       items: order.items.map((item: any) => ({
         name: item.product?.name || 'Product not found',
         quantity: item.quantity,

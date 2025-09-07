@@ -53,6 +53,34 @@ export default function CheckoutPage() {
       lastName: user.name.split(' ').slice(1).join(' ') || "",
       email: user.email || ""
     }))
+
+    // Load saved address
+    const loadSavedAddress = async () => {
+      try {
+        const response = await fetch(`/api/user/addresses?userId=${user._id}`)
+        const data = await response.json()
+        
+        if (data.success && data.data.length > 0) {
+          const defaultAddress = data.data.find((addr: any) => addr.isDefault) || data.data[0]
+          
+          setShippingInfo(prev => ({
+            ...prev,
+            firstName: defaultAddress.name.split(' ')[0] || prev.firstName,
+            lastName: defaultAddress.name.split(' ').slice(1).join(' ') || prev.lastName,
+            phone: defaultAddress.phone || prev.phone,
+            address: defaultAddress.address || prev.address,
+            city: defaultAddress.city || prev.city,
+            state: defaultAddress.state || prev.state,
+            zipCode: defaultAddress.zipCode || prev.zipCode,
+            country: defaultAddress.country || prev.country
+          }))
+        }
+      } catch (error) {
+        console.error('Error loading saved address:', error)
+      }
+    }
+
+    loadSavedAddress()
   }, [user, state.items.length, router])
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,24 +92,35 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validate required fields
+    if (!shippingInfo.firstName || !shippingInfo.lastName || !shippingInfo.email || 
+        !shippingInfo.phone || !shippingInfo.address || !shippingInfo.city || 
+        !shippingInfo.state || !shippingInfo.zipCode || !shippingInfo.country) {
+      toast.error("Please fill in all shipping address fields")
+      return
+    }
+    
     setLoading(true)
 
     try {
       // Create order
       const orderData = {
-        customer: user?._id,
+        userId: user?._id,
         items: state.items.map(item => ({
-          product: item.id,
+          productId: item.id,
           quantity: item.quantity,
           price: item.price
         })),
-        total: state.total,
+        totalAmount: state.total,
         shippingAddress: {
-          street: shippingInfo.address,
+          name: `${shippingInfo.firstName} ${shippingInfo.lastName}`,
+          address: shippingInfo.address,
           city: shippingInfo.city,
           state: shippingInfo.state,
           zipCode: shippingInfo.zipCode,
-          country: shippingInfo.country
+          country: shippingInfo.country,
+          phone: shippingInfo.phone
         },
         paymentMethod: paymentMethod
       }
@@ -100,7 +139,7 @@ export default function CheckoutPage() {
         toast.success("Order placed successfully!")
         // Clear cart
         // Redirect to order confirmation
-        router.push(`/orders/${data.data._id}`)
+        router.push(`/orders/${data.data.orderNumber}`)
       } else {
         toast.error(data.error || "Failed to place order")
       }

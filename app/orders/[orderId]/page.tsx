@@ -8,6 +8,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Textarea } from "@/components/ui/textarea"
 import { 
   CheckCircle, 
   Package, 
@@ -19,7 +23,8 @@ import {
   ArrowLeft,
   Download,
   Eye,
-  ShoppingBag
+  ShoppingBag,
+  Edit
 } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
@@ -72,6 +77,17 @@ export default function OrderDetailsPage() {
   const [order, setOrder] = useState<Order | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [isEditAddressOpen, setIsEditAddressOpen] = useState(false)
+  const [isUpdatingAddress, setIsUpdatingAddress] = useState(false)
+  const [editAddress, setEditAddress] = useState<ShippingAddress>({
+    name: '',
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    country: '',
+    phone: ''
+  })
 
   const orderId = params.orderId as string
 
@@ -83,6 +99,8 @@ export default function OrderDetailsPage() {
         const data = await response.json()
         
         if (data.success) {
+          console.log('Order data:', data.data)
+          console.log('Shipping address:', data.data.shippingAddress)
           setOrder(data.data)
         } else {
           setError(data.error || 'Failed to fetch order details')
@@ -142,6 +160,43 @@ export default function OrderDetailsPage() {
       hour: '2-digit',
       minute: '2-digit'
     })
+  }
+
+  const handleEditAddress = () => {
+    if (order) {
+      setEditAddress(order.shippingAddress)
+      setIsEditAddressOpen(true)
+    }
+  }
+
+  const handleUpdateAddress = async () => {
+    if (!order) return
+
+    try {
+      setIsUpdatingAddress(true)
+      const response = await fetch(`/api/orders/${order._id}/address`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editAddress),
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        setOrder(prev => prev ? { ...prev, shippingAddress: editAddress } : null)
+        setIsEditAddressOpen(false)
+        toast.success('Address updated successfully!')
+      } else {
+        toast.error(data.error || 'Failed to update address')
+      }
+    } catch (err) {
+      console.error('Error updating address:', err)
+      toast.error('An unexpected error occurred')
+    } finally {
+      setIsUpdatingAddress(false)
+    }
   }
 
   if (loading) {
@@ -352,9 +407,20 @@ export default function OrderDetailsPage() {
               {/* Shipping Address */}
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <MapPin className="h-5 w-5 mr-2" />
-                    Shipping Address
+                  <CardTitle className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <MapPin className="h-5 w-5 mr-2" />
+                      Shipping Address
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={handleEditAddress}
+                      className="text-xs"
+                    >
+                      <Edit className="h-3 w-3 mr-1" />
+                      Edit
+                    </Button>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2">
@@ -407,6 +473,106 @@ export default function OrderDetailsPage() {
           </div>
         </div>
       </div>
+
+      {/* Edit Address Modal */}
+      <Dialog open={isEditAddressOpen} onOpenChange={setIsEditAddressOpen}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Shipping Address</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="name">Full Name</Label>
+              <Input
+                id="name"
+                value={editAddress.name}
+                onChange={(e) => setEditAddress(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="Enter full name"
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="address">Address</Label>
+              <Textarea
+                id="address"
+                value={editAddress.address}
+                onChange={(e) => setEditAddress(prev => ({ ...prev, address: e.target.value }))}
+                placeholder="Enter address"
+                rows={3}
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="city">City</Label>
+                <Input
+                  id="city"
+                  value={editAddress.city}
+                  onChange={(e) => setEditAddress(prev => ({ ...prev, city: e.target.value }))}
+                  placeholder="Enter city"
+                />
+              </div>
+              <div>
+                <Label htmlFor="state">State</Label>
+                <Input
+                  id="state"
+                  value={editAddress.state}
+                  onChange={(e) => setEditAddress(prev => ({ ...prev, state: e.target.value }))}
+                  placeholder="Enter state"
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="zipCode">ZIP Code</Label>
+                <Input
+                  id="zipCode"
+                  value={editAddress.zipCode}
+                  onChange={(e) => setEditAddress(prev => ({ ...prev, zipCode: e.target.value }))}
+                  placeholder="Enter ZIP code"
+                />
+              </div>
+              <div>
+                <Label htmlFor="country">Country</Label>
+                <Input
+                  id="country"
+                  value={editAddress.country}
+                  onChange={(e) => setEditAddress(prev => ({ ...prev, country: e.target.value }))}
+                  placeholder="Enter country"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <Label htmlFor="phone">Phone Number</Label>
+              <Input
+                id="phone"
+                value={editAddress.phone}
+                onChange={(e) => setEditAddress(prev => ({ ...prev, phone: e.target.value }))}
+                placeholder="Enter phone number"
+              />
+            </div>
+            
+            <div className="flex justify-end space-x-2 pt-4">
+              <Button
+                variant="outline"
+                onClick={() => setIsEditAddressOpen(false)}
+                disabled={isUpdatingAddress}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleUpdateAddress}
+                disabled={isUpdatingAddress}
+              >
+                {isUpdatingAddress ? 'Updating...' : 'Update Address'}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       <Footer />
     </div>
   )

@@ -101,11 +101,13 @@ export async function POST(request: NextRequest) {
     
     // Transform shipping address to match Order model schema
     const transformedShippingAddress = {
-      street: shippingAddress.address, // Map address to street
+      name: shippingAddress.name,
+      address: shippingAddress.address,
       city: shippingAddress.city,
       state: shippingAddress.state,
       zipCode: shippingAddress.zipCode,
-      country: shippingAddress.country
+      country: shippingAddress.country,
+      phone: shippingAddress.phone
     }
     
     console.log('Order API - Transformed shipping address:', transformedShippingAddress)

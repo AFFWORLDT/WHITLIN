@@ -10,11 +10,13 @@ export interface IOrderItem {
 }
 
 export interface IShippingAddress {
-  street: string
+  name: string
+  address: string
   city: string
   state: string
   zipCode: string
   country: string
+  phone: string
 }
 
 export interface IOrderStatusHistory {
@@ -84,7 +86,11 @@ const OrderItemSchema = new Schema({
 }, { _id: false })
 
 const ShippingAddressSchema = new Schema({
-  street: {
+  name: {
+    type: String,
+    required: true
+  },
+  address: {
     type: String,
     required: true
   },
@@ -101,6 +107,10 @@ const ShippingAddressSchema = new Schema({
     required: true
   },
   country: {
+    type: String,
+    required: true
+  },
+  phone: {
     type: String,
     required: true
   }

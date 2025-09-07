@@ -35,7 +35,8 @@ export async function GET(request: NextRequest) {
     
     if (user.address) {
       addresses.push({
-        id: 'default',
+        _id: `address-${user._id}-${Date.now()}`,
+        id: `address-${user._id}-${Date.now()}`,
         type: 'Home',
         name: user.name,
         address: user.address.street,
@@ -43,6 +44,7 @@ export async function GET(request: NextRequest) {
         state: user.address.state,
         zipCode: user.address.zipCode,
         country: user.address.country,
+        phone: user.phone || '',
         isDefault: true,
         createdAt: user.createdAt
       })
@@ -106,7 +108,8 @@ export async function POST(request: NextRequest) {
       success: true,
       message: 'Address added successfully',
       data: {
-        id: 'default',
+        _id: `address-${userId}-${Date.now()}`,
+        id: `address-${userId}-${Date.now()}`,
         type: 'Home',
         name: user.name,
         address: user.address?.street,

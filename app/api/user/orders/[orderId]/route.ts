@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import Order from '@/lib/models/Order'
 import Product from '@/lib/models/Product'
+import User from '@/lib/models/User'
 
 export async function GET(
   request: NextRequest,
@@ -19,7 +20,7 @@ export async function GET(
       )
     }
     
-    const order = await Order.findById(orderId)
+    const order = await Order.findOne({ orderNumber: orderId })
       .populate('user', 'name email')
       .populate('items.product', 'name image')
       .lean()
@@ -67,8 +68,8 @@ export async function PUT(
     if (paymentStatus) updateData.paymentStatus = paymentStatus
     if (notes !== undefined) updateData.notes = notes
     
-    const order = await Order.findByIdAndUpdate(
-      orderId,
+    const order = await Order.findOneAndUpdate(
+      { orderNumber: orderId },
       updateData,
       { new: true }
     )

@@ -97,22 +97,33 @@ export default function CartPage() {
         const data = await response.json()
         
         if (data.success && data.data.length > 0) {
-          setSavedAddresses(data.data)
+          // Remove duplicates based on address content
+          const uniqueAddresses = data.data.filter((addr: any, index: number, self: any[]) => 
+            index === self.findIndex((a: any) => 
+              a.address === addr.address && 
+              a.city === addr.city && 
+              a.zipCode === addr.zipCode
+            )
+          )
+          
+          setSavedAddresses(uniqueAddresses)
           
           // Set default address if available
-          const defaultAddress = data.data.find((addr: any) => addr.isDefault) || data.data[0]
-          setSelectedAddressId(defaultAddress._id)
-          
-          // Pre-fill form with default address
-          setShippingAddress({
-            name: defaultAddress.name,
-            address: defaultAddress.address,
-            city: defaultAddress.city,
-            state: defaultAddress.state,
-            zipCode: defaultAddress.zipCode,
-            country: defaultAddress.country,
-            phone: '' // Phone not saved in address
-          })
+          const defaultAddress = uniqueAddresses.find((addr: any) => addr.isDefault) || uniqueAddresses[0]
+          if (defaultAddress) {
+            setSelectedAddressId(defaultAddress._id)
+            
+            // Pre-fill form with default address
+            setShippingAddress({
+              name: defaultAddress.name,
+              address: defaultAddress.address,
+              city: defaultAddress.city,
+              state: defaultAddress.state,
+              zipCode: defaultAddress.zipCode,
+              country: defaultAddress.country,
+              phone: '' // Phone not saved in address
+            })
+          }
         }
       } catch (err) {
         console.error('Error fetching saved addresses:', err)
@@ -661,9 +672,9 @@ export default function CartPage() {
                   </CardHeader>
                   {showAddressSelector && (
                     <CardContent className="space-y-3">
-                      {savedAddresses.map((address) => (
+                      {savedAddresses.map((address, index) => (
                         <div
-                          key={address._id}
+                          key={`${address._id}-${index}-${address.address}-${address.city}`}
                           className={`p-3 border rounded-lg cursor-pointer transition-colors ${
                             selectedAddressId === address._id
                               ? 'border-blue-500 bg-blue-50'
@@ -817,20 +828,23 @@ export default function CartPage() {
                         onClick={async () => {
                           if (!user?.id) return
                           try {
-                            const response = await fetch(`/api/user/addresses?userId=${user.id}`, {
+                            const response = await fetch(`/api/user/addresses`, {
                               method: 'POST',
                               headers: {
                                 'Content-Type': 'application/json'
                               },
                               body: JSON.stringify({
-                                type: 'Home',
-                                name: shippingAddress.name,
-                                address: shippingAddress.address,
-                                city: shippingAddress.city,
-                                state: shippingAddress.state,
-                                zipCode: shippingAddress.zipCode,
-                                country: shippingAddress.country,
-                                isDefault: savedAddresses.length === 0 // Set as default if first address
+                                userId: user.id,
+                                addressData: {
+                                  type: 'Home',
+                                  name: shippingAddress.name,
+                                  address: shippingAddress.address,
+                                  city: shippingAddress.city,
+                                  state: shippingAddress.state,
+                                  zipCode: shippingAddress.zipCode,
+                                  country: shippingAddress.country,
+                                  isDefault: savedAddresses.length === 0 // Set as default if first address
+                                }
                               })
                             })
                             
@@ -839,11 +853,25 @@ export default function CartPage() {
                               // Refresh addresses
                               const data = await response.json()
                               if (data.success) {
-                                setSavedAddresses(prev => [...prev, data.data])
+                                setSavedAddresses(prev => {
+                                  // Check if address already exists to avoid duplicates
+                                  const exists = prev.some(addr => 
+                                    addr.address === data.data.address && 
+                                    addr.city === data.data.city && 
+                                    addr.zipCode === data.data.zipCode
+                                  )
+                                  if (exists) {
+                                    return prev // Don't add duplicate
+                                  }
+                                  return [...prev, data.data]
+                                })
                                 if (savedAddresses.length === 0) {
                                   setSelectedAddressId(data.data._id)
                                 }
                               }
+                            } else {
+                              const errorData = await response.json()
+                              toast.error(errorData.error || 'Failed to save address')
                             }
                           } catch (error) {
                             toast.error('Failed to save address')
