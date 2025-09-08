@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Star, ShoppingCart, Filter, Grid, List, Loader2 } from "lucide-react"
+import { Star, ShoppingCart, Filter, Grid, List } from "lucide-react"
 import { useCart } from "@/lib/cart-context"
 import { toast } from "sonner"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { Loading, ProductSkeleton } from "@/components/ui/loading"
 
 interface Product {
   _id: string
@@ -140,8 +141,12 @@ export default function ProductsPage() {
     return (
       <div className="min-h-screen">
         <Header />
-        <div className="flex justify-center items-center h-64">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {Array.from({ length: 8 }).map((_, index) => (
+              <ProductSkeleton key={index} />
+            ))}
+          </div>
         </div>
         <Footer />
       </div>

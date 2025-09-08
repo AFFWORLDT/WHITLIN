@@ -4,6 +4,7 @@ import Product from '@/lib/models/Product'
 import Category from '@/lib/models/Category'
 import { withCache, cacheKeys, cacheTTL } from '@/lib/cache'
 import { createErrorResponse } from '@/lib/error-handler'
+import { CacheManager, CACHE_TAGS } from '@/lib/cache-optimizer'
 
 export async function GET(request: NextRequest) {
   try {

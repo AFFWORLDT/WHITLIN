@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, memo, useCallback } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { ShoppingBag, Search, Menu, X, User, LogOut } from "lucide-react"
@@ -10,10 +10,18 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
 
-export function Header() {
+export const Header = memo(function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { state } = useCart()
   const { user, logout } = useAuth()
+
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen(prev => !prev)
+  }, [])
+
+  const handleLogout = useCallback(() => {
+    logout()
+  }, [logout])
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
@@ -104,7 +112,7 @@ export function Header() {
             </Link>
 
             {/* Mobile Menu Button */}
-            <Button variant="ghost" size="icon" className="md:hidden" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleMenu}>
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
@@ -156,4 +164,4 @@ export function Header() {
       </div>
     </header>
   )
-}
+})
