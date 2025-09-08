@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Instagram, Facebook, Twitter, Mail, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -55,9 +56,14 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
-                <span className="text-black font-bold text-lg">KG</span>
+            <div className="flex items-center space-x-3">
+              <div className="relative w-12 h-12">
+                <Image
+                  src="/images/logo.png"
+                  alt="KeraGold PRO Logo"
+                  fill
+                  className="object-contain"
+                />
               </div>
               <div>
                 <span className="font-serif text-xl font-bold">KeraGold</span>
