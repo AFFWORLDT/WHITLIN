@@ -147,8 +147,9 @@ export default function EditProductPage() {
 
       if (data.success) {
         toast.success("Product updated successfully!")
-        // Stay on the same page instead of redirecting
-        // router.push('/admin/products')
+        // Redirect back to products list with current page preserved
+        const currentPage = new URLSearchParams(window.location.search).get('page') || '1'
+        router.push(`/admin/products?page=${currentPage}`)
       } else {
         toast.error(data.error || "Failed to update product")
       }

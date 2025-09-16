@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -82,6 +83,7 @@ const getStatusText = (status: string) => {
 }
 
 export default function ProductsPage() {
+  const searchParams = useSearchParams()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
@@ -187,13 +189,18 @@ export default function ProductsPage() {
   }
 
   useEffect(() => {
+    // Initialize page from URL parameters
+    const pageFromUrl = searchParams.get('page')
+    if (pageFromUrl) {
+      setCurrentPage(parseInt(pageFromUrl))
+    }
+    
     fetchStats() // Fetch overall statistics
     fetchCategories() // Fetch categories
-    fetchProducts() // Fetch paginated products
-  }, [])
+  }, [searchParams])
 
   useEffect(() => {
-    fetchProducts() // Fetch products when filters change
+    fetchProducts() // Fetch paginated products
   }, [searchTerm, selectedCategory, currentPage, itemsPerPage])
 
   const handleSearch = (value: string) => {
@@ -490,7 +497,7 @@ export default function ProductsPage() {
                             <Eye className="h-4 w-4 mr-2" />
                             View
                           </DropdownMenuItem>
-                          <DropdownMenuItem onClick={() => router.push(`/admin/products/${product._id}/edit`)}>
+                          <DropdownMenuItem onClick={() => router.push(`/admin/products/${product._id}/edit?page=${currentPage}`)}>
                             <Edit className="h-4 w-4 mr-2" />
                             Edit
                           </DropdownMenuItem>
