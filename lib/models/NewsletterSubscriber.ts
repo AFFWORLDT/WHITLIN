@@ -95,11 +95,10 @@ const NewsletterSubscriberSchema = new Schema<INewsletterSubscriber>({
 })
 
 // Indexes for better performance
-NewsletterSubscriberSchema.index({ email: 1 })
+// email and unsubscribeToken indexes are automatically created by unique: true
 NewsletterSubscriberSchema.index({ status: 1 })
 NewsletterSubscriberSchema.index({ tags: 1 })
 NewsletterSubscriberSchema.index({ subscriptionDate: -1 })
-NewsletterSubscriberSchema.index({ unsubscribeToken: 1 })
 
 // Generate unsubscribe token before saving
 NewsletterSubscriberSchema.pre('save', function(next) {
