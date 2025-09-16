@@ -1,7 +1,10 @@
 "use client"
 
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import { 
   Package, 
   ShoppingCart, 
@@ -9,26 +12,42 @@ import {
   TrendingUp,
   DollarSign,
   Eye,
-  Star
+  Star,
+  Loader2,
+  Plus,
+  BarChart3
 } from "lucide-react"
 
-// Mock data - in real app this would come from API
-const stats = {
-  totalProducts: 45,
-  totalOrders: 128,
-  totalUsers: 89,
-  totalRevenue: 12500,
-  recentOrders: [
-    { id: "ORD-001", customer: "John Doe", amount: 299.99, status: "completed", date: "2024-01-15" },
-    { id: "ORD-002", customer: "Jane Smith", amount: 199.99, status: "pending", date: "2024-01-14" },
-    { id: "ORD-003", customer: "Mike Johnson", amount: 399.99, status: "shipped", date: "2024-01-13" },
-    { id: "ORD-004", customer: "Sarah Wilson", amount: 149.99, status: "completed", date: "2024-01-12" },
-  ],
-  topProducts: [
-    { name: "KeraGold Expert Liss System", sales: 45, revenue: 4500 },
-    { name: "KeraGold Inforcer Range", sales: 32, revenue: 3200 },
-    { name: "KeraGold Nourishing System", sales: 28, revenue: 2800 },
-  ]
+interface DashboardStats {
+  totalProducts: number
+  totalOrders: number
+  totalUsers: number
+  totalRevenue: number
+  productGrowth: number
+  orderGrowth: number
+  userGrowth: number
+  revenueGrowth: number
+}
+
+interface RecentOrder {
+  id: string
+  customer: string
+  amount: number
+  status: string
+  date: string
+}
+
+interface TopProduct {
+  name: string
+  sales: number
+  revenue: number
+  rating: number
+}
+
+interface DashboardData {
+  stats: DashboardStats
+  recentOrders: RecentOrder[]
+  topProducts: TopProduct[]
 }
 
 const getStatusColor = (status: string) => {
@@ -41,11 +60,94 @@ const getStatusColor = (status: string) => {
 }
 
 export default function AdminDashboard() {
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
+
+  const fetchDashboardData = async () => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/admin/dashboard')
+      const data = await response.json()
+      
+      if (data.success) {
+        setDashboardData(data.data)
+      } else {
+        setError(data.error || 'Failed to fetch dashboard data')
+      }
+    } catch (err) {
+      console.error('Error fetching dashboard data:', err)
+      setError('An unexpected error occurred')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  useEffect(() => {
+    fetchDashboardData()
+  }, [])
+
+  const formatGrowth = (growth: number) => {
+    const sign = growth >= 0 ? '+' : ''
+    return `${sign}${growth}%`
+  }
+
+  const getGrowthColor = (growth: number) => {
+    return growth >= 0 ? 'text-green-600' : 'text-red-600'
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <p className="text-muted-foreground">Loading dashboard data...</p>
+        </div>
+        <div className="flex items-center justify-center py-12">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <p className="text-muted-foreground">Error loading dashboard data</p>
+        </div>
+        <div className="text-center py-12">
+          <p className="text-red-600 mb-4">{error}</p>
+          <Button onClick={fetchDashboardData}>Retry</Button>
+        </div>
+      </div>
+    )
+  }
+
+  if (!dashboardData) {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <p className="text-muted-foreground">No data available</p>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">Welcome back! Here's what's happening with your store.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Dashboard</h1>
+          <p className="text-muted-foreground">Welcome back! Here's what's happening with your store.</p>
+        </div>
+        <Button onClick={fetchDashboardData} variant="outline" size="sm">
+          <TrendingUp className="h-4 w-4 mr-2" />
+          Refresh
+        </Button>
       </div>
 
       {/* Stats Cards */}
@@ -56,9 +158,9 @@ export default function AdminDashboard() {
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalProducts}</div>
-            <p className="text-xs text-muted-foreground">
-              +2 from last month
+            <div className="text-2xl font-bold">{dashboardData.stats.totalProducts}</div>
+            <p className={`text-xs ${getGrowthColor(dashboardData.stats.productGrowth)}`}>
+              {formatGrowth(dashboardData.stats.productGrowth)} from last month
             </p>
           </CardContent>
         </Card>
@@ -69,9 +171,9 @@ export default function AdminDashboard() {
             <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalOrders}</div>
-            <p className="text-xs text-muted-foreground">
-              +12% from last month
+            <div className="text-2xl font-bold">{dashboardData.stats.totalOrders}</div>
+            <p className={`text-xs ${getGrowthColor(dashboardData.stats.orderGrowth)}`}>
+              {formatGrowth(dashboardData.stats.orderGrowth)} from last month
             </p>
           </CardContent>
         </Card>
@@ -82,9 +184,9 @@ export default function AdminDashboard() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.totalUsers}</div>
-            <p className="text-xs text-muted-foreground">
-              +8% from last month
+            <div className="text-2xl font-bold">{dashboardData.stats.totalUsers}</div>
+            <p className={`text-xs ${getGrowthColor(dashboardData.stats.userGrowth)}`}>
+              {formatGrowth(dashboardData.stats.userGrowth)} from last month
             </p>
           </CardContent>
         </Card>
@@ -95,9 +197,9 @@ export default function AdminDashboard() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">AED {stats.totalRevenue.toLocaleString()}</div>
-            <p className="text-xs text-muted-foreground">
-              +18% from last month
+            <div className="text-2xl font-bold">AED {dashboardData.stats.totalRevenue.toLocaleString()}</div>
+            <p className={`text-xs ${getGrowthColor(dashboardData.stats.revenueGrowth)}`}>
+              {formatGrowth(dashboardData.stats.revenueGrowth)} from last month
             </p>
           </CardContent>
         </Card>
@@ -112,21 +214,28 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {stats.recentOrders.map((order) => (
-                <div key={order.id} className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">{order.id}</p>
-                    <p className="text-xs text-muted-foreground">{order.customer}</p>
-                    <p className="text-xs text-muted-foreground">{order.date}</p>
+              {dashboardData.recentOrders.length > 0 ? (
+                dashboardData.recentOrders.map((order) => (
+                  <div key={order.id} className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium">{order.id}</p>
+                      <p className="text-xs text-muted-foreground">{order.customer}</p>
+                      <p className="text-xs text-muted-foreground">{order.date}</p>
+                    </div>
+                    <div className="text-right space-y-1">
+                      <p className="text-sm font-medium">AED {order.amount.toFixed(2)}</p>
+                      <Badge className={getStatusColor(order.status)}>
+                        {order.status}
+                      </Badge>
+                    </div>
                   </div>
-                  <div className="text-right space-y-1">
-                    <p className="text-sm font-medium">AED {order.amount}</p>
-                    <Badge className={getStatusColor(order.status)}>
-                      {order.status}
-                    </Badge>
-                  </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <ShoppingCart className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p>No orders yet</p>
                 </div>
-              ))}
+              )}
             </div>
           </CardContent>
         </Card>
@@ -139,21 +248,28 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {stats.topProducts.map((product, index) => (
-                <div key={index} className="flex items-center justify-between">
-                  <div className="space-y-1">
-                    <p className="text-sm font-medium">{product.name}</p>
-                    <p className="text-xs text-muted-foreground">{product.sales} sales</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm font-medium">AED {product.revenue}</p>
-                    <div className="flex items-center text-xs text-muted-foreground">
-                      <Star className="h-3 w-3 mr-1 fill-yellow-400 text-yellow-400" />
-                      <span>4.8</span>
+              {dashboardData.topProducts.length > 0 ? (
+                dashboardData.topProducts.map((product, index) => (
+                  <div key={index} className="flex items-center justify-between">
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium truncate max-w-[200px]">{product.name}</p>
+                      <p className="text-xs text-muted-foreground">{product.sales} sales</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium">AED {product.revenue.toFixed(2)}</p>
+                      <div className="flex items-center text-xs text-muted-foreground">
+                        <Star className="h-3 w-3 mr-1 fill-yellow-400 text-yellow-400" />
+                        <span>{product.rating}</span>
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Package className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                  <p>No sales data yet</p>
                 </div>
-              ))}
+              )}
             </div>
           </CardContent>
         </Card>
@@ -167,7 +283,10 @@ export default function AdminDashboard() {
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Card className="cursor-pointer hover:bg-accent transition-colors">
+            <Card 
+              className="cursor-pointer hover:bg-accent transition-colors"
+              onClick={() => router.push('/admin/products/add')}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
                   <Package className="h-8 w-8 text-primary" />
@@ -179,19 +298,25 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
 
-            <Card className="cursor-pointer hover:bg-accent transition-colors">
+            <Card 
+              className="cursor-pointer hover:bg-accent transition-colors"
+              onClick={() => router.push('/admin/products/bulk-import')}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
-                  <TrendingUp className="h-8 w-8 text-primary" />
+                  <Plus className="h-8 w-8 text-primary" />
                   <div>
-                    <h3 className="font-medium">View Analytics</h3>
-                    <p className="text-sm text-muted-foreground">Check sales reports</p>
+                    <h3 className="font-medium">Bulk Import</h3>
+                    <p className="text-sm text-muted-foreground">Import multiple products</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            <Card className="cursor-pointer hover:bg-accent transition-colors">
+            <Card 
+              className="cursor-pointer hover:bg-accent transition-colors"
+              onClick={() => router.push('/admin/users')}
+            >
               <CardContent className="p-4">
                 <div className="flex items-center space-x-3">
                   <Users className="h-8 w-8 text-primary" />

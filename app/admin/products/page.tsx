@@ -116,15 +116,7 @@ export default function ProductsPage() {
         setTotalProducts(data.total || 0)
         setTotalPages(data.pages || Math.ceil((data.total || 0) / itemsPerPage))
         
-        // Calculate stats
-        const total = data.total || data.data.length
-        const active = data.data.filter(p => p.stock > 0).length
-        const outOfStock = data.data.filter(p => p.stock === 0).length
-        const totalValue = data.data.reduce((sum, p) => sum + (p.price * p.stock), 0)
-        
-        setStats({ total, active, outOfStock, totalValue })
-        
-        // Extract unique categories
+        // Extract unique categories from current page data
         const uniqueCategories = Array.from(new Set(data.data.map(p => p.category?.name || p.category || 'Unknown')))
         setCategories(uniqueCategories)
       } else {
@@ -135,6 +127,39 @@ export default function ProductsPage() {
       toast.error("Error fetching products")
     } finally {
       setLoading(false)
+    }
+  }
+
+  const fetchStats = async () => {
+    try {
+      const response = await fetch('/api/admin/products/stats')
+      const data = await response.json()
+      
+      if (data.success) {
+        setStats({
+          total: data.data.totalProducts,
+          active: data.data.activeProducts,
+          outOfStock: data.data.outOfStockProducts,
+          totalValue: data.data.totalStockValue
+        })
+        
+        // Set categories from stats API
+        setCategories(data.data.categories.map((cat: any) => cat.name))
+      }
+    } catch (error) {
+      console.error('Error fetching stats:', error)
+    }
+  }
+
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/categories?active=true')
+      const data = await response.json()
+      if (data.success) {
+        setCategories(data.data.map((cat: any) => cat.name))
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error)
     }
   }
 
@@ -150,6 +175,7 @@ export default function ProductsPage() {
       
       if (data.success) {
         toast.success("Product deleted successfully")
+        fetchStats() // Refresh statistics
         fetchProducts() // Refresh the list
       } else {
         toast.error("Failed to delete product")
@@ -161,7 +187,13 @@ export default function ProductsPage() {
   }
 
   useEffect(() => {
-    fetchProducts()
+    fetchStats() // Fetch overall statistics
+    fetchCategories() // Fetch categories
+    fetchProducts() // Fetch paginated products
+  }, [])
+
+  useEffect(() => {
+    fetchProducts() // Fetch products when filters change
   }, [searchTerm, selectedCategory, currentPage, itemsPerPage])
 
   const handleSearch = (value: string) => {
@@ -262,16 +294,22 @@ export default function ProductsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{stats.total}</div>
+            <p className="text-xs text-muted-foreground">
+              Active products in inventory
+            </p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Products</CardTitle>
+            <CardTitle className="text-sm font-medium">In Stock</CardTitle>
             <Package className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">{stats.active}</div>
+            <p className="text-xs text-muted-foreground">
+              {stats.total > 0 ? Math.round((stats.active / stats.total) * 100) : 0}% of total
+            </p>
           </CardContent>
         </Card>
 
@@ -282,6 +320,9 @@ export default function ProductsPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-red-600">{stats.outOfStock}</div>
+            <p className="text-xs text-muted-foreground">
+              {stats.total > 0 ? Math.round((stats.outOfStock / stats.total) * 100) : 0}% of total
+            </p>
           </CardContent>
         </Card>
 
@@ -294,6 +335,9 @@ export default function ProductsPage() {
             <div className="text-2xl font-bold text-blue-600">
               AED {stats.totalValue.toLocaleString()}
             </div>
+            <p className="text-xs text-muted-foreground">
+              Current inventory value
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -308,12 +352,12 @@ export default function ProductsPage() {
             <div className="flex-1">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder="Search products..."
-                  value={searchTerm}
-                  onChange={(e) => handleSearch(e.target.value)}
-                  className="pl-10"
-                />
+                    <Input
+                      placeholder="Search by name, description, or SKU..."
+                      value={searchTerm}
+                      onChange={(e) => handleSearch(e.target.value)}
+                      className="pl-10"
+                    />
               </div>
             </div>
             <div className="sm:w-48">

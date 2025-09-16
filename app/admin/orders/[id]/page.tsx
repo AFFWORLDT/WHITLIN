@@ -37,6 +37,7 @@ import {
   EyeOff
 } from "lucide-react"
 import { toast } from "sonner"
+import { formatCurrency } from "@/lib/utils"
 
 interface Order {
   _id: string
@@ -464,7 +465,7 @@ export default function OrderDetailsPage() {
                   </Badge>
                 </div>
                 <div className="text-right">
-                  <div className='text-2xl font-bold'>AED {(order.totalAmount || 0).toFixed(2)}</div>
+                  <div className='text-2xl font-bold'>{formatCurrency(order.totalAmount || 0)}</div>
                   <div className="text-sm text-muted-foreground">Total Amount</div>
                 </div>
               </div>
@@ -627,9 +628,9 @@ export default function OrderDetailsPage() {
                       <p className="text-sm text-muted-foreground">Quantity: {item.quantity}</p>
                     </div>
                     <div className="text-right">
-                      <div className="font-medium">AED {(item.price || 0).toFixed(2)}</div>
+                      <div className="font-medium">{formatCurrency(item.price || 0)}</div>
                       <div className="text-sm text-muted-foreground">each</div>
-                      <div className="text-sm font-medium text-primary">Total: AED {(item.total || 0).toFixed(2)}</div>
+                      <div className="text-sm font-medium text-primary">Total: {formatCurrency(item.total || 0)}</div>
                     </div>
                   </div>
                 ))}
@@ -641,26 +642,26 @@ export default function OrderDetailsPage() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>Subtotal:</span>
-                  <span>AED {(order.subtotal || 0).toFixed(2)}</span>
+                  <span>{formatCurrency(order.subtotal || 0)}</span>
                 </div>
                 {order.discount > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span>Discount:</span>
-                    <span>-AED {(order.discount || 0).toFixed(2)}</span>
+                    <span>-{formatCurrency(order.discount || 0)}</span>
                   </div>
                 )}
                 <div className="flex justify-between">
                   <span>Shipping:</span>
-                  <span>AED {(order.shipping || 0).toFixed(2)}</span>
+                  <span>{formatCurrency(order.shipping || 0)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Tax:</span>
-                  <span>AED {(order.tax || 0).toFixed(2)}</span>
+                  <span>{formatCurrency(order.tax || 0)}</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total:</span>
-                  <span>AED {(order.totalAmount || 0).toFixed(2)}</span>
+                  <span>{formatCurrency(order.totalAmount || 0)}</span>
                 </div>
               </div>
             </CardContent>

@@ -34,6 +34,7 @@ import {
   ArrowLeft
 } from "lucide-react"
 import { toast } from "sonner"
+import { formatCurrency } from "@/lib/utils"
 
 interface Order {
   _id: string
@@ -235,7 +236,7 @@ export default function OrdersPage() {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-green-600">
-              ${totalRevenue.toLocaleString()}
+              {formatCurrency(totalRevenue)}
             </div>
           </CardContent>
         </Card>
@@ -322,7 +323,7 @@ export default function OrdersPage() {
                       </div>
                     </TableCell>
                     <TableCell>{order.items.length}</TableCell>
-                    <TableCell className="font-medium">AED {order.totalAmount.toFixed(2)}</TableCell>
+                    <TableCell className="font-medium">{formatCurrency(order.totalAmount)}</TableCell>
                     <TableCell>
                       <Badge className={getStatusColor(order.status)}>
                         <div className="flex items-center space-x-1">

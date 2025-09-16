@@ -150,6 +150,6 @@ ProductSchema.index({ status: 1 })
 ProductSchema.index({ price: 1 })
 ProductSchema.index({ rating: -1 })
 ProductSchema.index({ createdAt: -1 })
-ProductSchema.index({ name: 'text', description: 'text' }) // Text search index
+ProductSchema.index({ name: 'text', description: 'text', sku: 'text' }) // Text search index
 
 export default models.Product || model<IProduct>('Product', ProductSchema)

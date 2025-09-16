@@ -21,6 +21,7 @@ interface Product {
   originalPrice?: number
   description: string
   images: string[]
+  sku: string
   category: {
     name: string
   }
@@ -234,7 +235,7 @@ export default function ProductsPage() {
           <div className="flex-1">
             <div className="relative">
               <Input
-                placeholder="Search products..."
+                placeholder="Search by name, description, or SKU..."
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}
                 className="pl-10"
@@ -338,6 +339,7 @@ export default function ProductsPage() {
                       </h3>
                     </Link>
                     <p className="text-xs text-primary font-medium mb-1">{product.category.name} Range</p>
+                    <p className="text-xs text-muted-foreground mb-1">SKU: {product.sku || 'N/A'}</p>
                     <p className="text-sm text-muted-foreground mb-3 text-pretty line-clamp-2">
                       {product.description}
                     </p>
