@@ -7,24 +7,6 @@ import { validateRequestBody, loginSchema } from '@/lib/validation'
 
 export async function POST(request: NextRequest) {
   try {
-    // Rate limiting
-    const rateLimitResult = authRateLimit(request)
-    if (!rateLimitResult.success) {
-      return NextResponse.json(
-        { 
-          success: false, 
-          error: 'Too many login attempts. Please try again later.',
-          retryAfter: Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000)
-        },
-        { 
-          status: 429,
-          headers: {
-            'Retry-After': Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000).toString()
-          }
-        }
-      )
-    }
-
     await connectDB()
     
     const body = await request.json()
@@ -44,8 +26,29 @@ export async function POST(request: NextRequest) {
     
     const { email, password } = validation.data
     
-    // Find user by email
+    // Check if user exists and determine if it's an admin
     const user = await User.findOne({ email: email.toLowerCase() })
+    const isAdminUser = user && (user.role === 'admin' || user.email === 'admin@keragold.com')
+    
+    // Apply rate limiting only for non-admin users
+    if (!isAdminUser) {
+      const rateLimitResult = authRateLimit(request)
+      if (!rateLimitResult.success) {
+        return NextResponse.json(
+          { 
+            success: false, 
+            error: 'Too many login attempts. Please try again later.',
+            retryAfter: Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000)
+          },
+          { 
+            status: 429,
+            headers: {
+              'Retry-After': Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000).toString()
+            }
+          }
+        )
+      }
+    }
     
     if (!user) {
       return NextResponse.json(

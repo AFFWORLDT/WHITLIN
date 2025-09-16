@@ -63,14 +63,14 @@ function getDefaultKey(req: NextRequest): string {
 // Predefined rate limiters
 export const authRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  maxRequests: 5, // 5 attempts per window
+  maxRequests: 10, // 10 attempts per window (increased from 5)
   keyGenerator: (req) => {
     const ip = getDefaultKey(req)
-    const body = req.body
-    // Include email in key for login attempts
+    // Include email in key for login attempts to be more specific
     return `auth:${ip}`
   }
 })
+
 
 export const apiRateLimit = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -81,3 +81,4 @@ export const strictRateLimit = rateLimit({
   windowMs: 60 * 1000, // 1 minute
   maxRequests: 10, // 10 requests per minute
 })
+
