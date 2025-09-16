@@ -12,13 +12,11 @@ import { ArrowLeft, Save, Loader2, AlertCircle } from "lucide-react"
 import { toast } from "sonner"
 import { ImageUpload } from "@/components/ui/image-upload"
 
-const categories = [
-  "Treatment Systems",
-  "Hair Care",
-  "Professional Products",
-  "Accessories",
-  "Maintenance"
-]
+interface Category {
+  _id: string
+  name: string
+  slug: string
+}
 
 interface Product {
   _id: string
@@ -44,6 +42,7 @@ export default function EditProductPage() {
   
   const [loading, setLoading] = useState(false)
   const [fetching, setFetching] = useState(true)
+  const [categories, setCategories] = useState<Category[]>([])
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -57,6 +56,19 @@ export default function EditProductPage() {
     rating: "4.5"
   })
 
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch('/api/categories?active=true')
+      const data = await response.json()
+      
+      if (data.success) {
+        setCategories(data.data)
+      }
+    } catch (error) {
+      console.error('Error fetching categories:', error)
+    }
+  }
+
   const fetchProduct = async () => {
     try {
       setFetching(true)
@@ -69,7 +81,7 @@ export default function EditProductPage() {
           name: product.name,
           description: product.description,
           price: product.price.toString(),
-          category: product.category,
+          category: product.category._id || product.category,
           stock: product.stock.toString(),
           sku: product.sku,
           image: product.image,
@@ -92,6 +104,7 @@ export default function EditProductPage() {
 
   useEffect(() => {
     if (productId) {
+      fetchCategories()
       fetchProduct()
     }
   }, [productId])
@@ -268,8 +281,8 @@ export default function EditProductPage() {
                   >
                     <option value="">Select a category</option>
                     {categories.map(category => (
-                      <option key={category} value={category}>
-                        {category}
+                      <option key={category._id} value={category._id}>
+                        {category.name}
                       </option>
                     ))}
                   </select>
@@ -350,7 +363,7 @@ export default function EditProductPage() {
                       {formData.name || "Product Name"}
                     </h3>
                     <p className="text-sm text-muted-foreground">
-                      {formData.category || "Category"}
+                      {categories.find(cat => cat._id === formData.category)?.name || "Category"}
                     </p>
                     <p className="font-bold">
                       ${formData.price || "0.00"}
