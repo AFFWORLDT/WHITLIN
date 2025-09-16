@@ -278,6 +278,7 @@ export default function ProductDetailsPage() {
                   fill
                   className="object-cover"
                   unoptimized={true}
+                  priority={true}
                   onError={(e) => {
                     console.error('Image failed to load:', e.currentTarget.src)
                     e.currentTarget.src = '/placeholder.svg'

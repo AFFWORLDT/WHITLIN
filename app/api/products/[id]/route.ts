@@ -22,7 +22,9 @@ export async function GET(
     // Ensure images array is properly formatted
     const formattedProduct = {
       ...product,
-      images: product.images || (product.image ? [product.image] : [])
+      images: product.images && product.images.length > 0 
+        ? product.images 
+        : (product.image ? [product.image] : [])
     }
 
     return NextResponse.json({
