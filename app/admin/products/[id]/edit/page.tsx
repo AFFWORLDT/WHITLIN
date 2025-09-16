@@ -147,7 +147,8 @@ export default function EditProductPage() {
 
       if (data.success) {
         toast.success("Product updated successfully!")
-        router.push('/admin/products')
+        // Stay on the same page instead of redirecting
+        // router.push('/admin/products')
       } else {
         toast.error(data.error || "Failed to update product")
       }
