@@ -88,10 +88,18 @@ export async function GET(request: NextRequest) {
       .limit(limit)
       .lean()
 
+      // Ensure images array is properly formatted
+      const formattedProducts = products.map(product => ({
+        ...product,
+        images: product.images && product.images.length > 0 
+          ? product.images 
+          : (product.image ? [product.image] : [])
+      }))
+
       const total = await Product.countDocuments(filter)
 
       return {
-        products,
+        products: formattedProducts,
         total,
         page,
         pages: Math.ceil(total / limit)

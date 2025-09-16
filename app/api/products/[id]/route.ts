@@ -19,9 +19,15 @@ export async function GET(
       )
     }
 
+    // Ensure images array is properly formatted
+    const formattedProduct = {
+      ...product,
+      images: product.images || (product.image ? [product.image] : [])
+    }
+
     return NextResponse.json({
       success: true,
-      data: product
+      data: formattedProduct
     })
   } catch (error) {
     console.error('Error fetching product:', error)

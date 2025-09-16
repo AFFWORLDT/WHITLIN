@@ -304,13 +304,27 @@ export default function ProductsPage() {
               {products.map((product) => (
                 <Card key={product._id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-border/50">
                   <Link href={`/products/${product._id}`}>
-                    <div className="relative aspect-square overflow-hidden cursor-pointer">
-                      <Image
-                        src={product.images[0] || "/placeholder.svg"}
-                        alt={product.name}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
+                     <div className="relative aspect-square overflow-hidden cursor-pointer bg-gray-100">
+                       {product.images && product.images.length > 0 ? (
+                         <Image
+                           src={product.images[0]}
+                           alt={product.name}
+                           fill
+                           className="object-cover group-hover:scale-105 transition-transform duration-500"
+                           unoptimized={true}
+                           onError={(e) => {
+                             console.error('Image failed to load:', e.currentTarget.src)
+                             e.currentTarget.src = '/placeholder.svg'
+                           }}
+                         />
+                       ) : (
+                         <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                           <div className="text-center">
+                             <div className="text-4xl text-gray-400 mb-2">📦</div>
+                             <p className="text-gray-500 text-sm">No image</p>
+                           </div>
+                         </div>
+                       )}
                       <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
                         {getProductBadge(product)}
                       </Badge>

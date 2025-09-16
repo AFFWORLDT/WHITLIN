@@ -22,6 +22,7 @@ interface Product {
   description: string
   longDescription?: string
   images: string[]
+  sku: string
   category: {
     name: string
   }
@@ -269,13 +270,27 @@ export default function ProductDetailsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Product Images */}
           <div className="space-y-4">
-            <div className="relative aspect-square overflow-hidden rounded-lg">
-              <Image
-                src={product.images[selectedImage] || "/placeholder.svg"}
-                alt={product.name}
-                fill
-                className="object-cover"
-              />
+            <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
+              {product.images && product.images.length > 0 ? (
+                <Image
+                  src={product.images[selectedImage] || product.images[0]}
+                  alt={product.name}
+                  fill
+                  className="object-cover"
+                  unoptimized={true}
+                  onError={(e) => {
+                    console.error('Image failed to load:', e.currentTarget.src)
+                    e.currentTarget.src = '/placeholder.svg'
+                  }}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                  <div className="text-center">
+                    <div className="text-6xl text-gray-400 mb-2">📦</div>
+                    <p className="text-gray-500">No image available</p>
+                  </div>
+                </div>
+              )}
               {product.originalPrice && product.originalPrice > product.price && (
                 <Badge className="absolute top-4 left-4 bg-red-500 text-white">
                   Sale
@@ -283,7 +298,7 @@ export default function ProductDetailsPage() {
               )}
             </div>
             
-            {product.images.length > 1 && (
+            {product.images && product.images.length > 1 && (
               <div className="grid grid-cols-4 gap-2">
                 {product.images.map((image, index) => (
                   <button
@@ -298,6 +313,11 @@ export default function ProductDetailsPage() {
                       alt={`${product.name} ${index + 1}`}
                       fill
                       className="object-cover"
+                      unoptimized={true}
+                      onError={(e) => {
+                        console.error('Thumbnail image failed to load:', e.currentTarget.src)
+                        e.currentTarget.src = '/placeholder.svg'
+                      }}
                     />
                   </button>
                 ))}
@@ -368,7 +388,7 @@ export default function ProductDetailsPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">SKU:</span>
-                  <span className="font-medium">{getProductAttribute('sku')}</span>
+                  <span className="font-medium">{product.sku || 'N/A'}</span>
                 </div>
               </div>
             </div>
