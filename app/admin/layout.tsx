@@ -9,14 +9,11 @@ import {
   Package, 
   ShoppingCart, 
   Users, 
-  Settings, 
-  BarChart3,
   Menu,
   X,
   LogOut,
   User,
-  Tags,
-  Mail
+  Tags
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth-context"
@@ -27,9 +24,10 @@ const adminNavItems = [
   { href: "/admin/categories", icon: Tags, label: "Categories" },
   { href: "/admin/orders", icon: ShoppingCart, label: "Orders" },
   { href: "/admin/users", icon: Users, label: "Users" },
-  { href: "/admin/newsletter", icon: Mail, label: "Newsletter" },
-  { href: "/admin/analytics", icon: BarChart3, label: "Analytics" },
-  { href: "/admin/settings", icon: Settings, label: "Settings" },
+  // Hidden menu items: Newsletter, Analytics, Settings
+  // { href: "/admin/newsletter", icon: Mail, label: "Newsletter" },
+  // { href: "/admin/analytics", icon: BarChart3, label: "Analytics" },
+  // { href: "/admin/settings", icon: Settings, label: "Settings" },
 ]
 
 export default function AdminLayout({
