@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Edit, Trash2, Package, Calendar, DollarSign, Hash, Star, Loader2, AlertCircle } from "lucide-react"
 import { toast } from "sonner"
+import { formatCurrency } from "@/lib/utils"
 
 interface Product {
   _id: string
@@ -206,7 +207,7 @@ export default function ProductViewPage() {
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Price</p>
-                  <p className="text-2xl font-bold">${product.price}</p>
+                  <p className="text-2xl font-bold">{formatCurrency(product.price)}</p>
                 </div>
               </div>
 
