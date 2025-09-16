@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { useAuth } from "@/lib/auth-context"
+import DebugAuth from "@/components/debug-auth"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -51,7 +52,11 @@ export default function LoginPage() {
           role: data.data.role
         }
         localStorage.setItem("keragold_user", JSON.stringify(userData))
-        document.cookie = `keragold_user=${JSON.stringify(userData)}; path=/; max-age=86400`
+        // Set cookie with proper attributes for production
+        const cookieValue = JSON.stringify(userData)
+        const isProduction = window.location.hostname !== 'localhost'
+        const cookieString = `keragold_user=${cookieValue}; path=/; max-age=86400; SameSite=Lax${isProduction ? '; Secure' : ''}`
+        document.cookie = cookieString
         
         // Call login function to update context
         await login(email, password)
@@ -174,6 +179,11 @@ export default function LoginPage() {
             </div>
           </CardContent>
         </Card>
+        
+        {/* Debug component - remove in production */}
+        <div className="mt-8">
+          <DebugAuth />
+        </div>
       </div>
     </div>
   )

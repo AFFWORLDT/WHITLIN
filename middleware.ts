@@ -6,10 +6,11 @@ export function middleware(request: NextRequest) {
   
   // Check if the path starts with /admin
   if (pathname.startsWith('/admin')) {
-    // Get the token from cookies or headers
+    // Get the token from cookies
     const token = request.cookies.get('keragold_user')?.value
     
     if (!token) {
+      console.log('No token found, redirecting to login')
       // Redirect to login page with redirect parameter
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)
@@ -19,15 +20,20 @@ export function middleware(request: NextRequest) {
     try {
       // Parse the user data from the token
       const userData = JSON.parse(token)
+      console.log('User data from token:', { role: userData.role, email: userData.email })
       
       // Check if user is admin
       if (userData.role !== 'admin') {
+        console.log('User is not admin, redirecting to login')
         // Redirect to login page
         const loginUrl = new URL('/login', request.url)
         loginUrl.searchParams.set('redirect', pathname)
         return NextResponse.redirect(loginUrl)
       }
+      
+      console.log('Admin access granted')
     } catch (error) {
+      console.log('Invalid token, redirecting to login:', error)
       // Invalid token, redirect to login
       const loginUrl = new URL('/login', request.url)
       loginUrl.searchParams.set('redirect', pathname)

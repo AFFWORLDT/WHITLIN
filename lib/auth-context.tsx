@@ -34,7 +34,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             const userData = JSON.parse(savedUser)
             setUser(userData)
             // Also set cookie for middleware
-            document.cookie = `keragold_user=${savedUser}; path=/; max-age=86400` // 24 hours
+            const isProduction = window.location.hostname !== 'localhost'
+            const cookieString = `keragold_user=${savedUser}; path=/; max-age=86400; SameSite=Lax${isProduction ? '; Secure' : ''}`
+            document.cookie = cookieString
           } catch (error) {
             console.error('Error parsing user data:', error)
             localStorage.removeItem("keragold_user")
@@ -72,7 +74,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const userDataString = JSON.stringify(userData)
           localStorage.setItem("keragold_user", userDataString)
           // Set cookie for middleware
-          document.cookie = `keragold_user=${userDataString}; path=/; max-age=86400` // 24 hours
+          const isProduction = window.location.hostname !== 'localhost'
+          const cookieString = `keragold_user=${userDataString}; path=/; max-age=86400; SameSite=Lax${isProduction ? '; Secure' : ''}`
+          document.cookie = cookieString
         }
         setIsLoading(false)
         return true
