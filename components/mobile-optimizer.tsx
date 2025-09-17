@@ -21,14 +21,32 @@ export function MobileOptimizer() {
   useEffect(() => {
     // Add mobile-specific optimizations
     if (isMobile) {
-      // Prevent zoom on input focus
+      // Optimize viewport for mobile images
       const viewport = document.querySelector('meta[name="viewport"]')
       if (viewport) {
-        viewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no')
+        viewport.setAttribute('content', 'width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes')
       }
 
       // Add touch-friendly styles
       document.body.classList.add('mobile-optimized')
+      
+      // Mobile image loading optimizations
+      const style = document.createElement('style')
+      style.textContent = `
+        .mobile-optimized img {
+          image-rendering: -webkit-optimize-contrast;
+          image-rendering: crisp-edges;
+        }
+        .mobile-optimized .aspect-square {
+          min-height: 200px;
+        }
+        @media (max-width: 768px) {
+          img[loading="lazy"] {
+            loading: eager;
+          }
+        }
+      `
+      document.head.appendChild(style)
     } else {
       document.body.classList.remove('mobile-optimized')
     }
