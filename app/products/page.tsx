@@ -301,7 +301,7 @@ export default function ProductsPage() {
                 ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
                 : "space-y-4"
             }>
-              {products.map((product) => (
+              {products.map((product, index) => (
                 <Card key={product._id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-border/50">
                   <Link href={`/products/${product._id}`}>
                      <div className="relative aspect-square overflow-hidden cursor-pointer bg-gray-100">
