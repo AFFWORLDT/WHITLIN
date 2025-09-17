@@ -277,8 +277,11 @@ export default function ProductDetailsPage() {
                   alt={product.name}
                   fill
                   className="object-cover"
-                  unoptimized={true}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   priority={true}
+                  quality={85}
+                  placeholder="blur"
+                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
                   onError={(e) => {
                     console.error('Image failed to load:', e.currentTarget.src)
                     e.currentTarget.src = '/placeholder.svg'
@@ -314,7 +317,8 @@ export default function ProductDetailsPage() {
                       alt={`${product.name} ${index + 1}`}
                       fill
                       className="object-cover"
-                      unoptimized={true}
+                      sizes="80px"
+                      quality={75}
                       onError={(e) => {
                         console.error('Thumbnail image failed to load:', e.currentTarget.src)
                         e.currentTarget.src = '/placeholder.svg'
