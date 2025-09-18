@@ -63,7 +63,7 @@ export function PerformanceMonitor() {
 // Preload critical resources
 export function ResourcePreloader() {
   useEffect(() => {
-    // Preload critical images
+    // Preload critical images (only if they exist)
     const criticalImages = [
       '/images/logo.png',
       '/images/keragold-hero.png'
@@ -74,16 +74,24 @@ export function ResourcePreloader() {
       link.rel = 'preload'
       link.as = 'image'
       link.href = src
+      link.onerror = () => {
+        console.warn(`Image preload failed: ${src}`)
+        document.head.removeChild(link)
+      }
       document.head.appendChild(link)
     })
 
-    // Preload critical fonts
+    // Preload critical fonts (only if they exist)
     const fontLink = document.createElement('link')
     fontLink.rel = 'preload'
     fontLink.as = 'font'
     fontLink.type = 'font/woff2'
     fontLink.crossOrigin = 'anonymous'
     fontLink.href = '/fonts/inter-var.woff2'
+    fontLink.onerror = () => {
+      console.warn('Font file not found, skipping preload')
+      document.head.removeChild(fontLink)
+    }
     document.head.appendChild(fontLink)
   }, [])
 

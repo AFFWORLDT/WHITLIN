@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -13,6 +12,8 @@ import { toast } from "sonner"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Loading, ProductSkeleton } from "@/components/ui/loading"
+import { UniversalProductGridImage } from "@/components/ui/universal-image"
+import { emergencyImageFix } from "@/lib/emergency-image-fix"
 
 interface Product {
   _id: string
@@ -95,6 +96,16 @@ export default function ProductsPage() {
   useEffect(() => {
     fetchData()
   }, [fetchData])
+
+  // Apply emergency image fixes when products are loaded
+  useEffect(() => {
+    if (products.length > 0) {
+      // Small delay to ensure DOM is updated
+      setTimeout(() => {
+        emergencyImageFix()
+      }, 100)
+    }
+  }, [products])
 
   const handleAddToCart = useCallback((product: Product) => {
     const size = product.attributes?.find(attr => attr.name.toLowerCase() === 'size')?.value || 'Standard'
@@ -304,23 +315,13 @@ export default function ProductsPage() {
               {products.map((product, index) => (
                 <Card key={product._id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-border/50">
                   <Link href={`/products/${product._id}`}>
-                     <div className="relative aspect-square overflow-hidden cursor-pointer bg-gray-100">
+                     <div className="relative aspect-square overflow-hidden cursor-pointer bg-gray-100" data-product-image={product.images?.[0]}>
                        {product.images && product.images.length > 0 ? (
-                         <Image
+                         <UniversalProductGridImage
                            src={product.images[0]}
                            alt={product.name}
-                           fill
-                           className="object-cover group-hover:scale-105 transition-transform duration-500"
-                           sizes="(max-width: 480px) 100vw, (max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
-                           quality={85}
-                           loading={index < 4 ? "eager" : "lazy"}
-                           priority={index < 4}
-                           placeholder="blur"
-                           blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-                           onError={(e) => {
-                             console.error('Image failed to load:', e.currentTarget.src)
-                             e.currentTarget.src = '/placeholder.svg'
-                           }}
+                           className="group-hover:scale-105 transition-transform duration-500"
+                           index={index}
                          />
                        ) : (
                          <div className="w-full h-full flex items-center justify-center bg-gray-100">

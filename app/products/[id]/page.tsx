@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useParams, useRouter } from "next/navigation"
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -13,6 +12,7 @@ import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import { UniversalProductImage, UniversalProductThumbnail } from "@/components/ui/universal-image"
 
 interface Product {
   _id: string
@@ -272,20 +272,11 @@ export default function ProductDetailsPage() {
           <div className="space-y-4">
             <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
               {product.images && product.images.length > 0 ? (
-                <Image
+                <UniversalProductImage
                   src={product.images[selectedImage] || product.images[0]}
                   alt={product.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 480px) 100vw, (max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   priority={true}
                   quality={85}
-                  placeholder="blur"
-                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-                  onError={(e) => {
-                    console.error('Image failed to load:', e.currentTarget.src)
-                    e.currentTarget.src = '/placeholder.svg'
-                  }}
                 />
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-100">
@@ -312,17 +303,9 @@ export default function ProductDetailsPage() {
                       selectedImage === index ? 'border-primary' : 'border-transparent'
                     }`}
                   >
-                    <Image
+                    <UniversalProductThumbnail
                       src={image}
                       alt={`${product.name} ${index + 1}`}
-                      fill
-                      className="object-cover"
-                      sizes="80px"
-                      quality={75}
-                      onError={(e) => {
-                        console.error('Thumbnail image failed to load:', e.currentTarget.src)
-                        e.currentTarget.src = '/placeholder.svg'
-                      }}
                     />
                   </button>
                 ))}
