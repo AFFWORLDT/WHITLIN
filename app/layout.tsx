@@ -8,7 +8,7 @@ import { Suspense } from "react"
 import { CartProvider } from "@/lib/cart-context"
 import { AuthProvider } from "@/lib/auth-context"
 import { Toaster } from "sonner"
-import { PerformanceMonitor, ResourcePreloader } from "@/components/performance-monitor"
+import { PerformanceMonitor } from "@/components/performance-monitor"
 import { ErrorBoundary } from "@/components/error-boundary"
 import { MobileOptimizer } from "@/components/mobile-optimizer"
 import { PerformanceDashboard } from "@/components/performance-dashboard"
@@ -74,7 +74,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} ${playfairDisplay.variable}`}>
-        <ResourcePreloader />
         <MobileOptimizer />
         <ErrorBoundary>
           <AuthProvider>

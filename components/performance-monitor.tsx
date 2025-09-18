@@ -63,36 +63,33 @@ export function PerformanceMonitor() {
 // Preload critical resources
 export function ResourcePreloader() {
   useEffect(() => {
-    // Preload critical images (only if they exist)
+    // Only preload resources that actually exist and are used
+    const checkAndPreloadImage = (src: string) => {
+      const img = new Image()
+      img.onload = () => {
+        // Only preload if image actually loads
+        const link = document.createElement('link')
+        link.rel = 'preload'
+        link.as = 'image'
+        link.href = src
+        document.head.appendChild(link)
+      }
+      img.onerror = () => {
+        console.warn(`Skipping preload for missing image: ${src}`)
+      }
+      img.src = src
+    }
+
+    // Check and preload critical images
     const criticalImages = [
       '/images/logo.png',
       '/images/keragold-hero.png'
     ]
 
-    criticalImages.forEach(src => {
-      const link = document.createElement('link')
-      link.rel = 'preload'
-      link.as = 'image'
-      link.href = src
-      link.onerror = () => {
-        console.warn(`Image preload failed: ${src}`)
-        document.head.removeChild(link)
-      }
-      document.head.appendChild(link)
-    })
+    criticalImages.forEach(checkAndPreloadImage)
 
-    // Preload critical fonts (only if they exist)
-    const fontLink = document.createElement('link')
-    fontLink.rel = 'preload'
-    fontLink.as = 'font'
-    fontLink.type = 'font/woff2'
-    fontLink.crossOrigin = 'anonymous'
-    fontLink.href = '/fonts/inter-var.woff2'
-    fontLink.onerror = () => {
-      console.warn('Font file not found, skipping preload')
-      document.head.removeChild(fontLink)
-    }
-    document.head.appendChild(fontLink)
+    // Remove font preloading completely to avoid 404 errors
+    // Fonts will be loaded normally when needed
   }, [])
 
   return null

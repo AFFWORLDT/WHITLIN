@@ -44,18 +44,26 @@ export function emergencyImageFix() {
     }
   })
 
-  // Fix 3: Preload critical product images
+  // Fix 3: Smart preloading for product images
   const productImages = document.querySelectorAll('[data-product-image]')
   if (productImages.length > 0) {
-    console.log('Preloading product images...')
+    console.log('Smart preloading product images...')
     productImages.forEach((element, index) => {
       const src = element.getAttribute('data-product-image')
-      if (src && index < 6) { // Only preload first 6
-        const link = document.createElement('link')
-        link.rel = 'preload'
-        link.as = 'image'
-        link.href = src
-        document.head.appendChild(link)
+      if (src && index < 4) { // Only preload first 4 visible images
+        // Check if image exists before preloading
+        const img = new Image()
+        img.onload = () => {
+          const link = document.createElement('link')
+          link.rel = 'preload'
+          link.as = 'image'
+          link.href = src
+          document.head.appendChild(link)
+        }
+        img.onerror = () => {
+          console.warn(`Skipping preload for broken image: ${src}`)
+        }
+        img.src = src
       }
     })
   }

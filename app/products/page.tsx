@@ -14,6 +14,7 @@ import { Footer } from "@/components/footer"
 import { Loading, ProductSkeleton } from "@/components/ui/loading"
 import { UniversalProductGridImage } from "@/components/ui/universal-image"
 import { emergencyImageFix } from "@/lib/emergency-image-fix"
+import { fixCloudinaryImages } from "@/lib/cloudinary-image-fix"
 
 interface Product {
   _id: string
@@ -97,12 +98,13 @@ export default function ProductsPage() {
     fetchData()
   }, [fetchData])
 
-  // Apply emergency image fixes when products are loaded
+  // Apply image fixes when products are loaded
   useEffect(() => {
     if (products.length > 0) {
       // Small delay to ensure DOM is updated
       setTimeout(() => {
         emergencyImageFix()
+        fixCloudinaryImages()
       }, 100)
     }
   }, [products])

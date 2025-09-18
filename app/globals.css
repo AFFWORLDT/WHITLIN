@@ -2,20 +2,22 @@
 @import "tw-animate-css";
 
 /* Image loading states */
-.loading {
+.image-loading {
   position: relative;
   overflow: hidden;
+  background-color: #f3f4f6;
 }
 
-.loading::before {
+.image-loading::before {
   content: '';
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
   animation: loading-shimmer 1.5s infinite;
+  z-index: 1;
 }
 
 @keyframes loading-shimmer {
@@ -27,28 +29,61 @@
   }
 }
 
-.loaded {
+.image-loaded {
   opacity: 1;
   transition: opacity 0.3s ease-in-out;
 }
 
-.error {
+.image-error {
   background-color: #f3f4f6;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px dashed #d1d5db;
+}
+
+.image-error::after {
+  content: '📦';
+  font-size: 2rem;
+  color: #9ca3af;
 }
 
 /* Image optimization */
 img {
   max-width: 100%;
   height: auto;
+  transition: opacity 0.3s ease-in-out;
 }
 
 /* Fallback for broken images */
 img[src*="placeholder.svg"] {
   background-color: #f3f4f6;
   border: 1px dashed #d1d5db;
+}
+
+/* Cloudinary image specific fixes */
+img[src*="cloudinary.com"] {
+  background-color: #f9fafb;
+}
+
+/* Loading animation for product images */
+.aspect-square {
+  transition: all 0.3s ease-in-out;
+}
+
+.aspect-square.image-loading {
+  background: linear-gradient(90deg, #f3f4f6 25%, #e5e7eb 50%, #f3f4f6 75%);
+  background-size: 200% 100%;
+  animation: loading-gradient 1.5s infinite;
+}
+
+@keyframes loading-gradient {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 @custom-variant dark (&:is(.dark *));
