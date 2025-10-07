@@ -107,7 +107,7 @@ export default function AdminLayout({
           {/* Logo */}
           <div className="flex items-center justify-between p-6 border-b border-border">
             <Link href="/admin" className="flex items-center space-x-3">
-              <div className="relative w-10 h-10">
+              <div className="relative w-14 h-14">
                 <Image
                   src="/images/logonew.png"
                   alt="KeraGold PRO Logo"

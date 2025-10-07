@@ -57,7 +57,7 @@ export function Footer() {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="relative w-12 h-12">
+              <div className="relative w-16 h-16">
                 <Image
                   src="/images/logonew.png"
                   alt="KeraGold PRO Logo"
