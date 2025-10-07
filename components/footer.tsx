@@ -59,7 +59,7 @@ export function Footer() {
             <div className="flex items-center space-x-3">
               <div className="relative w-12 h-12">
                 <Image
-                  src="/images/logo.png"
+                  src="/images/logonew.png"
                   alt="KeraGold PRO Logo"
                   fill
                   className="object-contain"

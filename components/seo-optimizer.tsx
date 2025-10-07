@@ -89,7 +89,7 @@ export const generateOrganizationStructuredData = () => ({
   "@type": "Organization",
   "name": "KeraGold Pro",
   "url": "https://keragold-uae.com",
-  "logo": "https://keragold-uae.com/images/logo.png",
+  "logo": "https://keragold-uae.com/images/logonew.png",
   "description": "Professional hair care products with keratin and hyaluronic acid",
   "contactPoint": {
     "@type": "ContactPoint",
