@@ -36,14 +36,14 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://keragoldpro.com'),
+  metadataBase: new URL('https://keragold-uae.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://keragoldpro.com',
+    url: 'https://keragold-uae.com',
     title: 'KeraGold Pro - Professional Hair Care',
     description: 'Luxury professional hair care products with keratin and hyaluronic acid.',
     siteName: 'KeraGold Pro',

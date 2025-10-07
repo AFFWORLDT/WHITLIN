@@ -289,7 +289,7 @@ const seedData = async () => {
         phone: "+1 (555) 987-6543",
         address: {
           street: "456 Oak Ave",
-          city: "Los Angeles",
+          city: "Dubai",
           state: "CA",
           zipCode: "90210",
           country: "US"

@@ -73,7 +73,7 @@ export const emailTemplates = {
             <p style="margin: 0 0 10px 0;">© 2025 KeraGold Pro. All rights reserved.</p>
             <div class="unsubscribe">
               <a href="UNSUBSCRIBE_TOKEN">Unsubscribe</a> | 
-              <a href="mailto:support@keragoldpro.com">Contact Support</a>
+              <a href="mailto:info@keragold-uae.com">Contact Support</a>
             </div>
           </div>
         </div>
@@ -171,7 +171,7 @@ export const emailTemplates = {
             <p style="margin: 0 0 10px 0;">© 2025 KeraGold Pro. All rights reserved.</p>
             <div class="unsubscribe">
               <a href="UNSUBSCRIBE_TOKEN">Unsubscribe</a> | 
-              <a href="mailto:support@keragoldpro.com">Contact Support</a>
+              <a href="mailto:info@keragold-uae.com">Contact Support</a>
             </div>
           </div>
         </div>
@@ -274,7 +274,7 @@ export const emailTemplates = {
             <p style="margin: 0 0 10px 0;">© 2025 KeraGold Pro. All rights reserved.</p>
             <div class="unsubscribe">
               <a href="UNSUBSCRIBE_TOKEN">Unsubscribe</a> | 
-              <a href="mailto:support@keragoldpro.com">Contact Support</a>
+              <a href="mailto:info@keragold-uae.com">Contact Support</a>
             </div>
           </div>
         </div>
@@ -373,7 +373,7 @@ export const emailTemplates = {
             <p style="margin: 0 0 10px 0;">© 2025 KeraGold Pro. All rights reserved.</p>
             <div class="unsubscribe">
               <a href="UNSUBSCRIBE_TOKEN">Unsubscribe</a> | 
-              <a href="mailto:support@keragoldpro.com">Contact Support</a>
+              <a href="mailto:info@keragold-uae.com">Contact Support</a>
             </div>
           </div>
         </div>

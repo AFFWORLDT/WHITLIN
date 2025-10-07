@@ -125,7 +125,7 @@ export default function ReturnsPage() {
                             Contact Customer Service
                           </h3>
                           <p className="text-gray-600 leading-relaxed">
-                            Email us at returns@keragoldpro.com or call (800) KERAGOLD to initiate your return. 
+                            Email us at info@keragold-uae.com or call +971 45 754 785 to initiate your return. 
                             Please have your order number ready.
                           </p>
                         </div>
@@ -208,7 +208,7 @@ export default function ReturnsPage() {
                           <Mail className="w-5 h-5 text-amber-600" />
                           <div>
                             <p className="font-medium text-gray-900">Email Support</p>
-                            <p className="text-sm text-gray-600">returns@keragoldpro.com</p>
+                            <p className="text-sm text-gray-600">info@keragold-uae.com</p>
                           </div>
                         </div>
                         
@@ -216,7 +216,7 @@ export default function ReturnsPage() {
                           <Phone className="w-5 h-5 text-amber-600" />
                           <div>
                             <p className="font-medium text-gray-900">Phone Support</p>
-                            <p className="text-sm text-gray-600">(800) KERAGOLD</p>
+                            <p className="text-sm text-gray-600">+971 45 754 785</p>
                           </div>
                         </div>
                       </div>

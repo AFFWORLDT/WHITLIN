@@ -17,7 +17,7 @@ export function SEOOptimizer({
   description = "Luxury professional hair care products with keratin and hyaluronic acid. Transform your hair with our premium treatment systems.",
   keywords = ["hair care", "keratin", "professional", "luxury", "beauty"],
   image = "/images/keragold-hero.png",
-  url = "https://keragoldpro.com",
+  url = "https://keragold-uae.com",
   type = "website",
   structuredData
 }: SEOProps) {
@@ -88,12 +88,12 @@ export const generateOrganizationStructuredData = () => ({
   "@context": "https://schema.org",
   "@type": "Organization",
   "name": "KeraGold Pro",
-  "url": "https://keragoldpro.com",
-  "logo": "https://keragoldpro.com/images/logo.png",
+  "url": "https://keragold-uae.com",
+  "logo": "https://keragold-uae.com/images/logo.png",
   "description": "Professional hair care products with keratin and hyaluronic acid",
   "contactPoint": {
     "@type": "ContactPoint",
-    "telephone": "+971-XX-XXXXXXX",
+    "telephone": "+971-45-754-785",
     "contactType": "customer service"
   }
 })

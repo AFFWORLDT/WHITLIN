@@ -18,6 +18,7 @@ import {
   ArrowRight
 } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function AboutPage() {
   return (
@@ -342,13 +343,17 @@ export default function AboutPage() {
                 professional-grade hair care at home.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-amber-600 hover:bg-amber-700">
-                  Shop Our Products
-                  <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900">
-                  Contact Us
-                </Button>
+                <Link href="/products">
+                  <Button size="lg" className="bg-amber-600 hover:bg-amber-700">
+                    Shop Our Products
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </Link>
+                <Link href="/contact">
+                  <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900">
+                    Contact Us
+                  </Button>
+                </Link>
               </div>
             </div>
           </div>

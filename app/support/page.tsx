@@ -132,12 +132,12 @@ export default function SupportPage() {
                     <div className="space-y-2 mb-6">
                       <div className="flex items-center justify-center gap-2">
                         <Clock className="w-4 h-4 text-gray-500" />
-                        <span className="text-sm text-gray-600">Mon-Fri 9AM-6PM PST</span>
+                        <span className="text-sm text-gray-600">Sun-Thu 9AM-6PM GST</span>
                       </div>
-                      <p className="text-sm text-gray-500">Sat 10AM-4PM PST</p>
+                      <p className="text-sm text-gray-500">Fri 10AM-4PM GST</p>
                     </div>
                     <Button className="w-full bg-amber-600 hover:bg-amber-700">
-                      Call (800) KERAGOLD
+                      Call +971 45 754 785
                     </Button>
                   </CardContent>
                 </Card>

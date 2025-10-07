@@ -459,7 +459,7 @@ export default function TermsPage() {
                   <div className="p-4 bg-blue-50 rounded-lg">
                     <p className="text-blue-800 text-sm">
                       <strong>Note:</strong> If you believe your intellectual property rights have been violated, 
-                      please contact us immediately at legal@keragoldpro.com.
+                      please contact us immediately at info@keragold-uae.com.
                     </p>
                   </div>
                 </CardContent>
@@ -488,7 +488,7 @@ export default function TermsPage() {
                         <Mail className="w-5 h-5 mr-2 text-amber-600" />
                         Email
                       </h3>
-                      <p className="text-gray-700 mb-2">legal@keragoldpro.com</p>
+                      <p className="text-gray-700 mb-2">info@keragold-uae.com</p>
                       <p className="text-sm text-gray-600">For legal and terms-related inquiries</p>
                     </div>
                     
@@ -497,8 +497,8 @@ export default function TermsPage() {
                         <Phone className="w-5 h-5 mr-2 text-amber-600" />
                         Phone
                       </h3>
-                      <p className="text-gray-700 mb-2">(800) KERAGOLD</p>
-                      <p className="text-sm text-gray-600">Mon-Fri 9AM-6PM PST</p>
+                      <p className="text-gray-700 mb-2">+971 45 754 785</p>
+                      <p className="text-sm text-gray-600">Sun-Thu 9AM-6PM GST</p>
                     </div>
                   </div>
 
@@ -506,8 +506,9 @@ export default function TermsPage() {
                     <p className="text-amber-800 text-sm">
                       <strong>Mailing Address:</strong><br />
                       KeraGold Pro Legal Department<br />
-                      123 Beauty Lane<br />
-                      Los Angeles, CA 90210
+                      Aspin Tower<br />
+                      Sheikh Zayed Road<br />
+                      Dubai, United Arab Emirates
                     </p>
                   </div>
                 </CardContent>

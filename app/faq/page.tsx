@@ -55,13 +55,13 @@ const faqData: FAQItem[] = [
   {
     id: "5",
     question: "How long does shipping take?",
-    answer: "Standard shipping takes 3-5 business days and is free on orders over $75. Express shipping (1-2 days) is available for $12.99, and overnight shipping is available for $24.99. Processing time is 1-2 business days for all orders.",
+    answer: "Standard shipping takes 2-3 business days within UAE and is free on orders over AED 200. Express shipping (next day) is available for AED 25, and same-day delivery is available for AED 50 in Dubai. Processing time is 1-2 business days for all orders.",
     category: "Shipping"
   },
   {
     id: "6",
     question: "Do you ship internationally?",
-    answer: "Currently, we ship to all 50 US states and Canada. International shipping to other countries is coming soon! Sign up for our newsletter to be notified when international shipping becomes available.",
+    answer: "Currently, we ship throughout the United Arab Emirates. International shipping to GCC countries is coming soon! Sign up for our newsletter to be notified when international shipping becomes available.",
     category: "Shipping"
   },
   {
@@ -73,7 +73,7 @@ const faqData: FAQItem[] = [
   {
     id: "8",
     question: "What if my package is damaged or lost?",
-    answer: "All packages are insured. If your package arrives damaged or is lost in transit, please contact us immediately at support@keragoldpro.com or call (800) KERAGOLD. We'll arrange for a replacement or refund at no cost to you.",
+    answer: "All packages are insured. If your package arrives damaged or is lost in transit, please contact us immediately at info@keragold-uae.com or call +971 45 754 785. We'll arrange for a replacement or refund at no cost to you.",
     category: "Shipping"
   },
 
@@ -87,7 +87,7 @@ const faqData: FAQItem[] = [
   {
     id: "10",
     question: "How do I return a product?",
-    answer: "Contact our customer service team at returns@keragoldpro.com or call (800) KERAGOLD to initiate your return. We'll email you a prepaid return shipping label and return authorization number. Package your items securely and drop off at any authorized shipping location.",
+    answer: "Contact our customer service team at info@keragold-uae.com or call +971 45 754 785 to initiate your return. We'll email you a prepaid return shipping label and return authorization number. Package your items securely and drop off at any authorized shipping location.",
     category: "Returns"
   },
   {
@@ -121,7 +121,7 @@ const faqData: FAQItem[] = [
   {
     id: "15",
     question: "How do I contact customer support?",
-    answer: "You can reach our customer support team via email at support@keragoldpro.com, phone at (800) KERAGOLD, or through our contact form. Our team is available Monday-Friday 9 AM-6 PM PST and Saturday 10 AM-4 PM PST.",
+    answer: "You can reach our customer support team via email at info@keragold-uae.com, phone at +971 45 754 785, or through our contact form. Our team is available Sunday-Thursday 9 AM-6 PM GST and Friday 10 AM-4 PM GST.",
     category: "Support"
   },
   {

@@ -14,7 +14,7 @@ const ZOHO_CONFIG_SSL = {
   port: 465, // SSL port
   secure: true, // true for SSL
   auth: {
-    user: 'admin@affworld.io',
+    user: 'info@keragold-uae.com',
     pass: 'Ad34%@hRFd' // Replace with your Zoho App Password
   }
 }
@@ -25,7 +25,7 @@ const ZOHO_CONFIG = {
   port: 587, // TLS port
   secure: false, // false for TLS
   auth: {
-    user: 'admin@affworld.io',
+    user: 'info@keragold-uae.com',
     pass: 'Ad34%@hRFd' // Replace with your Zoho App Password
   },
   tls: {
@@ -35,7 +35,7 @@ const ZOHO_CONFIG = {
 }
 
 // Admin email for notifications
-const ADMIN_EMAIL = 'crm@propfusion.io'
+const ADMIN_EMAIL = 'info@keragold-uae.com'
 
 // Create transporter - Using SSL configuration (Port 465)
 const createTransporter = () => {

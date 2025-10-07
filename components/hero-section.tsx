@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 
 export function HeroSection() {
@@ -25,16 +26,20 @@ export function HeroSection() {
           salon-quality care.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8">
-            Shop Now
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-white text-white hover:bg-white hover:text-black bg-transparent"
-          >
-            View Collections
-          </Button>
+          <Link href="/products">
+            <Button size="lg" className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-8">
+              Shop Now
+            </Button>
+          </Link>
+          <Link href="/collections">
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-white text-white hover:bg-white hover:text-black bg-transparent"
+            >
+              View Collections
+            </Button>
+          </Link>
         </div>
       </div>
     </section>

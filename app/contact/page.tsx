@@ -96,10 +96,10 @@ export default function ContactPage() {
                       Send us an email and we'll respond within 24 hours
                     </p>
                     <a 
-                      href="mailto:support@keragoldpro.com" 
+                      href="mailto:info@keragold-uae.com" 
                       className="text-amber-600 font-medium hover:text-amber-700"
                     >
-                      support@keragoldpro.com
+                      info@keragold-uae.com
                     </a>
                   </CardContent>
                 </Card>
@@ -114,10 +114,10 @@ export default function ContactPage() {
                       Speak directly with our customer support team
                     </p>
                     <a 
-                      href="tel:+1-800-KERAGOLD" 
+                      href="tel:+97145754785" 
                       className="text-amber-600 font-medium hover:text-amber-700"
                     >
-                      +1 (800) KERAGOLD
+                      +971 45 754 785
                     </a>
                   </CardContent>
                 </Card>
@@ -132,8 +132,9 @@ export default function ContactPage() {
                       Our headquarters and customer service center
                     </p>
                     <address className="text-amber-600 font-medium not-italic">
-                      123 Beauty Lane<br />
-                      Los Angeles, CA 90210
+                      Aspin Tower<br />
+                      Sheikh Zayed Road<br />
+                      Dubai, United Arab Emirates
                     </address>
                   </CardContent>
                 </Card>
@@ -251,15 +252,15 @@ export default function ContactPage() {
                     <CardContent className="p-0">
                       <div className="space-y-4">
                         <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                          <span className="font-medium text-gray-700">Monday - Friday</span>
-                          <span className="text-gray-600">9:00 AM - 6:00 PM PST</span>
+                          <span className="font-medium text-gray-700">Sunday - Thursday</span>
+                          <span className="text-gray-600">9:00 AM - 6:00 PM GST</span>
                         </div>
                         <div className="flex justify-between items-center py-2 border-b border-gray-100">
-                          <span className="font-medium text-gray-700">Saturday</span>
-                          <span className="text-gray-600">10:00 AM - 4:00 PM PST</span>
+                          <span className="font-medium text-gray-700">Friday</span>
+                          <span className="text-gray-600">10:00 AM - 4:00 PM GST</span>
                         </div>
                         <div className="flex justify-between items-center py-2">
-                          <span className="font-medium text-gray-700">Sunday</span>
+                          <span className="font-medium text-gray-700">Saturday</span>
                           <span className="text-gray-600">Closed</span>
                         </div>
                       </div>
@@ -315,7 +316,7 @@ export default function ContactPage() {
                       </p>
                       <Button className="w-full bg-amber-600 hover:bg-amber-700">
                         <Phone className="w-5 h-5 mr-2" />
-                        Call Now: +1 (800) KERAGOLD
+                        Call Now: +971 45 754 785
                       </Button>
                     </CardContent>
                   </Card>

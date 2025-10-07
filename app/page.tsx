@@ -17,12 +17,19 @@ const BrandStory = dynamic(() => import("@/components/brand-story").then(mod => 
   loading: () => <div className="h-64 bg-gray-100 animate-pulse rounded-lg" />
 })
 
+const InTheSpotlight = dynamic(() => import("@/components/in-the-spotlight").then(mod => ({ default: mod.InTheSpotlight })), {
+  loading: () => <div className="h-96 bg-gray-100 animate-pulse rounded-lg" />
+})
+
 export default function HomePage() {
   return (
     <div className="min-h-screen">
       <Header />
       <main>
         <HeroSection />
+        <Suspense fallback={<div className="h-96 bg-gray-100 animate-pulse rounded-lg" />}>
+          <InTheSpotlight />
+        </Suspense>
         <Suspense fallback={<div className="h-64 bg-gray-100 animate-pulse rounded-lg" />}>
           <ProductCategories />
         </Suspense>

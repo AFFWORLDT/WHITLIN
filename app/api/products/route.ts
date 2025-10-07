@@ -14,12 +14,13 @@ export async function GET(request: NextRequest) {
     const sort = searchParams.get('sort')
     const minPrice = searchParams.get('minPrice')
     const maxPrice = searchParams.get('maxPrice')
+    const featured = searchParams.get('featured')
     const page = parseInt(searchParams.get('page') || '1')
     const limit = parseInt(searchParams.get('limit') || '10')
 
     // Create cache key
     const cacheKey = cacheKeys.products(
-      `${category || 'all'}-${search || ''}-${sort || 'newest'}-${minPrice || ''}-${maxPrice || ''}-${page}-${limit}`
+      `${category || 'all'}-${search || ''}-${sort || 'newest'}-${minPrice || ''}-${maxPrice || ''}-${featured || 'false'}-${page}-${limit}`
     )
 
     // Try to get from cache first
@@ -28,6 +29,15 @@ export async function GET(request: NextRequest) {
 
     // Build filter object
     const filter: any = { status: 'active' }
+
+    // Handle featured products
+    if (featured === 'true') {
+      filter.$or = [
+        { isBestSeller: true },
+        { isNewProduct: true },
+        { isFeatured: true }
+      ]
+    }
 
     if (category && category !== 'all') {
       // Find category by slug or name
@@ -44,11 +54,20 @@ export async function GET(request: NextRequest) {
     }
 
     if (search) {
-      filter.$or = [
-        { name: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } },
-        { sku: { $regex: search, $options: 'i' } }
-      ]
+      const searchFilter = {
+        $or: [
+          { name: { $regex: search, $options: 'i' } },
+          { description: { $regex: search, $options: 'i' } },
+          { sku: { $regex: search, $options: 'i' } }
+        ]
+      }
+      
+      if (featured === 'true') {
+        filter.$and = [filter.$or, searchFilter]
+        delete filter.$or
+      } else {
+        filter.$or = searchFilter.$or
+      }
     }
 
     if (minPrice || maxPrice) {

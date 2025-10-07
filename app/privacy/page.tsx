@@ -441,7 +441,7 @@ export default function PrivacyPage() {
                         <Mail className="w-5 h-5 mr-2 text-amber-600" />
                         Email
                       </h3>
-                      <p className="text-gray-700 mb-2">privacy@keragoldpro.com</p>
+                      <p className="text-gray-700 mb-2">info@keragold-uae.com</p>
                       <p className="text-sm text-gray-600">We'll respond within 48 hours</p>
                     </div>
                     
@@ -450,15 +450,15 @@ export default function PrivacyPage() {
                         <Phone className="w-5 h-5 mr-2 text-amber-600" />
                         Phone
                       </h3>
-                      <p className="text-gray-700 mb-2">(800) KERAGOLD</p>
-                      <p className="text-sm text-gray-600">Mon-Fri 9AM-6PM PST</p>
+                      <p className="text-gray-700 mb-2">+971 45 754 785</p>
+                      <p className="text-sm text-gray-600">Sun-Thu 9AM-6PM GST</p>
                     </div>
                   </div>
 
                   <div className="mt-8 p-4 bg-blue-50 rounded-lg">
                     <p className="text-blue-800 text-sm">
                       <strong>Data Protection Officer:</strong> For EU residents, you can contact our Data Protection Officer 
-                      at dpo@keragoldpro.com for any privacy-related concerns.
+                      at info@keragold-uae.com for any privacy-related concerns.
                     </p>
                   </div>
                 </CardContent>
