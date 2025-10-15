@@ -49,6 +49,9 @@ export const Header = memo(function Header() {
             <Link href="/products" className="text-foreground hover:text-primary transition-colors">
               Products
             </Link>
+            <Link href="/showcase" className="text-foreground hover:text-primary transition-colors font-semibold">
+              Premium Collections
+            </Link>
             <Link href="/collections" className="text-foreground hover:text-primary transition-colors">
               Collections
             </Link>
@@ -124,6 +127,9 @@ export const Header = memo(function Header() {
             <nav className="flex flex-col space-y-4">
               <Link href="/products" className="text-foreground hover:text-primary transition-colors">
                 Products
+              </Link>
+              <Link href="/showcase" className="text-foreground hover:text-primary transition-colors font-semibold">
+                Premium Collections
               </Link>
               <Link href="/collections" className="text-foreground hover:text-primary transition-colors">
                 Collections

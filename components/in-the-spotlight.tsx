@@ -203,30 +203,32 @@ export function InTheSpotlight() {
                 <div key={product._id} className="flex-shrink-0 w-72">
                   <Card className="group bg-white shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-gray-100 rounded-none">
                     {/* Product Image - Compact */}
-                    <div className="relative h-48 bg-gray-50 overflow-hidden">
-                      {product.images && product.images.length > 0 ? (
-                        <Image
-                          src={product.images[0]}
-                          alt={product.name}
-                          fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center">
-                          <div className="text-center">
-                            <div className="text-4xl text-gray-400 mb-2">💄</div>
-                            <p className="text-gray-500 text-xs">No image</p>
+                    <Link href={`/products/${product._id}`}>
+                      <div className="relative h-48 bg-gray-50 overflow-hidden cursor-pointer">
+                        {product.images && product.images.length > 0 ? (
+                          <Image
+                            src={product.images[0]}
+                            alt={product.name}
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center">
+                            <div className="text-center">
+                              <div className="text-4xl text-gray-400 mb-2">💄</div>
+                              <p className="text-gray-500 text-xs">No image</p>
+                            </div>
                           </div>
-                        </div>
-                      )}
-                      
-                      {/* Badge - Compact */}
-                      {getProductBadge(product) && (
-                        <Badge className="absolute top-2 left-2 bg-gray-800 text-white border-0 text-xs px-2 py-1 rounded-none">
-                          {getProductBadge(product)}
-                        </Badge>
-                      )}
-                    </div>
+                        )}
+                        
+                        {/* Badge - Compact */}
+                        {getProductBadge(product) && (
+                          <Badge className="absolute top-2 left-2 bg-gray-800 text-white border-0 text-xs px-2 py-1 rounded-none">
+                            {getProductBadge(product)}
+                          </Badge>
+                        )}
+                      </div>
+                    </Link>
 
                     <CardContent className="p-4">
                       {/* Brand - Compact */}
@@ -235,9 +237,11 @@ export function InTheSpotlight() {
                       </div>
                       
                       {/* Product Name - Compact */}
-                      <h3 className="font-bold text-sm text-gray-900 mb-2 line-clamp-2 leading-tight">
-                        {product.name}
-                      </h3>
+                      <Link href={`/products/${product._id}`}>
+                        <h3 className="font-bold text-sm text-gray-900 mb-2 line-clamp-2 leading-tight cursor-pointer hover:text-gray-700 transition-colors">
+                          {product.name}
+                        </h3>
+                      </Link>
                       
                       {/* Price - Compact */}
                       <div className="flex items-center gap-2 mb-3">
