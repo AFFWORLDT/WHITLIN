@@ -12,7 +12,6 @@ import { ArrowLeft, CreditCard, Truck, Loader2 } from "lucide-react"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
 
@@ -154,7 +153,6 @@ export default function CheckoutPage() {
   if (!user || state.items.length === 0) {
     return (
       <div className="min-h-screen">
-        <Header />
         <div className="flex justify-center items-center h-64">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
@@ -165,7 +163,6 @@ export default function CheckoutPage() {
 
   return (
     <div className="min-h-screen">
-      <Header />
       
       <main className="container mx-auto px-4 py-8">
         <div className="flex items-center gap-4 mb-8">

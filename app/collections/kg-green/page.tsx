@@ -1,4 +1,3 @@
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LuxuryProductGallery } from "@/components/luxury-product-gallery"
 import { Sparkles } from "lucide-react"
@@ -74,7 +73,6 @@ const greenProducts = [
 export default function KGREENCollectionPage() {
   return (
     <div className="min-h-screen">
-      <Header />
       <LuxuryProductGallery
         categoryId="green"
         categoryName="KG GREEN Collection"

@@ -1,4 +1,3 @@
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LuxuryProductGallery } from "@/components/luxury-product-gallery"
 import { Zap } from "lucide-react"
@@ -48,7 +47,6 @@ const abProducts = [
 export default function ABCollectionPage() {
   return (
     <div className="min-h-screen">
-      <Header />
       <LuxuryProductGallery
         categoryId="ab"
         categoryName="AB Collection"

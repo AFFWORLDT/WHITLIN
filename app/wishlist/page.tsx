@@ -16,7 +16,6 @@ import {
   Star,
   Eye
 } from "lucide-react"
-import { Header } from "@/components/header"
 import { toast } from "sonner"
 import Link from "next/link"
 import Image from "next/image"
@@ -111,7 +110,6 @@ export default function WishlistPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-center justify-center py-12">
@@ -129,7 +127,6 @@ export default function WishlistPage() {
   if (error) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-6xl mx-auto">
             <div className="flex items-center justify-center py-12">
@@ -151,7 +148,6 @@ export default function WishlistPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">

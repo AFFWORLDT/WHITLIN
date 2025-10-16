@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import { CartProvider } from "@/lib/cart-context"
 import { AuthProvider } from "@/lib/auth-context"
+import { LayoutProvider } from "@/components/layout-provider"
 import { Toaster } from "sonner"
 import { PerformanceMonitor } from "@/components/performance-monitor"
 import { ErrorBoundary } from "@/components/error-boundary"
@@ -78,7 +79,9 @@ export default function RootLayout({
         <ErrorBoundary>
           <AuthProvider>
             <CartProvider>
-              <Suspense fallback={null}>{children}</Suspense>
+              <LayoutProvider>
+                <Suspense fallback={null}>{children}</Suspense>
+              </LayoutProvider>
             </CartProvider>
           </AuthProvider>
         </ErrorBoundary>

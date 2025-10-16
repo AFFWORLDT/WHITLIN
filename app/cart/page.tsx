@@ -15,7 +15,6 @@ import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, CreditCard, Truck, MapPin,
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
 interface ShippingAddress {
@@ -360,7 +359,6 @@ export default function CartPage() {
   if (state.items.length === 0) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-2xl mx-auto text-center">
             <div className="mb-8">
@@ -385,7 +383,6 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}

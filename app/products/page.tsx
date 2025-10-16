@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input"
 import { Star, ShoppingCart, Filter, Grid, List, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react"
 import { useCart } from "@/lib/cart-context"
 import { toast } from "sonner"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Loading, ProductSkeleton } from "@/components/ui/loading"
 import { UniversalProductGridImage } from "@/components/ui/universal-image"
@@ -202,7 +201,6 @@ export default function ProductsPage() {
   if (loading) {
     return (
       <div className="min-h-screen">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {Array.from({ length: 8 }).map((_, index) => (
@@ -218,7 +216,6 @@ export default function ProductsPage() {
   if (error) {
     return (
       <div className="min-h-screen">
-        <Header />
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-destructive mb-4">Error Loading Products</h1>
@@ -233,7 +230,6 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen">
-      <Header />
       
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">

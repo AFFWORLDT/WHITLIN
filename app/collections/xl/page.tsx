@@ -1,4 +1,3 @@
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { LuxuryProductGallery } from "@/components/luxury-product-gallery"
 import { Crown } from "lucide-react"
@@ -74,7 +73,6 @@ const xlProducts = [
 export default function XLCollectionPage() {
   return (
     <div className="min-h-screen">
-      <Header />
       <LuxuryProductGallery
         categoryId="xl"
         categoryName="XL Collection"

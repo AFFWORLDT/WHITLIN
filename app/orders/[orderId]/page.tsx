@@ -28,7 +28,6 @@ import {
 } from "lucide-react"
 import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
 interface OrderItem {
@@ -202,7 +201,6 @@ export default function OrderDetailsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             <div className="text-center py-12">
@@ -219,7 +217,6 @@ export default function OrderDetailsPage() {
   if (error || !order) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             <div className="text-center py-12">
@@ -244,7 +241,6 @@ export default function OrderDetailsPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}

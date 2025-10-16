@@ -10,7 +10,6 @@ import { Star, ShoppingCart, Heart, Share2, Truck, Shield, RotateCcw, Loader2 } 
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { UniversalProductImage, UniversalProductThumbnail } from "@/components/ui/universal-image"
 
@@ -237,7 +236,6 @@ export default function ProductDetailsPage() {
   if (loading) {
     return (
       <div className="min-h-screen">
-        <Header />
         <div className="flex justify-center items-center h-64">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
@@ -249,7 +247,6 @@ export default function ProductDetailsPage() {
   if (error || !product) {
     return (
       <div className="min-h-screen">
-        <Header />
         <div className="container mx-auto px-4 py-16">
           <div className="text-center">
             <h1 className="text-2xl font-bold text-destructive mb-4">Product Not Found</h1>
@@ -264,7 +261,6 @@ export default function ProductDetailsPage() {
 
   return (
     <div className="min-h-screen">
-      <Header />
       
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">

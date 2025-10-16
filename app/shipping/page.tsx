@@ -1,6 +1,5 @@
 "use client"
 
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -18,7 +17,6 @@ import {
 export default function ShippingPage() {
   return (
     <div className="min-h-screen">
-      <Header />
       
       <main>
         {/* Hero Section */}

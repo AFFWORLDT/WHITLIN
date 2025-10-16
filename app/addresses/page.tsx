@@ -20,7 +20,6 @@ import {
   Building,
   Check
 } from "lucide-react"
-import { Header } from "@/components/header"
 import { toast } from "sonner"
 import Link from "next/link"
 
@@ -233,7 +232,6 @@ export default function AddressesPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-center py-12">
@@ -251,7 +249,6 @@ export default function AddressesPage() {
   if (error) {
     return (
       <div className="min-h-screen bg-background">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             <div className="flex items-center justify-center py-12">
@@ -273,7 +270,6 @@ export default function AddressesPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">

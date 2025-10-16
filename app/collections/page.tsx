@@ -1,7 +1,6 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -108,7 +107,6 @@ export default function CollectionsPage() {
 
   return (
     <div className="min-h-screen">
-      <Header />
       
       <main>
         {/* Hero Section */}

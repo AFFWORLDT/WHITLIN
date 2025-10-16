@@ -1,6 +1,5 @@
 import { Suspense } from "react"
 import dynamic from "next/dynamic"
-import { Header } from "@/components/header"
 import HeroSlider from "@/components/hero-slider"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
@@ -27,7 +26,6 @@ const InTheSpotlight = dynamic(() => import("@/components/in-the-spotlight").the
 export default function HomePage() {
   return (
     <div className="min-h-screen">
-      <Header />
       <main>
         <HeroSlider />
         <Suspense fallback={<div className="h-96 bg-gray-100 animate-pulse rounded-lg" />}>

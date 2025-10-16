@@ -18,7 +18,6 @@ import {
 import Link from "next/link"
 import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
-import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 
 interface Order {
@@ -198,7 +197,6 @@ export default function OrderTrackingPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             <div className="text-center py-12">
@@ -215,7 +213,6 @@ export default function OrderTrackingPage() {
   if (error || !order) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <Header />
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-4xl mx-auto">
             <div className="text-center py-12">
@@ -240,7 +237,6 @@ export default function OrderTrackingPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header />
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
           {/* Header */}
