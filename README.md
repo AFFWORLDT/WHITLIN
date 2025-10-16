@@ -1,4 +1,4 @@
- # KeraGold Pro Ecommerce Platform
+  # KeraGold Pro Ecommerce Platform
  
 एक complete ecommerce platform जो KeraGold Pro hair care products के लिए बनाया गया है। यह platform Next.js 15, React 19, और Tailwind CSS पर बना है।
 
