@@ -55,6 +55,9 @@ export const Header = memo(function Header() {
             <Link href="/collections" className="text-foreground hover:text-primary transition-colors">
               Collections
             </Link>
+            <Link href="/dashboard" className="text-foreground hover:text-primary transition-colors">
+              Dashboard
+            </Link>
             <Link href="/about" className="text-foreground hover:text-primary transition-colors">
               About
             </Link>
@@ -133,6 +136,9 @@ export const Header = memo(function Header() {
               </Link>
               <Link href="/collections" className="text-foreground hover:text-primary transition-colors">
                 Collections
+              </Link>
+              <Link href="/dashboard" className="text-foreground hover:text-primary transition-colors">
+                Dashboard
               </Link>
               <Link href="/about" className="text-foreground hover:text-primary transition-colors">
                 About
