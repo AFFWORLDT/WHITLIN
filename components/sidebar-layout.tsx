@@ -1,6 +1,5 @@
 "use client"
 
-import { useState } from "react"
 import { CollapsibleSidebar } from "@/components/collapsible-sidebar"
 import { useAuth } from "@/lib/auth-context"
 import { Button } from "@/components/ui/button"
@@ -12,10 +11,13 @@ interface SidebarLayoutProps {
 
 export function SidebarLayout({ children }: SidebarLayoutProps) {
   const { user, logout } = useAuth()
-  const [isCollapsed, setIsCollapsed] = useState(false)
 
   const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed)
+    // Find and click the sidebar toggle button
+    const toggleButton = document.querySelector('[title*="Open Sidebar"], [title*="Close Sidebar"]') as HTMLButtonElement
+    if (toggleButton) {
+      toggleButton.click()
+    }
   }
 
   return (
@@ -30,17 +32,8 @@ export function SidebarLayout({ children }: SidebarLayoutProps) {
           className="bg-white shadow-lg hover:bg-gray-50 border-2"
           onClick={toggleSidebar}
         >
-          {isCollapsed ? (
-            <>
-              <PanelLeftOpen className="h-5 w-5 mr-2" />
-              Open Sidebar
-            </>
-          ) : (
-            <>
-              <PanelLeftClose className="h-5 w-5 mr-2" />
-              Close Sidebar
-            </>
-          )}
+          <PanelLeftClose className="h-5 w-5 mr-2" />
+          Toggle Sidebar
         </Button>
       </div>
 

@@ -190,27 +190,23 @@ export function InTheSpotlight() {
             </>
           )}
 
-          {/* Product Grid - Compact Spacing */}
-          <div className="overflow-hidden">
-            <div 
-              className="flex gap-2 transition-transform duration-300 ease-in-out"
-              style={{ 
-                transform: `translateX(-${currentIndex * (280 + 8)}px)`,
-                width: `${products.length * (280 + 8)}px`
-              }}
-            >
-              {products.map((product, index) => (
-                <div key={product._id} className="flex-shrink-0 w-72">
+        {/* Product Grid - Mobile First Design */}
+        <div className="overflow-hidden">
+          <div className="flex gap-2 md:gap-4 overflow-x-auto scrollbar-hide">
+            {products.map((product, index) => (
+              <div key={product._id} className="flex-shrink-0 w-60 md:w-72">
                   <Card className="group bg-white shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-gray-100 rounded-none">
                     {/* Product Image - Compact */}
                     <Link href={`/products/${product._id}`}>
-                      <div className="relative h-48 bg-gray-50 overflow-hidden cursor-pointer">
+                      <div className="relative h-40 md:h-48 bg-gray-50 overflow-hidden cursor-pointer">
                         {product.images && product.images.length > 0 ? (
                           <Image
                             src={product.images[0]}
                             alt={product.name}
                             fill
                             className="object-cover group-hover:scale-105 transition-transform duration-300"
+                            sizes="(max-width: 768px) 240px, 288px"
+                            priority={index < 2}
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center">
@@ -287,7 +283,7 @@ export function InTheSpotlight() {
           </div>
         </div>
 
-        {/* Dots Indicator - Compact */}
+        {/* Dots Indicator */}
         {products.length > 4 && (
           <div className="flex justify-center mt-6 gap-1">
             {Array.from({ length: Math.max(1, products.length - 3) }).map((_, index) => (

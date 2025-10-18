@@ -1,5 +1,4 @@
 import { SidebarLayout } from "@/components/sidebar-layout"
-import { SidebarToggle } from "@/components/sidebar-toggle"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Crown, Sparkles, Star, Gem } from "lucide-react"
@@ -7,7 +6,6 @@ import { Crown, Sparkles, Star, Gem } from "lucide-react"
 export default function SidebarDemoPage() {
   return (
     <SidebarLayout>
-      <SidebarToggle />
       <div className="p-6">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
