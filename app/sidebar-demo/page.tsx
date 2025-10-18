@@ -42,12 +42,12 @@ export default function SidebarDemoPage() {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Crown className="w-5 h-5 mr-2 text-yellow-500" />
-                  Desktop Collapse
+                  Desktop Minimize/Expand
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  Click the chevron button in the sidebar header to collapse/expand the sidebar on desktop.
+                  Use the minimize (⊖) and expand (⊞) buttons in the sidebar header, or the floating expand button when minimized.
                 </p>
               </CardContent>
             </Card>
@@ -92,7 +92,7 @@ export default function SidebarDemoPage() {
                   <div className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
                   <div>
                     <h4 className="font-semibold">Desktop Experience</h4>
-                    <p className="text-gray-600">Look for the chevron button (← or →) in the top-right corner of the sidebar to collapse/expand it.</p>
+                    <p className="text-gray-600">Use the minimize (⊖) and expand (⊞) buttons in the sidebar header, or keyboard shortcuts: Ctrl+M (minimize), Ctrl+E (expand), Ctrl+B (toggle).</p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">

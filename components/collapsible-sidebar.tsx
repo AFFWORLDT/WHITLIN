@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
@@ -18,7 +18,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Menu,
-  X
+  X,
+  Minimize2,
+  Maximize2
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -31,6 +33,14 @@ export function CollapsibleSidebar({ user, logout }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const [isMobileOpen, setIsMobileOpen] = useState(false)
 
+  const minimizeSidebar = () => {
+    setIsCollapsed(true)
+  }
+
+  const expandSidebar = () => {
+    setIsCollapsed(false)
+  }
+
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed)
   }
@@ -38,6 +48,30 @@ export function CollapsibleSidebar({ user, logout }: SidebarProps) {
   const toggleMobileSidebar = () => {
     setIsMobileOpen(!isMobileOpen)
   }
+
+  // Keyboard shortcuts
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Ctrl/Cmd + B to toggle sidebar
+      if ((e.ctrlKey || e.metaKey) && e.key === 'b') {
+        e.preventDefault()
+        toggleSidebar()
+      }
+      // Ctrl/Cmd + M to minimize
+      if ((e.ctrlKey || e.metaKey) && e.key === 'm') {
+        e.preventDefault()
+        minimizeSidebar()
+      }
+      // Ctrl/Cmd + E to expand
+      if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+        e.preventDefault()
+        expandSidebar()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [])
 
   const navigationItems = [
     { href: "/", label: "Home", icon: Home },
@@ -96,17 +130,48 @@ export function CollapsibleSidebar({ user, logout }: SidebarProps) {
               </Link>
             )}
             
-            {/* Collapse Button - Desktop Only */}
-            <Button
-              variant="ghost"
-              size="icon"
-              className="hidden md:flex text-white hover:bg-slate-700"
-              onClick={toggleSidebar}
-            >
-              {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-            </Button>
+            {/* Logo when collapsed */}
+            {isCollapsed && (
+              <Link href="/" className="flex items-center justify-center w-full">
+                <div className="relative w-8 h-8">
+                  <Image
+                    src="/images/logonew.png"
+                    alt="KeraGold PRO Logo"
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+              </Link>
+            )}
+            
+            {/* Desktop Controls */}
+            <div className="hidden md:flex items-center space-x-1">
+              {!isCollapsed && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-white hover:bg-slate-700"
+                  onClick={minimizeSidebar}
+                  title="Minimize Sidebar (Ctrl+M)"
+                >
+                  <Minimize2 className="h-4 w-4" />
+                </Button>
+              )}
+              {isCollapsed && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-white hover:bg-slate-700"
+                  onClick={expandSidebar}
+                  title="Expand Sidebar (Ctrl+E)"
+                >
+                  <Maximize2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
 
-            {/* Close Button - Mobile Only */}
+            {/* Mobile Close Button */}
             <Button
               variant="ghost"
               size="icon"
@@ -259,6 +324,19 @@ export function CollapsibleSidebar({ user, logout }: SidebarProps) {
         "transition-all duration-300 ease-in-out",
         isCollapsed ? "md:ml-16" : "md:ml-64"
       )} />
+
+      {/* Floating Expand Button - Only when collapsed on desktop */}
+      {isCollapsed && (
+        <Button
+          variant="outline"
+          size="icon"
+          className="fixed top-20 left-2 z-30 hidden md:flex bg-white shadow-lg hover:bg-gray-50"
+          onClick={expandSidebar}
+          title="Expand Sidebar (Ctrl+E)"
+        >
+          <Maximize2 className="h-4 w-4" />
+        </Button>
+      )}
     </>
   )
 }
