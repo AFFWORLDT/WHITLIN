@@ -43,13 +43,18 @@ export function InTheSpotlight() {
         const response = await fetch('/api/products?featured=true&limit=8')
         const data = await response.json()
         
+        console.log('API Response:', data)
+        
         if (data.success) {
+          console.log('Products with images:', data.data.map(p => ({ name: p.name, images: p.images })))
           setProducts(data.data)
         } else {
           // Fallback to regular products if no featured products
           const fallbackResponse = await fetch('/api/products?limit=8&sort=newest')
           const fallbackData = await fallbackResponse.json()
+          console.log('Fallback Response:', fallbackData)
           if (fallbackData.success) {
+            console.log('Fallback Products with images:', fallbackData.data.map(p => ({ name: p.name, images: p.images })))
             setProducts(fallbackData.data)
           }
         }
@@ -207,12 +212,22 @@ export function InTheSpotlight() {
                             className="object-cover group-hover:scale-105 transition-transform duration-300"
                             sizes="(max-width: 768px) 240px, 288px"
                             priority={index < 2}
+                            onError={(e) => {
+                              console.error('Image failed to load for product:', product.name, 'URL:', product.images[0])
+                              // Try to load a fallback image
+                              const target = e.target as HTMLImageElement
+                              target.src = '/images/placeholder.jpg'
+                            }}
+                            onLoad={() => {
+                              console.log('Image loaded successfully for product:', product.name)
+                            }}
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center">
+                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
                             <div className="text-center">
                               <div className="text-4xl text-gray-400 mb-2">💄</div>
-                              <p className="text-gray-500 text-xs">No image</p>
+                              <p className="text-gray-500 text-xs font-medium">KeraGold Pro</p>
+                              <p className="text-gray-400 text-xs">Premium Hair Care</p>
                             </div>
                           </div>
                         )}
