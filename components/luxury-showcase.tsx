@@ -221,7 +221,7 @@ export function LuxuryShowcase() {
             {luxuryCategories.map((category) => (
               <Card 
                 key={category.id}
-                className="group hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-200 bg-white/95 backdrop-blur-sm h-[500px] flex flex-col rounded-xl shadow-lg hover:shadow-2xl"
+                className="group hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-200 bg-white/95 backdrop-blur-sm h-[520px] flex flex-col rounded-xl shadow-lg hover:shadow-2xl"
               >
                 <div className={`relative h-48 ${category.color} overflow-hidden flex-shrink-0`}>
                   <Image
@@ -246,16 +246,16 @@ export function LuxuryShowcase() {
                   </div>
                 </div>
 
-                <CardContent className="p-6 flex flex-col flex-grow">
-                  <h3 className="font-serif text-xl font-bold text-gray-900 mb-3 line-clamp-1">
+                <CardContent className="p-6 flex flex-col flex-grow min-h-0">
+                  <h3 className="font-serif text-xl font-bold text-gray-900 mb-3 line-clamp-1 h-8 flex items-center">
                     {category.name}
                   </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-2 flex-grow">
+                  <p className="text-gray-600 mb-4 line-clamp-3 h-16 flex items-start">
                     {category.description}
                   </p>
                   
                   {/* Features */}
-                  <div className="flex flex-wrap gap-2 mb-4">
+                  <div className="flex flex-wrap gap-2 mb-4 h-12 overflow-hidden">
                     {category.features.slice(0, 3).map((feature, index) => (
                       <Badge 
                         key={index}
@@ -267,14 +267,16 @@ export function LuxuryShowcase() {
                     ))}
                   </div>
 
-                  <Link href={`/collections/${category.id}`}>
-                    <Button 
-                      className="w-full bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white font-semibold"
-                    >
-                      Explore Collection
-                      <ChevronRight className="w-4 h-4 ml-2" />
-                    </Button>
-                  </Link>
+                  <div className="mt-auto">
+                    <Link href={`/collections/${category.id}`}>
+                      <Button 
+                        className="w-full bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white font-semibold"
+                      >
+                        Explore Collection
+                        <ChevronRight className="w-4 h-4 ml-2" />
+                      </Button>
+                    </Link>
+                  </div>
                 </CardContent>
               </Card>
             ))}
