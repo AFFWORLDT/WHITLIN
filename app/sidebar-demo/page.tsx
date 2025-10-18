@@ -2,11 +2,13 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { SidebarLayout } from "@/components/sidebar-layout"
+import { SidebarToggle } from "@/components/sidebar-toggle"
 import { Crown, Sparkles, ArrowRight } from "lucide-react"
 
 export default function SidebarDemoPage() {
   return (
     <SidebarLayout>
+      <SidebarToggle />
       <div className="p-6">
         <div className="max-w-4xl mx-auto">
           {/* Hero Section */}

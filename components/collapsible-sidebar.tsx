@@ -20,7 +20,9 @@ import {
   Menu,
   X,
   Minimize2,
-  Maximize2
+  Maximize2,
+  PanelLeftClose,
+  PanelLeftOpen
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
@@ -147,6 +149,18 @@ export function CollapsibleSidebar({ user, logout }: SidebarProps) {
             
             {/* Desktop Controls */}
             <div className="hidden md:flex items-center space-x-1">
+              {/* Main Toggle Button */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-white hover:bg-slate-700"
+                onClick={toggleSidebar}
+                title={isCollapsed ? "Open Sidebar (Ctrl+B)" : "Close Sidebar (Ctrl+B)"}
+              >
+                {isCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+              </Button>
+              
+              {/* Additional Controls */}
               {!isCollapsed && (
                 <Button
                   variant="ghost"
@@ -156,17 +170,6 @@ export function CollapsibleSidebar({ user, logout }: SidebarProps) {
                   title="Minimize Sidebar (Ctrl+M)"
                 >
                   <Minimize2 className="h-4 w-4" />
-                </Button>
-              )}
-              {isCollapsed && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-white hover:bg-slate-700"
-                  onClick={expandSidebar}
-                  title="Expand Sidebar (Ctrl+E)"
-                >
-                  <Maximize2 className="h-4 w-4" />
                 </Button>
               )}
             </div>
@@ -325,18 +328,16 @@ export function CollapsibleSidebar({ user, logout }: SidebarProps) {
         isCollapsed ? "md:ml-16" : "md:ml-64"
       )} />
 
-      {/* Floating Expand Button - Only when collapsed on desktop */}
-      {isCollapsed && (
-        <Button
-          variant="outline"
-          size="icon"
-          className="fixed top-20 left-2 z-30 hidden md:flex bg-white shadow-lg hover:bg-gray-50"
-          onClick={expandSidebar}
-          title="Expand Sidebar (Ctrl+E)"
-        >
-          <Maximize2 className="h-4 w-4" />
-        </Button>
-      )}
+      {/* Floating Toggle Button - Always visible on desktop */}
+      <Button
+        variant="outline"
+        size="icon"
+        className="fixed top-20 left-2 z-30 hidden md:flex bg-white shadow-lg hover:bg-gray-50"
+        onClick={toggleSidebar}
+        title={isCollapsed ? "Open Sidebar" : "Close Sidebar"}
+      >
+        {isCollapsed ? <PanelLeftOpen className="h-4 w-4" /> : <PanelLeftClose className="h-4 w-4" />}
+      </Button>
     </>
   )
 }
