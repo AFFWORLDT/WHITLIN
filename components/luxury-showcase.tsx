@@ -152,7 +152,6 @@ const luxuryCategories: ProductCategory[] = [
 ]
 
 export function LuxuryShowcase() {
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
 
   return (
@@ -218,14 +217,13 @@ export function LuxuryShowcase() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {luxuryCategories.map((category) => (
               <Card 
                 key={category.id}
-                className="group hover:shadow-2xl transition-all duration-500 overflow-hidden border-0 bg-white/80 backdrop-blur-sm"
-                onClick={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
+                className="group hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-200 bg-white/95 backdrop-blur-sm h-[500px] flex flex-col rounded-xl shadow-lg hover:shadow-2xl"
               >
-                <div className={`relative h-64 ${category.color} overflow-hidden`}>
+                <div className={`relative h-48 ${category.color} overflow-hidden flex-shrink-0`}>
                   <Image
                     src={category.groupImage}
                     alt={category.name}
@@ -248,17 +246,17 @@ export function LuxuryShowcase() {
                   </div>
                 </div>
 
-                <CardContent className="p-6">
-                  <h3 className="font-serif text-2xl font-bold text-gray-900 mb-3">
+                <CardContent className="p-6 flex flex-col flex-grow">
+                  <h3 className="font-serif text-xl font-bold text-gray-900 mb-3 line-clamp-1">
                     {category.name}
                   </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-2">
+                  <p className="text-gray-600 mb-4 line-clamp-2 flex-grow">
                     {category.description}
                   </p>
                   
                   {/* Features */}
                   <div className="flex flex-wrap gap-2 mb-4">
-                    {category.features.map((feature, index) => (
+                    {category.features.slice(0, 3).map((feature, index) => (
                       <Badge 
                         key={index}
                         variant="secondary"
@@ -272,33 +270,12 @@ export function LuxuryShowcase() {
                   <Link href={`/collections/${category.id}`}>
                     <Button 
                       className="w-full bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white font-semibold"
-                      onClick={(e) => e.stopPropagation()}
                     >
                       Explore Collection
                       <ChevronRight className="w-4 h-4 ml-2" />
                     </Button>
                   </Link>
                 </CardContent>
-
-                {/* Expanded View */}
-                {selectedCategory === category.id && (
-                  <div className="p-6 border-t bg-gradient-to-r from-gray-50 to-white">
-                    <h4 className="font-semibold text-gray-900 mb-4">Products in this Collection:</h4>
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                      {category.products.map((product, index) => (
-                        <div key={index} className="relative group">
-                          <Image
-                            src={product}
-                            alt={`${category.name} Product ${index + 1}`}
-                            width={200}
-                            height={200}
-                            className="w-full h-32 object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </Card>
             ))}
           </div>
