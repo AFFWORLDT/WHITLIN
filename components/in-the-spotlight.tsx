@@ -45,9 +45,11 @@ export function InTheSpotlight() {
         const data = await response.json()
         
         console.log('API Response:', data)
+        console.log('Products received:', data.data?.length || 0)
+        console.log('First product images:', data.data?.[0]?.images)
         
         if (data.success) {
-          console.log('Products with images:', data.data.map(p => ({ name: p.name, images: p.images })))
+          console.log('Products with images:', data.data.map(p => ({ name: p.name, images: p.images, hasImages: p.images && p.images.length > 0 })))
           setProducts(data.data)
         } else {
           // Fallback to regular products if no featured products
@@ -205,13 +207,22 @@ export function InTheSpotlight() {
                     {/* Product Image - Compact */}
                     <Link href={`/products/${product._id}`}>
                       <div className="relative h-40 md:h-48 bg-gray-50 overflow-hidden cursor-pointer">
-                        {product.images && product.images.length > 0 ? (
-                          <MobileProductImage
-                            src={product.images[0]}
-                            alt={product.name}
-                            className="group-hover:scale-105 transition-transform duration-300"
-                            priority={index < 2}
-                          />
+                        {product.images && product.images.length > 0 && product.images[0] ? (
+                          <div className="relative w-full h-full">
+                            <img
+                              src={product.images[0]}
+                              alt={product.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                              onError={(e) => {
+                                console.error('Image failed to load for product:', product.name, 'URL:', product.images[0])
+                                const target = e.target as HTMLImageElement
+                                target.src = '/placeholder.jpg'
+                              }}
+                              onLoad={() => {
+                                console.log('Image loaded successfully for product:', product.name)
+                              }}
+                            />
+                          </div>
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
                             <div className="text-center">
