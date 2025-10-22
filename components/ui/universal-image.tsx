@@ -95,7 +95,7 @@ export function UniversalImage({
   const finalPriority = priority || (isMobile && index < 4)
 
   // Fallback for broken images
-  if (hasError && imageSrc === '/placeholder.svg') {
+  if (hasError && imageSrc === '/placeholder.jpg') {
     return (
       <div className={`flex items-center justify-center bg-gray-100 ${className}`}>
         <div className="text-center p-4">

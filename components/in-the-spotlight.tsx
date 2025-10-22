@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import { MobileProductImage } from "@/components/ui/mobile-optimized-image"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Star, ChevronLeft, ChevronRight, ShoppingCart, Sparkles } from "lucide-react"
@@ -205,22 +206,11 @@ export function InTheSpotlight() {
                     <Link href={`/products/${product._id}`}>
                       <div className="relative h-40 md:h-48 bg-gray-50 overflow-hidden cursor-pointer">
                         {product.images && product.images.length > 0 ? (
-                          <Image
+                          <MobileProductImage
                             src={product.images[0]}
                             alt={product.name}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                            sizes="(max-width: 768px) 240px, 288px"
+                            className="group-hover:scale-105 transition-transform duration-300"
                             priority={index < 2}
-                            onError={(e) => {
-                              console.error('Image failed to load for product:', product.name, 'URL:', product.images[0])
-                              // Try to load a fallback image
-                              const target = e.target as HTMLImageElement
-                              target.src = '/images/placeholder.jpg'
-                            }}
-                            onLoad={() => {
-                              console.log('Image loaded successfully for product:', product.name)
-                            }}
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
@@ -298,22 +288,6 @@ export function InTheSpotlight() {
           </div>
         </div>
 
-        {/* Dots Indicator */}
-        {products.length > 4 && (
-          <div className="flex justify-center mt-6 gap-1">
-            {Array.from({ length: Math.max(1, products.length - 3) }).map((_, index) => (
-              <button
-                key={index}
-                className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                  index === currentIndex 
-                    ? 'bg-gray-900 scale-125' 
-                    : 'bg-gray-300 hover:bg-gray-400'
-                }`}
-                onClick={() => setCurrentIndex(index)}
-              />
-            ))}
-          </div>
-        )}
       </div>
     </section>
   )

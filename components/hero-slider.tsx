@@ -334,24 +334,6 @@ export function HeroSlider() {
           </div>
         </div>
 
-        {/* Enhanced Slide Indicators - Mobile Optimized */}
-        <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-20">
-          <div className="flex space-x-2 sm:space-x-3 bg-white/15 backdrop-blur-md rounded-full px-3 sm:px-4 py-1.5 sm:py-2 border border-white/30">
-            {heroSlides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => goToSlide(index)}
-                disabled={isTransitioning}
-                className={`w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full transition-all duration-300 disabled:opacity-50 active:scale-125 hover:scale-125 touch-manipulation ${
-                  index === currentSlide
-                    ? 'bg-white scale-125 shadow-lg'
-                    : 'bg-white/60 hover:bg-white/80'
-                }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
-        </div>
 
     </section>
   )

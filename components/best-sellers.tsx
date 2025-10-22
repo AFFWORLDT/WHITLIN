@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import Image from "next/image"
+import { MobileProductGridImage } from "@/components/ui/mobile-optimized-image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -116,11 +116,10 @@ export function BestSellers() {
               >
                 <Link href={`/products/${product._id}`}>
                   <div className="relative aspect-square overflow-hidden cursor-pointer">
-                    <Image
-                      src={product.images[0] || "/placeholder.svg"}
+                    <MobileProductGridImage
+                      src={product.images[0] || "/placeholder.jpg"}
                       alt={product.name}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      className="group-hover:scale-105 transition-transform duration-500"
                     />
                     <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
                       {getProductBadge(product)}

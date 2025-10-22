@@ -143,8 +143,8 @@ export function handleImageError(event: React.SyntheticEvent<HTMLImageElement, E
   }
   
   // Strategy 3: Use placeholder
-  if (!img.src.includes('/placeholder.svg')) {
-    img.src = '/placeholder.svg'
+  if (!img.src.includes('/placeholder.jpg')) {
+    img.src = '/placeholder.jpg'
   }
 }
 
