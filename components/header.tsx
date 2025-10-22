@@ -25,11 +25,11 @@ export const Header = memo(function Header() {
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3">
-            <div className="relative w-16 h-16">
+      <div className="container mx-auto px-3 sm:px-4">
+        <div className="flex items-center justify-between h-16 sm:h-18 md:h-20">
+          {/* Logo - Mobile Optimized */}
+          <Link href="/" className="flex items-center space-x-2 sm:space-x-3">
+            <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16">
               <Image
                 src="/images/logonew.png"
                 alt="KeraGold PRO Logo"
@@ -38,8 +38,8 @@ export const Header = memo(function Header() {
                 priority
               />
             </div>
-            <div className="hidden sm:block">
-              <span className="font-serif text-xl font-bold">KeraGold</span>
+            <div className="hidden xs:block">
+              <span className="font-serif text-lg sm:text-xl font-bold">KeraGold</span>
               <span className="text-xs text-muted-foreground block -mt-1">PRO</span>
             </div>
           </Link>
@@ -66,20 +66,20 @@ export const Header = memo(function Header() {
             </Link>
           </nav>
 
-          {/* Right Actions */}
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon" className="hidden sm:flex">
-              <Search className="h-5 w-5" />
+          {/* Right Actions - Mobile Optimized */}
+          <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4">
+            <Button variant="ghost" size="icon" className="hidden sm:flex p-2">
+              <Search className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
 
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon">
-                    <User className="h-5 w-5" />
+                  <Button variant="ghost" size="icon" className="p-2">
+                    <User className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="w-48">
                   <DropdownMenuItem className="font-medium">{user.name}</DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/account">My Account</Link>
@@ -100,17 +100,17 @@ export const Header = memo(function Header() {
               </DropdownMenu>
             ) : (
               <Link href="/login">
-                <Button variant="ghost" size="icon">
-                  <User className="h-5 w-5" />
+                <Button variant="ghost" size="icon" className="p-2">
+                  <User className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </Link>
             )}
 
             <Link href="/cart">
-              <Button variant="ghost" size="icon" className="relative">
-                <ShoppingBag className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="relative p-2">
+                <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5" />
                 {state.itemCount > 0 && (
-                  <Badge className="absolute -top-2 -right-2 h-5 w-5 flex items-center justify-center p-0 text-xs bg-primary text-primary-foreground">
+                  <Badge className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center p-0 text-xs bg-primary text-primary-foreground">
                     {state.itemCount}
                   </Badge>
                 )}
@@ -118,58 +118,119 @@ export const Header = memo(function Header() {
             </Link>
 
             {/* Mobile Menu Button */}
-            <Button variant="ghost" size="icon" className="md:hidden" onClick={toggleMenu}>
+            <Button variant="ghost" size="icon" className="md:hidden p-2" onClick={toggleMenu}>
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Enhanced */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border">
-            <nav className="flex flex-col space-y-4">
-              <Link href="/products" className="text-foreground hover:text-primary transition-colors">
+          <div className="md:hidden py-4 border-t border-border bg-background/95 backdrop-blur">
+            <nav className="flex flex-col space-y-3 px-3">
+              <Link 
+                href="/products" 
+                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Products
               </Link>
-              <Link href="/showcase" className="text-foreground hover:text-primary transition-colors font-semibold">
+              <Link 
+                href="/showcase" 
+                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium font-semibold"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Premium Collections
               </Link>
-              <Link href="/collections" className="text-foreground hover:text-primary transition-colors">
+              <Link 
+                href="/collections" 
+                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Collections
               </Link>
-              <Link href="/dashboard" className="text-foreground hover:text-primary transition-colors">
+              <Link 
+                href="/dashboard" 
+                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Dashboard
               </Link>
-              <Link href="/about" className="text-foreground hover:text-primary transition-colors">
+              <Link 
+                href="/about" 
+                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 About
               </Link>
-              <Link href="/contact" className="text-foreground hover:text-primary transition-colors">
+              <Link 
+                href="/contact" 
+                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                onClick={() => setIsMenuOpen(false)}
+              >
                 Contact
               </Link>
-              {user ? (
-                <>
-                  <Link href="/account" className="text-foreground hover:text-primary transition-colors">
-                    My Account
-                  </Link>
-                  {user?.role === "admin" && (
-                    <Link href="/admin" className="text-foreground hover:text-primary transition-colors">
-                      Admin Panel
+              
+              {/* Mobile Search */}
+              <div className="pt-2 border-t border-border">
+                <Button variant="ghost" className="w-full justify-start text-foreground hover:text-primary py-2 px-3">
+                  <Search className="h-4 w-4 mr-3" />
+                  Search Products
+                </Button>
+              </div>
+              
+              {/* User Actions */}
+              <div className="pt-2 border-t border-border">
+                {user ? (
+                  <>
+                    <div className="px-3 py-2 text-sm text-muted-foreground">
+                      Welcome, {user.name}
+                    </div>
+                    <Link 
+                      href="/account" 
+                      className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      My Account
                     </Link>
-                  )}
-                  <button onClick={logout} className="text-left text-red-600 hover:text-red-700 transition-colors">
-                    Sign Out
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link href="/login" className="text-foreground hover:text-primary transition-colors">
-                    Sign In
-                  </Link>
-                  <Link href="/signup" className="text-foreground hover:text-primary transition-colors">
-                    Sign Up
-                  </Link>
-                </>
-              )}
+                    {user?.role === "admin" && (
+                      <Link 
+                        href="/admin" 
+                        className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        Admin Panel
+                      </Link>
+                    )}
+                    <button 
+                      onClick={() => {
+                        handleLogout()
+                        setIsMenuOpen(false)
+                      }} 
+                      className="w-full text-left text-red-600 hover:text-red-700 transition-colors py-2 px-3 rounded-md hover:bg-red-50 text-base font-medium"
+                    >
+                      Sign Out
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link 
+                      href="/login" 
+                      className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign In
+                    </Link>
+                    <Link 
+                      href="/signup" 
+                      className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      Sign Up
+                    </Link>
+                  </>
+                )}
+              </div>
             </nav>
           </div>
         )}

@@ -195,7 +195,7 @@ export function HeroSlider() {
   return (
     <section 
       ref={sliderRef}
-      className="relative h-[70vh] min-h-[500px] md:h-[80vh] md:min-h-[600px] lg:min-h-[700px] overflow-hidden"
+      className="relative h-[60vh] min-h-[400px] sm:h-[65vh] sm:min-h-[450px] md:h-[70vh] md:min-h-[500px] lg:h-[80vh] lg:min-h-[600px] xl:min-h-[700px] overflow-hidden"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
@@ -235,123 +235,123 @@ export function HeroSlider() {
         <div className="absolute bottom-32 left-32 w-3 h-3 bg-white/20 rounded-full animate-bounce delay-3000" />
       </div>
 
-      {/* Enhanced Navigation Arrows */}
-      <button
-        onClick={prevSlide}
-        disabled={isTransitioning}
-        className="absolute left-2 md:left-4 lg:left-8 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/25 backdrop-blur-md border border-white/20 rounded-full p-3 md:p-4 transition-all duration-300 disabled:opacity-50 hover:scale-110 shadow-lg hover:shadow-xl"
-        aria-label="Previous slide"
-      >
-        <ChevronLeft className="w-5 h-5 md:w-6 md:h-6 text-white drop-shadow-lg" />
-      </button>
+        {/* Enhanced Navigation Arrows - Mobile Optimized */}
+        <button
+          onClick={prevSlide}
+          disabled={isTransitioning}
+          className="absolute left-1 sm:left-2 md:left-4 lg:left-8 top-1/2 -translate-y-1/2 z-20 bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 rounded-full p-2 sm:p-3 md:p-4 transition-all duration-300 disabled:opacity-50 active:scale-95 hover:scale-110 shadow-lg hover:shadow-xl touch-manipulation"
+          aria-label="Previous slide"
+        >
+          <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white drop-shadow-lg" />
+        </button>
 
-      <button
-        onClick={nextSlide}
-        disabled={isTransitioning}
-        className="absolute right-2 md:right-4 lg:right-8 top-1/2 -translate-y-1/2 z-20 bg-white/10 hover:bg-white/25 backdrop-blur-md border border-white/20 rounded-full p-3 md:p-4 transition-all duration-300 disabled:opacity-50 hover:scale-110 shadow-lg hover:shadow-xl"
-        aria-label="Next slide"
-      >
-        <ChevronRight className="w-5 h-5 md:w-6 md:h-6 text-white drop-shadow-lg" />
-      </button>
+        <button
+          onClick={nextSlide}
+          disabled={isTransitioning}
+          className="absolute right-1 sm:right-2 md:right-4 lg:right-8 top-1/2 -translate-y-1/2 z-20 bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 rounded-full p-2 sm:p-3 md:p-4 transition-all duration-300 disabled:opacity-50 active:scale-95 hover:scale-110 shadow-lg hover:shadow-xl touch-manipulation"
+          aria-label="Next slide"
+        >
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white drop-shadow-lg" />
+        </button>
 
 
-      {/* Enhanced Content */}
-      <div className="relative z-10 h-full flex items-center">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className={`max-w-5xl ${
-            currentSlideData.textPosition === 'left' 
-              ? 'text-left' 
-              : currentSlideData.textPosition === 'right'
-              ? 'text-right ml-auto'
-              : 'text-center mx-auto'
-          }`}>
-            {/* Enhanced Title with Gradient Text */}
-            <h1 className={`font-serif text-3xl sm:text-4xl md:text-6xl lg:text-7xl font-black mb-4 md:mb-6 text-balance transition-all duration-700 transform ${
-              isTransitioning ? 'opacity-0 translate-y-8 scale-95' : 'opacity-100 translate-y-0 scale-100'
-            } ${
-              currentSlideData.theme === 'dark' 
-                ? 'text-white drop-shadow-2xl' 
-                : 'text-gray-900 drop-shadow-lg'
+        {/* Enhanced Content - Mobile Optimized */}
+        <div className="relative z-10 h-full flex items-center">
+          <div className="container mx-auto px-3 sm:px-4 md:px-6">
+            <div className={`max-w-6xl ${
+              currentSlideData.textPosition === 'left' 
+                ? 'text-left' 
+                : currentSlideData.textPosition === 'right'
+                ? 'text-right ml-auto'
+                : 'text-center mx-auto'
             }`}>
-              <span className="block leading-tight">
-                {currentSlideData.title}
-              </span>
-              <span className={`block text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-tight bg-gradient-to-r ${
+              {/* Enhanced Title with Gradient Text - Mobile Responsive */}
+              <h1 className={`font-serif text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-3 sm:mb-4 md:mb-6 text-balance transition-all duration-700 transform ${
+                isTransitioning ? 'opacity-0 translate-y-8 scale-95' : 'opacity-100 translate-y-0 scale-100'
+              } ${
                 currentSlideData.theme === 'dark' 
-                  ? 'from-primary via-yellow-400 to-primary bg-clip-text text-transparent' 
-                  : 'from-red-600 via-red-500 to-red-700 bg-clip-text text-transparent'
+                  ? 'text-white drop-shadow-2xl' 
+                  : 'text-gray-900 drop-shadow-lg'
               }`}>
-                {currentSlideData.subtitle}
-              </span>
-            </h1>
+                <span className="block leading-tight">
+                  {currentSlideData.title}
+                </span>
+                <span className={`block text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-tight bg-gradient-to-r ${
+                  currentSlideData.theme === 'dark' 
+                    ? 'from-primary via-yellow-400 to-primary bg-clip-text text-transparent' 
+                    : 'from-red-600 via-red-500 to-red-700 bg-clip-text text-transparent'
+                }`}>
+                  {currentSlideData.subtitle}
+                </span>
+              </h1>
 
-            {/* Enhanced Description */}
-            <p className={`text-base sm:text-lg md:text-xl lg:text-2xl mb-8 md:mb-10 text-pretty max-w-3xl transition-all duration-700 transform delay-100 ${
-              isTransitioning ? 'opacity-0 translate-y-6 scale-95' : 'opacity-100 translate-y-0 scale-100'
-            } ${
-              currentSlideData.textPosition === 'center' ? 'mx-auto' : ''
-            } ${
-              currentSlideData.theme === 'dark' 
-                ? 'text-white/95 drop-shadow-lg' 
-                : 'text-gray-800 drop-shadow-sm'
-            } font-medium leading-relaxed`}>
-              {currentSlideData.description}
-            </p>
+              {/* Enhanced Description - Mobile Optimized */}
+              <p className={`text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 md:mb-10 text-pretty max-w-4xl transition-all duration-700 transform delay-100 ${
+                isTransitioning ? 'opacity-0 translate-y-6 scale-95' : 'opacity-100 translate-y-0 scale-100'
+              } ${
+                currentSlideData.textPosition === 'center' ? 'mx-auto' : ''
+              } ${
+                currentSlideData.theme === 'dark' 
+                  ? 'text-white/95 drop-shadow-lg' 
+                  : 'text-gray-800 drop-shadow-sm'
+              } font-medium leading-relaxed`}>
+                {currentSlideData.description}
+              </p>
 
-            {/* Enhanced Buttons */}
-            <div className={`flex flex-col sm:flex-row gap-4 md:gap-6 transition-all duration-700 transform delay-200 ${
-              isTransitioning ? 'opacity-0 translate-y-6 scale-95' : 'opacity-100 translate-y-0 scale-100'
-            } ${
-              currentSlideData.textPosition === 'center' ? 'justify-center' : ''
-            }`}>
-              <Link href={currentSlideData.primaryButton.href}>
-                <Button 
-                  size="lg" 
-                  className={`font-bold px-8 md:px-10 py-4 md:py-5 text-base md:text-lg transition-all duration-300 w-full sm:w-auto hover:scale-105 shadow-xl hover:shadow-2xl ${
-                    currentSlideData.theme === 'dark'
-                      ? 'bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground'
-                      : 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white'
-                  }`}
-                >
-                  {currentSlideData.primaryButton.text}
-                </Button>
-              </Link>
-              <Link href={currentSlideData.secondaryButton.href}>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className={`border-2 font-bold px-8 md:px-10 py-4 md:py-5 text-base md:text-lg transition-all duration-300 w-full sm:w-auto hover:scale-105 backdrop-blur-sm ${
-                    currentSlideData.theme === 'dark'
-                      ? 'border-white/80 text-white hover:bg-white hover:text-black bg-white/10'
-                      : 'border-gray-900/80 text-gray-900 hover:bg-gray-900 hover:text-white bg-white/20'
-                  }`}
-                >
-                  {currentSlideData.secondaryButton.text}
-                </Button>
-              </Link>
+              {/* Enhanced Buttons - Mobile Optimized */}
+              <div className={`flex flex-col xs:flex-row gap-3 sm:gap-4 md:gap-6 transition-all duration-700 transform delay-200 ${
+                isTransitioning ? 'opacity-0 translate-y-6 scale-95' : 'opacity-100 translate-y-0 scale-100'
+              } ${
+                currentSlideData.textPosition === 'center' ? 'justify-center' : ''
+              }`}>
+                <Link href={currentSlideData.primaryButton.href}>
+                  <Button 
+                    size="lg" 
+                    className={`font-bold px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 text-sm sm:text-base md:text-lg transition-all duration-300 w-full xs:w-auto hover:scale-105 active:scale-95 shadow-xl hover:shadow-2xl touch-manipulation ${
+                      currentSlideData.theme === 'dark'
+                        ? 'bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground'
+                        : 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white'
+                    }`}
+                  >
+                    {currentSlideData.primaryButton.text}
+                  </Button>
+                </Link>
+                <Link href={currentSlideData.secondaryButton.href}>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className={`border-2 font-bold px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 text-sm sm:text-base md:text-lg transition-all duration-300 w-full xs:w-auto hover:scale-105 active:scale-95 backdrop-blur-sm touch-manipulation ${
+                      currentSlideData.theme === 'dark'
+                        ? 'border-white/80 text-white hover:bg-white hover:text-black bg-white/10'
+                        : 'border-gray-900/80 text-gray-900 hover:bg-gray-900 hover:text-white bg-white/20'
+                    }`}
+                  >
+                    {currentSlideData.secondaryButton.text}
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Enhanced Slide Indicators */}
-      <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-20">
-        <div className="flex space-x-3 bg-white/10 backdrop-blur-md rounded-full px-4 py-2 border border-white/20">
-          {heroSlides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              disabled={isTransitioning}
-              className={`w-3 h-3 md:w-4 md:h-4 rounded-full transition-all duration-300 disabled:opacity-50 hover:scale-125 ${
-                index === currentSlide
-                  ? 'bg-white scale-125 shadow-lg'
-                  : 'bg-white/60 hover:bg-white/80'
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
+        {/* Enhanced Slide Indicators - Mobile Optimized */}
+        <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 z-20">
+          <div className="flex space-x-2 sm:space-x-3 bg-white/15 backdrop-blur-md rounded-full px-3 sm:px-4 py-1.5 sm:py-2 border border-white/30">
+            {heroSlides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                disabled={isTransitioning}
+                className={`w-2.5 h-2.5 sm:w-3 sm:h-3 md:w-4 md:h-4 rounded-full transition-all duration-300 disabled:opacity-50 active:scale-125 hover:scale-125 touch-manipulation ${
+                  index === currentSlide
+                    ? 'bg-white scale-125 shadow-lg'
+                    : 'bg-white/60 hover:bg-white/80'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
         </div>
-      </div>
 
     </section>
   )

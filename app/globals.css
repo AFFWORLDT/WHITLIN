@@ -297,6 +297,163 @@ img[src*="cloudinary.com"] {
   align-items: center;
 }
 
+/* Enhanced Mobile Responsiveness */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .text-responsive {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+  }
+  
+  .heading-responsive {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  .button-responsive {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+  
+  .card-responsive {
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  
+  .grid-responsive {
+    gap: 0.75rem;
+  }
+  
+  /* Improve touch targets */
+  button, 
+  [role="button"], 
+  input[type="button"], 
+  input[type="submit"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better spacing for mobile */
+  .space-y-mobile > * + * {
+    margin-top: 0.75rem;
+  }
+  
+  .space-y-mobile-sm > * + * {
+    margin-top: 0.5rem;
+  }
+}
+
+/* Tablet Optimizations */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  
+  .text-responsive {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+  
+  .heading-responsive {
+    font-size: 2rem;
+    line-height: 2.5rem;
+  }
+  
+  .button-responsive {
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .card-responsive {
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .grid-responsive {
+    gap: 1rem;
+  }
+}
+
+/* Large Screen Optimizations */
+@media (min-width: 1025px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  
+  .text-responsive {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+  
+  .heading-responsive {
+    font-size: 2.5rem;
+    line-height: 3rem;
+  }
+  
+  .button-responsive {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+  }
+  
+  .card-responsive {
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .grid-responsive {
+    gap: 1.5rem;
+  }
+}
+
+/* Touch-friendly interactions */
+.touch-manipulation {
+  touch-action: manipulation;
+}
+
+.touch-pan-x {
+  touch-action: pan-x;
+}
+
+.touch-pan-y {
+  touch-action: pan-y;
+}
+
+/* Prevent text selection on UI elements */
+.no-select {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Safe area handling for notched devices */
+.safe-area-inset {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Improved scrolling on mobile */
+.mobile-scroll {
+  -webkit-overflow-scrolling: touch;
+  overflow-scrolling: touch;
+}
+
+/* Better focus states for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .focus-mobile:focus {
+    outline: 2px solid oklch(0.85 0.15 85);
+    outline-offset: 2px;
+  }
+}
+
 /* Performance Optimizations */
 * {
   -webkit-font-smoothing: antialiased;

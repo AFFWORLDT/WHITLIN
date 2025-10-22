@@ -307,8 +307,8 @@ export default function ProductsPage() {
           <>
             <div className={
               viewMode === "grid" 
-                ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-                : "space-y-4"
+                ? "grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6"
+                : "space-y-3 sm:space-y-4"
             }>
               {products.map((product, index) => (
                 <Card key={product._id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-border/50">
@@ -324,15 +324,15 @@ export default function ProductsPage() {
                        ) : (
                          <div className="w-full h-full flex items-center justify-center bg-gray-100">
                            <div className="text-center">
-                             <div className="text-4xl text-gray-400 mb-2">📦</div>
-                             <p className="text-gray-500 text-sm">No image</p>
+                             <div className="text-2xl sm:text-4xl text-gray-400 mb-1 sm:mb-2">📦</div>
+                             <p className="text-gray-500 text-xs sm:text-sm">No image</p>
                            </div>
                          </div>
                        )}
-                      <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
+                      <Badge className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-primary text-primary-foreground text-xs px-1.5 py-0.5 sm:px-2 sm:py-1">
                         {getProductBadge(product)}
                       </Badge>
-                      <div className="absolute top-3 right-3 bg-black/70 text-white px-2 py-1 rounded text-xs font-medium">
+                      <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-black/70 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-xs font-medium">
                         {getProductSize(product)}
                       </div>
                     </div>
