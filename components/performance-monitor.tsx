@@ -83,7 +83,7 @@ export function ResourcePreloader() {
     // Check and preload critical images
     const criticalImages = [
       '/images/logonew.png',
-      '/images/keragold-hero.png'
+      '/hero.png'
     ]
 
     criticalImages.forEach(checkAndPreloadImage)

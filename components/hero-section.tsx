@@ -7,7 +7,7 @@ export function HeroSection() {
     <section className="relative h-[70vh] min-h-[500px] flex items-center justify-center overflow-hidden">
       <div className="absolute inset-0">
         <Image
-          src="/images/keragold-hero.png"
+          src="/hero.png"
           alt="KeraGold Pro Professional Hair Care"
           fill
           className="object-cover"

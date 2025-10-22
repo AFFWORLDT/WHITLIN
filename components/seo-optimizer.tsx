@@ -16,7 +16,7 @@ export function SEOOptimizer({
   title = "KeraGold Pro - Professional Hair Care",
   description = "Luxury professional hair care products with keratin and hyaluronic acid. Transform your hair with our premium treatment systems.",
   keywords = ["hair care", "keratin", "professional", "luxury", "beauty"],
-  image = "/images/keragold-hero.png",
+  image = "/hero.png",
   url = "https://keragold-uae.com",
   type = "website",
   structuredData
