@@ -33,7 +33,7 @@ interface CartItem {
 }
 
 export default function GuestCheckoutPage() {
-  const { items, clearCart } = useCart()
+  const { state, clearCart } = useCart()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [orderSuccess, setOrderSuccess] = useState(false)
@@ -56,10 +56,10 @@ export default function GuestCheckoutPage() {
   const [errors, setErrors] = useState<Record<string, string>>({})
 
   useEffect(() => {
-    if (!items || items.length === 0) {
+    if (!state.items || state.items.length === 0) {
       router.push('/cart')
     }
-  }, [items, router])
+  }, [state.items, router])
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -118,8 +118,8 @@ export default function GuestCheckoutPage() {
   }
 
   const calculateTotals = () => {
-    const subtotal = (items || []).reduce((sum, item) => sum + (item.price * item.quantity), 0)
-    const shipping = subtotal > 1000 ? 0 : 100 // Free shipping above ₹1000
+    const subtotal = (state.items || []).reduce((sum, item) => sum + (item.price * item.quantity), 0)
+    const shipping = subtotal > 1000 ? 0 : 100 // Free shipping above AED 1000
     const tax = subtotal * 0.18 // 18% GST
     const total = subtotal + shipping + tax
 
@@ -144,35 +144,32 @@ export default function GuestCheckoutPage() {
         lastName: formData.lastName.trim(),
         phone: formData.phone.trim(),
         
-        // Address
-        shippingAddress: {
-          street: formData.address.trim(),
-          city: formData.city.trim(),
-          state: formData.state.trim(),
-          zipCode: formData.zipCode.trim(),
-          country: formData.country
-        },
+        // Address fields (API expects these directly in body, not nested)
+        address: formData.address.trim(),
+        city: formData.city.trim(),
+        state: formData.state.trim(),
+        zipCode: formData.zipCode.trim(),
+        country: formData.country || 'India',
         
-        // Order items
-        items: (items || []).map(item => ({
+        // Order items (include name and image for API)
+        items: (state.items || []).map(item => ({
           product: item.id,
+          name: item.name,
           quantity: item.quantity,
-          price: item.price
+          price: item.price,
+          image: item.image || 'https://via.placeholder.com/150'
         })),
         
         // Order totals
-        subtotal,
-        shipping,
-        tax,
         totalAmount: total,
         
         // Payment
-        paymentMethod: formData.paymentMethod,
-        paymentStatus: formData.paymentMethod === 'cod' ? 'pending' : 'pending',
-        
-        // Guest order flag
-        isGuestOrder: true
+        paymentMethod: formData.paymentMethod || 'cod'
       }
+
+      // Debug logging
+      console.log('Sending order data:', orderData)
+      console.log('Cart items:', state.items)
 
       const response = await fetch('/api/orders/guest', {
         method: 'POST',
@@ -182,6 +179,12 @@ export default function GuestCheckoutPage() {
         body: JSON.stringify(orderData)
       })
 
+      // Check if response is ok
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: `Server error: ${response.status} ${response.statusText}` }))
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`)
+      }
+
       const data = await response.json()
 
       if (data.success) {
@@ -190,11 +193,33 @@ export default function GuestCheckoutPage() {
         clearCart()
         toast.success('Order placed successfully! Check your email for account details.')
       } else {
-        toast.error(data.error || 'Failed to place order')
+        // Show specific error message
+        const errorMessage = data.error || 'Failed to place order'
+        toast.error(errorMessage)
+        
+        // If it's a validation error, highlight the fields
+        if (errorMessage.includes('Missing required fields') || errorMessage.includes('required')) {
+          // Re-validate to show field-level errors
+          validateForm()
+        }
       }
     } catch (error) {
       console.error('Error placing order:', error)
-      toast.error('An unexpected error occurred. Please try again.')
+      
+      // Show more specific error message
+      let errorMessage = 'An unexpected error occurred. Please try again.'
+      
+      if (error instanceof Error) {
+        errorMessage = error.message
+        console.error('Error details:', {
+          message: error.message,
+          stack: error.stack
+        })
+      } else if (typeof error === 'string') {
+        errorMessage = error
+      }
+      
+      toast.error(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -227,7 +252,7 @@ export default function GuestCheckoutPage() {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Total Amount:</span>
-                  <span className="font-semibold">₹{orderData.totalAmount.toFixed(2)}</span>
+                  <span className="font-semibold">AED {orderData.totalAmount.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Payment Method:</span>
@@ -466,7 +491,7 @@ export default function GuestCheckoutPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {(items || []).map((item) => (
+                {(state.items || []).map((item) => (
                   <div key={item.id} className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
                       {item.image ? (
@@ -479,7 +504,7 @@ export default function GuestCheckoutPage() {
                       <h4 className="font-medium text-sm">{item.name}</h4>
                       <p className="text-gray-500 text-sm">Qty: {item.quantity}</p>
                     </div>
-                    <div className="font-medium">₹{(item.price * item.quantity).toFixed(2)}</div>
+                    <div className="font-medium">AED {(item.price * item.quantity).toFixed(2)}</div>
                   </div>
                 ))}
 
@@ -488,26 +513,26 @@ export default function GuestCheckoutPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between">
                     <span>Subtotal</span>
-                    <span>₹{subtotal.toFixed(2)}</span>
+                    <span>AED {subtotal.toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Shipping</span>
-                    <span>{shipping === 0 ? 'Free' : `₹${shipping.toFixed(2)}`}</span>
+                    <span>{shipping === 0 ? 'Free' : `AED ${shipping.toFixed(2)}`}</span>
                   </div>
                   <div className="flex justify-between">
                     <span>Tax (GST)</span>
-                    <span>₹{tax.toFixed(2)}</span>
+                    <span>AED {tax.toFixed(2)}</span>
                   </div>
                   <Separator />
                   <div className="flex justify-between font-bold text-lg">
                     <span>Total</span>
-                    <span>₹{total.toFixed(2)}</span>
+                    <span>AED {total.toFixed(2)}</span>
                   </div>
                 </div>
 
                 <Button
                   onClick={handlePlaceOrder}
-                  disabled={loading || !items || items.length === 0}
+                  disabled={loading || !state.items || state.items.length === 0}
                   className="w-full bg-amber-600 hover:bg-amber-700"
                 >
                   {loading ? (

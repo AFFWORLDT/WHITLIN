@@ -362,13 +362,13 @@ export default function CartPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="max-w-2xl mx-auto text-center">
             <div className="mb-8">
-              <ShoppingBag className="h-24 w-24 text-gray-400 mx-auto mb-4" />
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Cart is Empty</h1>
-              <p className="text-gray-600 mb-8">
+              <ShoppingBag className="h-16 w-16 sm:h-24 sm:w-24 text-gray-400 mx-auto mb-4" />
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Your Cart is Empty</h1>
+              <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 px-4">
                 Looks like you haven't added any items to your cart yet.
               </p>
               <Link href="/products">
-                <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-white">
+                <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-white w-full sm:w-auto">
                   <ShoppingBag className="h-5 w-5 mr-2" />
                   Continue Shopping
                 </Button>
@@ -383,43 +383,43 @@ export default function CartPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="flex items-center justify-between mb-8">
-            <div className="flex items-center space-x-4">
-              <Link href="/products">
-                <Button variant="outline" size="sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
+              <Link href="/products" className="w-full sm:w-auto">
+                <Button variant="outline" size="sm" className="w-full sm:w-auto">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Continue Shopping
                 </Button>
               </Link>
-              <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Shopping Cart</h1>
             </div>
             <Button 
               variant="outline" 
               onClick={handleClearCart}
-              className="text-red-600 hover:text-red-700"
+              className="text-red-600 hover:text-red-700 w-full sm:w-auto"
             >
               <Trash2 className="h-4 w-4 mr-2" />
               Clear Cart
             </Button>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {/* Cart Items */}
             <div className="lg:col-span-2">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <ShoppingBag className="h-5 w-5 mr-2" />
-                    Cart Items ({state.items.length})
+                  <CardTitle className="flex items-center text-base sm:text-lg">
+                    <ShoppingBag className="h-5 w-5 mr-2 flex-shrink-0" />
+                    <span>Cart Items ({state.items.length})</span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {state.items.map((item) => (
-                    <div key={item.id} className="flex items-center space-x-4 p-4 border rounded-lg">
-                      <div className="relative w-20 h-20 flex-shrink-0">
+                    <div key={item.id} className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 border rounded-lg">
+                      <div className="relative w-full sm:w-20 h-48 sm:h-20 flex-shrink-0">
                         <Image
                           src={item.image}
                           alt={item.name}
@@ -428,31 +428,50 @@ export default function CartPage() {
                         />
                       </div>
                       
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-gray-900 truncate">{item.name}</h3>
-                        <p className="text-sm text-gray-500">AED {item.price}</p>
-                        <div className="flex items-center space-x-2 mt-2">
+                      <div className="flex-1 min-w-0 w-full sm:w-auto">
+                        <div className="flex items-start justify-between gap-2 mb-2">
+                          <h3 className="font-medium text-gray-900 text-sm sm:text-base flex-1">{item.name}</h3>
                           <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
-                            onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
-                            disabled={loading}
+                            onClick={() => removeItem(item.id)}
+                            className="text-red-600 hover:text-red-700 sm:hidden flex-shrink-0"
                           >
-                            <Minus className="h-3 w-3" />
+                            <Trash2 className="h-4 w-4" />
                           </Button>
-                          <span className="w-8 text-center">{item.quantity}</span>
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
-                            disabled={loading}
-                          >
-                            <Plus className="h-3 w-3" />
-                          </Button>
+                        </div>
+                        <p className="text-sm text-gray-500 mb-3">AED {item.price}</p>
+                        <div className="flex items-center justify-between sm:justify-start gap-4">
+                          <div className="flex items-center space-x-2">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                              disabled={loading}
+                              className="h-8 w-8 p-0"
+                            >
+                              <Minus className="h-3 w-3" />
+                            </Button>
+                            <span className="w-8 text-center font-medium">{item.quantity}</span>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                              disabled={loading}
+                              className="h-8 w-8 p-0"
+                            >
+                              <Plus className="h-3 w-3" />
+                            </Button>
+                          </div>
+                          <div className="sm:hidden">
+                            <p className="font-medium text-gray-900 text-lg">
+                              AED {(item.price * item.quantity).toFixed(2)}
+                            </p>
+                          </div>
                         </div>
                       </div>
                       
-                      <div className="text-right">
+                      <div className="hidden sm:flex flex-col items-end justify-between text-right w-24">
                         <p className="font-medium text-gray-900">
                           AED {(item.price * item.quantity).toFixed(2)}
                         </p>
@@ -476,7 +495,7 @@ export default function CartPage() {
               {/* Order Summary */}
               <Card>
                 <CardHeader>
-                  <CardTitle>Order Summary</CardTitle>
+                  <CardTitle className="text-base sm:text-lg">Order Summary</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex justify-between">
@@ -530,9 +549,11 @@ export default function CartPage() {
                           </Button>
                           
                           <div className="text-center">
-                            <Badge variant="secondary" className="text-xs">
-                              <Zap className="h-3 w-3 mr-1" />
-                              {selectedAddress ? `Using: ${selectedAddress.name}` : 'Address confirmation required'}
+                            <Badge variant="secondary" className="text-xs break-words px-2">
+                              <Zap className="h-3 w-3 mr-1 inline" />
+                              <span className="inline-block max-w-full break-words">
+                                {selectedAddress ? `Using: ${selectedAddress.name}` : 'Address confirmation required'}
+                              </span>
                             </Badge>
                           </div>
 
@@ -569,7 +590,7 @@ export default function CartPage() {
                           </Button>
                           
                           <div className="text-center">
-                            <p className="text-sm text-gray-500 mb-2">
+                            <p className="text-xs sm:text-sm text-gray-500 mb-2 px-2">
                               No account needed • We'll create one for you
                             </p>
                           </div>
@@ -597,12 +618,12 @@ export default function CartPage() {
                       {/* Trust Signals */}
                       <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
                         <div className="flex items-center justify-center p-2 bg-gray-50 rounded">
-                          <Shield className="h-3 w-3 mr-1" />
-                          Secure
+                          <Shield className="h-3 w-3 mr-1 flex-shrink-0" />
+                          <span className="truncate">Secure</span>
                         </div>
                         <div className="flex items-center justify-center p-2 bg-gray-50 rounded">
-                          <Clock className="h-3 w-3 mr-1" />
-                          Fast Delivery
+                          <Clock className="h-3 w-3 mr-1 flex-shrink-0" />
+                          <span className="truncate">Fast Delivery</span>
                         </div>
                       </div>
                     </div>
@@ -653,14 +674,15 @@ export default function CartPage() {
               {showCheckout && savedAddresses.length > 0 && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center justify-between">
+                    <CardTitle className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                       <div className="flex items-center">
-                        <MapPin className="h-5 w-5 mr-2" />
-                        Saved Addresses
+                        <MapPin className="h-5 w-5 mr-2 flex-shrink-0" />
+                        <span className="text-base sm:text-lg">Saved Addresses</span>
                       </div>
                       <Button
                         variant="outline"
                         size="sm"
+                        className="w-full sm:w-auto"
                         onClick={() => setShowAddressSelector(!showAddressSelector)}
                       >
                         {showAddressSelector ? 'Hide' : 'Change'}
@@ -691,22 +713,22 @@ export default function CartPage() {
                             setShowAddressSelector(false)
                           }}
                         >
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <div className="font-medium">{address.name}</div>
-                              <div className="text-sm text-gray-600">
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <div className="font-medium text-sm sm:text-base">{address.name}</div>
+                              <div className="text-xs sm:text-sm text-gray-600 break-words">
                                 {address.address}, {address.city}, {address.state} {address.zipCode}
                               </div>
                               <div className="text-xs text-gray-500">{address.country}</div>
                             </div>
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 flex-shrink-0">
                               {address.isDefault && (
                                 <Badge variant="secondary" className="text-xs">
                                   Default
                                 </Badge>
                               )}
                               {selectedAddressId === address._id && (
-                                <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center">
+                                <div className="w-4 h-4 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
                                   <div className="w-2 h-2 bg-white rounded-full"></div>
                                 </div>
                               )}
@@ -723,9 +745,9 @@ export default function CartPage() {
               {showCheckout && (
                 <Card>
                   <CardHeader>
-                    <CardTitle className="flex items-center">
-                      <MapPin className="h-5 w-5 mr-2" />
-                      {savedAddresses.length > 0 ? 'Edit Address' : 'Shipping Address'}
+                    <CardTitle className="flex items-center text-base sm:text-lg">
+                      <MapPin className="h-5 w-5 mr-2 flex-shrink-0" />
+                      <span>{savedAddresses.length > 0 ? 'Edit Address' : 'Shipping Address'}</span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -760,7 +782,7 @@ export default function CartPage() {
                       />
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="city">City *</Label>
                         <Input
@@ -781,7 +803,7 @@ export default function CartPage() {
                       </div>
                     </div>
                     
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="zipCode">ZIP Code *</Label>
                         <Input
@@ -814,14 +836,15 @@ export default function CartPage() {
                     </div>
 
                     {/* Save Address Option */}
-                    <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div>
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 bg-gray-50 rounded-lg">
+                      <div className="flex-1">
                         <div className="font-medium text-sm">Save this address</div>
                         <div className="text-xs text-gray-600">Save for future orders</div>
                       </div>
                       <Button
                         variant="outline"
                         size="sm"
+                        className="w-full sm:w-auto"
                         onClick={async () => {
                           if (!user?.id) return
                           try {

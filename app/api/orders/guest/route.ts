@@ -3,6 +3,7 @@ import connectDB from '@/lib/mongodb'
 import Order from '@/lib/models/Order'
 import User from '@/lib/models/User'
 import bcrypt from 'bcryptjs'
+import mongoose from 'mongoose'
 
 export async function POST(request: NextRequest) {
   try {
@@ -79,14 +80,21 @@ export async function POST(request: NextRequest) {
     }
 
     // Create order items with proper structure
-    const orderItems = items.map((item: any) => ({
-      product: item.product,
-      name: item.name || 'Product',
-      quantity: item.quantity,
-      price: item.price,
-      image: item.image || 'https://via.placeholder.com/150',
-      total: item.price * item.quantity
-    }))
+    const orderItems = items.map((item: any) => {
+      // Validate product ID is a valid ObjectId
+      if (!mongoose.Types.ObjectId.isValid(item.product)) {
+        throw new Error(`Invalid product ID: ${item.product}`)
+      }
+      
+      return {
+        product: new mongoose.Types.ObjectId(item.product),
+        name: item.name || 'Product',
+        quantity: item.quantity,
+        price: item.price,
+        image: item.image || 'https://via.placeholder.com/150',
+        total: item.price * item.quantity
+      }
+    })
 
     // Calculate totals
     const subtotal = orderItems.reduce((sum, item) => sum + item.total, 0)
@@ -118,20 +126,24 @@ export async function POST(request: NextRequest) {
       paymentStatus: 'pending',
       paymentMethod: paymentMethod,
       priority: 'normal',
-      source: 'guest-checkout',
+      source: 'website',
       shippingAddress: {
-        street: address,
+        name: `${firstName} ${lastName}`,
+        address: address,
         city: city,
         state: state,
         zipCode: zipCode,
-        country: country || 'India'
+        country: country || 'India',
+        phone: phone
       },
       billingAddress: {
-        street: address,
+        name: `${firstName} ${lastName}`,
+        address: address,
         city: city,
         state: state,
         zipCode: zipCode,
-        country: country || 'India'
+        country: country || 'India',
+        phone: phone
       },
       tags: ['guest-order'],
       metadata: {
@@ -180,9 +192,38 @@ export async function POST(request: NextRequest) {
       message: error instanceof Error ? error.message : 'Unknown error',
       stack: error instanceof Error ? error.stack : undefined
     })
+    
+    // Return more specific error messages
+    let errorMessage = 'An unexpected error occurred. Please try again.'
+    let statusCode = 500
+    
+    if (error instanceof Error) {
+      // Mongoose validation errors
+      if (error.name === 'ValidationError') {
+        const validationError = error as any
+        const errors = Object.values(validationError.errors || {}).map((err: any) => err.message)
+        errorMessage = `Validation error: ${errors.join(', ')}`
+        statusCode = 400
+      }
+      // Duplicate key errors (e.g., duplicate order number)
+      else if ((error as any).code === 11000) {
+        errorMessage = 'Order number already exists. Please try again.'
+        statusCode = 409
+      }
+      // Custom error messages
+      else if (error.message.includes('Invalid product ID')) {
+        errorMessage = error.message
+        statusCode = 400
+      }
+      // Other errors
+      else {
+        errorMessage = error.message || errorMessage
+      }
+    }
+    
     return NextResponse.json(
-      { success: false, error: 'An unexpected error occurred. Please try again.' },
-      { status: 500 }
+      { success: false, error: errorMessage },
+      { status: statusCode }
     )
   }
 }
