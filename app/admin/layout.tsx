@@ -17,6 +17,8 @@ import {
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth-context"
+import { useI18n } from "@/components/language-provider"
+import { LanguageSwitcher } from "@/components/language-switcher"
 
 const adminNavItems = [
   { href: "/admin", icon: LayoutDashboard, label: "Dashboard" },

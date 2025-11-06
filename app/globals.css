@@ -243,6 +243,11 @@ img[src*="cloudinary.com"] {
     @apply bg-background text-foreground;
   }
 
+/* RTL helper class */
+.rtl {
+  direction: rtl;
+}
+
   /* Added luxury typography classes */
   .font-serif {
     font-family: var(--font-serif);

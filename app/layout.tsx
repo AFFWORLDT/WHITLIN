@@ -8,6 +8,7 @@ import { Suspense } from "react"
 import { CartProvider } from "@/lib/cart-context"
 import { AuthProvider } from "@/lib/auth-context"
 import { LayoutProvider } from "@/components/layout-provider"
+import { LanguageProvider } from "@/components/language-provider"
 import { Toaster } from "sonner"
 import { PerformanceMonitor } from "@/components/performance-monitor"
 import { ErrorBoundary } from "@/components/error-boundary"
@@ -77,6 +78,7 @@ export default function RootLayout({
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} ${playfairDisplay.variable}`}>
         <MobileOptimizer />
         <ErrorBoundary>
+          <LanguageProvider>
           <AuthProvider>
             <CartProvider>
               <LayoutProvider>
@@ -84,6 +86,7 @@ export default function RootLayout({
               </LayoutProvider>
             </CartProvider>
           </AuthProvider>
+          </LanguageProvider>
         </ErrorBoundary>
         <Toaster position="top-right" />
         <Analytics />

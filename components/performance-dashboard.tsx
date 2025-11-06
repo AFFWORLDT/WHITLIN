@@ -27,10 +27,17 @@ export function PerformanceDashboard() {
   const [isVisible, setIsVisible] = useState(false)
 
   useEffect(() => {
-    // Only show in development
+    // Only show in development and on desktop/tablet sizes
     if (process.env.NODE_ENV !== 'development') return
 
-    setIsVisible(true)
+    const decideVisibility = () => {
+      if (typeof window === 'undefined') return
+      // Hide on small screens (e.g., < 1024px)
+      setIsVisible(window.innerWidth >= 1024)
+    }
+
+    decideVisibility()
+    window.addEventListener('resize', decideVisibility)
 
     // Get performance metrics
     if (typeof window !== 'undefined' && 'performance' in window) {
@@ -75,6 +82,11 @@ export function PerformanceDashboard() {
       observer.observe({ entryTypes: ['paint', 'largest-contentful-paint', 'first-input', 'layout-shift', 'navigation'] })
 
       return () => observer.disconnect()
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', decideVisibility)
+      }
     }
   }, [])
 

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, memo, useCallback } from "react"
+import { useState, memo, useCallback, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { 
@@ -24,9 +24,12 @@ import {
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+// import { LanguageSwitcher } from "@/components/language-switcher"
+import { useI18n } from "@/components/language-provider"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
 import { cn } from "@/lib/utils"
+import { usePathname } from "next/navigation"
 
 interface SidebarProps {
   isOpen: boolean
@@ -36,18 +39,34 @@ interface SidebarProps {
 export const Sidebar = memo(function Sidebar({ isOpen, onToggle }: SidebarProps) {
   const { state } = useCart()
   const { user, logout } = useAuth()
+  const { t } = useI18n()
+  const pathname = usePathname()
 
   const handleLogout = useCallback(() => {
     logout()
   }, [logout])
 
+  // Auto-close sidebar on route change for mobile/tablet
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      if (isOpen) onToggle()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pathname])
+
+  const handleNavSelect = () => {
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      onToggle()
+    }
+  }
+
   const navigationItems = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/products", label: "Products", icon: Package },
-    { href: "/showcase", label: "Premium Collections", icon: Crown },
-    { href: "/collections", label: "Collections", icon: Package },
-    { href: "/about", label: "About", icon: Info },
-    { href: "/contact", label: "Contact", icon: Mail },
+    { href: "/", label: t('nav.home', 'Home'), icon: Home },
+    { href: "/products", label: t('nav.products', 'Products'), icon: Package },
+    { href: "/showcase", label: t('nav.premium', 'Premium Collections'), icon: Crown },
+    { href: "/collections", label: t('nav.collections', 'Collections'), icon: Package },
+    { href: "/about", label: t('nav.about', 'About'), icon: Info },
+    { href: "/contact", label: t('nav.contact', 'Contact'), icon: Mail },
   ]
 
   const userItems = user ? [
@@ -121,6 +140,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onToggle }: SidebarProps)
                     <Link
                       key={item.href}
                       href={item.href}
+                      onClick={handleNavSelect}
                       className="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 group"
                     >
                       <Icon className="h-5 w-5 group-hover:text-white" />
@@ -141,6 +161,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onToggle }: SidebarProps)
                     <Link
                       key={item.href}
                       href={item.href}
+                      onClick={handleNavSelect}
                       className="flex items-center space-x-3 px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-700/50 transition-all duration-200 group"
                     >
                       <Icon className="h-5 w-5 group-hover:text-white" />
@@ -164,6 +185,11 @@ export const Sidebar = memo(function Sidebar({ isOpen, onToggle }: SidebarProps)
 
           {/* Footer Actions */}
           <div className="p-6 border-t border-slate-700 space-y-4">
+            {/* Language Switcher - temporarily hidden */}
+            {/* <div className="flex justify-start">
+              <LanguageSwitcher />
+            </div> */}
+
             {/* Search */}
             <Button 
               variant="ghost" 
@@ -174,7 +200,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onToggle }: SidebarProps)
             </Button>
 
             {/* Cart */}
-            <Link href="/cart">
+            <Link href="/cart" onClick={handleNavSelect}>
               <Button 
                 variant="ghost" 
                 className="w-full justify-start text-slate-300 hover:text-white hover:bg-slate-700/50 relative"
@@ -209,3 +235,4 @@ export const Sidebar = memo(function Sidebar({ isOpen, onToggle }: SidebarProps)
     </>
   )
 })
+

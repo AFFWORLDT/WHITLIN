@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useI18n } from "@/components/language-provider"
 import Link from "next/link"
 import Image from "next/image"
 import { Instagram, Facebook, Twitter, Mail, Loader2 } from "lucide-react"
@@ -11,6 +12,7 @@ import { toast } from "sonner"
 export function Footer() {
   const [email, setEmail] = useState("")
   const [isSubscribing, setIsSubscribing] = useState(false)
+  const { t } = useI18n()
 
   const handleNewsletterSubscribe = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -77,7 +79,7 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-serif text-lg font-semibold mb-4">Quick Links</h3>
+            <h3 className="font-serif text-lg font-semibold mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/products" className="text-gray-400 hover:text-primary transition-colors">
@@ -104,7 +106,7 @@ export function Footer() {
 
           {/* Customer Care */}
           <div>
-            <h3 className="font-serif text-lg font-semibold mb-4">Customer Care</h3>
+            <h3 className="font-serif text-lg font-semibold mb-4">{t('footer.customerCare')}</h3>
             <ul className="space-y-2">
               <li>
                 <Link href="/shipping" className="text-gray-400 hover:text-primary transition-colors">
@@ -131,7 +133,7 @@ export function Footer() {
 
           {/* Newsletter */}
           <div>
-            <h3 className="font-serif text-lg font-semibold mb-4">Stay Connected</h3>
+            <h3 className="font-serif text-lg font-semibold mb-4">{t('footer.contactUs')}</h3>
             <p className="text-gray-400 text-sm mb-4">Get the latest updates on new products and exclusive offers.</p>
             <form onSubmit={handleNewsletterSubscribe} className="flex gap-2 mb-4">
               <Input

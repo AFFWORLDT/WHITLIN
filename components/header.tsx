@@ -2,6 +2,7 @@
 
 import { useState, memo, useCallback } from "react"
 import Link from "next/link"
+import { useI18n } from "@/components/language-provider"
 import Image from "next/image"
 import { ShoppingBag, Search, Menu, X, User, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -14,6 +15,7 @@ export const Header = memo(function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const { state } = useCart()
   const { user, logout } = useAuth()
+  const { t } = useI18n()
 
   const toggleMenu = useCallback(() => {
     setIsMenuOpen(prev => !prev)
@@ -47,22 +49,22 @@ export const Header = memo(function Header() {
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             <Link href="/products" className="text-foreground hover:text-primary transition-colors">
-              Products
+              {t('nav.products')}
             </Link>
             <Link href="/showcase" className="text-foreground hover:text-primary transition-colors font-semibold">
-              Premium Collections
+              {t('nav.premium')}
             </Link>
             <Link href="/collections" className="text-foreground hover:text-primary transition-colors">
-              Collections
+              {t('nav.collections')}
             </Link>
             <Link href="/dashboard" className="text-foreground hover:text-primary transition-colors">
               Dashboard
             </Link>
             <Link href="/about" className="text-foreground hover:text-primary transition-colors">
-              About
+              {t('nav.about')}
             </Link>
             <Link href="/contact" className="text-foreground hover:text-primary transition-colors">
-              Contact
+              {t('nav.contact')}
             </Link>
           </nav>
 
@@ -133,21 +135,21 @@ export const Header = memo(function Header() {
                 className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Products
+                {t('nav.products')}
               </Link>
               <Link 
                 href="/showcase" 
                 className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium font-semibold"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Premium Collections
+                {t('nav.premium')}
               </Link>
               <Link 
                 href="/collections" 
                 className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Collections
+                {t('nav.collections')}
               </Link>
               <Link 
                 href="/dashboard" 
@@ -161,14 +163,14 @@ export const Header = memo(function Header() {
                 className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
-                About
+                {t('nav.about')}
               </Link>
               <Link 
                 href="/contact" 
                 className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Contact
+                {t('nav.contact')}
               </Link>
               
               {/* Mobile Search */}
@@ -238,3 +240,243 @@ export const Header = memo(function Header() {
     </header>
   )
 })
+
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+
+            </Button>
+
+          </div>
+
+        </div>
+
+
+
+        {/* Mobile Navigation - Enhanced */}
+
+        {isMenuOpen && (
+
+          <div className="md:hidden py-4 border-t border-border bg-background/95 backdrop-blur">
+
+            <nav className="flex flex-col space-y-3 px-3">
+
+              <Link 
+
+                href="/products" 
+
+                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+
+                onClick={() => setIsMenuOpen(false)}
+
+              >
+
+                Products
+
+              </Link>
+
+              <Link 
+
+                href="/showcase" 
+
+                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium font-semibold"
+
+                onClick={() => setIsMenuOpen(false)}
+
+              >
+
+                Premium Collections
+
+              </Link>
+
+              <Link 
+
+                href="/collections" 
+
+                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+
+                onClick={() => setIsMenuOpen(false)}
+
+              >
+
+                Collections
+
+              </Link>
+
+              <Link 
+
+                href="/dashboard" 
+
+                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+
+                onClick={() => setIsMenuOpen(false)}
+
+              >
+
+                Dashboard
+
+              </Link>
+
+              <Link 
+
+                href="/about" 
+
+                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+
+                onClick={() => setIsMenuOpen(false)}
+
+              >
+
+                About
+
+              </Link>
+
+              <Link 
+
+                href="/contact" 
+
+                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+
+                onClick={() => setIsMenuOpen(false)}
+
+              >
+
+                Contact
+
+              </Link>
+
+              
+
+              {/* Mobile Search */}
+
+              <div className="pt-2 border-t border-border">
+
+                <Button variant="ghost" className="w-full justify-start text-foreground hover:text-primary py-2 px-3">
+
+                  <Search className="h-4 w-4 mr-3" />
+
+                  Search Products
+
+                </Button>
+
+              </div>
+
+              
+
+              {/* User Actions */}
+
+              <div className="pt-2 border-t border-border">
+
+                {user ? (
+
+                  <>
+
+                    <div className="px-3 py-2 text-sm text-muted-foreground">
+
+                      Welcome, {user.name}
+
+                    </div>
+
+                    <Link 
+
+                      href="/account" 
+
+                      className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+
+                      onClick={() => setIsMenuOpen(false)}
+
+                    >
+
+                      My Account
+
+                    </Link>
+
+                    {user?.role === "admin" && (
+
+                      <Link 
+
+                        href="/admin" 
+
+                        className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+
+                        onClick={() => setIsMenuOpen(false)}
+
+                      >
+
+                        Admin Panel
+
+                      </Link>
+
+                    )}
+
+                    <button 
+
+                      onClick={() => {
+
+                        handleLogout()
+
+                        setIsMenuOpen(false)
+
+                      }} 
+
+                      className="w-full text-left text-red-600 hover:text-red-700 transition-colors py-2 px-3 rounded-md hover:bg-red-50 text-base font-medium"
+
+                    >
+
+                      Sign Out
+
+                    </button>
+
+                  </>
+
+                ) : (
+
+                  <>
+
+                    <Link 
+
+                      href="/login" 
+
+                      className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+
+                      onClick={() => setIsMenuOpen(false)}
+
+                    >
+
+                      Sign In
+
+                    </Link>
+
+                    <Link 
+
+                      href="/signup" 
+
+                      className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+
+                      onClick={() => setIsMenuOpen(false)}
+
+                    >
+
+                      Sign Up
+
+                    </Link>
+
+                  </>
+
+                )}
+
+              </div>
+
+            </nav>
+
+          </div>
+
+        )}
+
+      </div>
+
+    </header>
+
+  )
+
+})
+
+
