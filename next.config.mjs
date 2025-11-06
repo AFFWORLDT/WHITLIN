@@ -26,6 +26,19 @@ const nextConfig = {
         port: '',
         pathname: '/**',
       },
+      // Allow images hosted on ibb.co (and i.ibb.co) used in product assets
+      {
+        protocol: 'https',
+        hostname: 'ibb.co',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ibb.co',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
   experimental: {

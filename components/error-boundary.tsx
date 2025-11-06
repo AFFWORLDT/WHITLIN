@@ -21,11 +21,15 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    // Log error for debugging
+    console.error('ErrorBoundary caught an error:', error)
     return { hasError: true, error }
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('Error caught by boundary:', error, errorInfo)
+    console.error('Error stack:', error.stack)
+    console.error('Component stack:', errorInfo.componentStack)
   }
 
   resetError = () => {
@@ -65,24 +69,32 @@ function DefaultErrorFallback({ error, resetError }: { error?: Error; resetError
         {process.env.NODE_ENV === 'development' && error && (
           <details className="mb-6 text-left">
             <summary className="cursor-pointer text-sm text-gray-500 mb-2">
-              Error Details (Development)
+              ► Error Details (Development)
             </summary>
-            <pre className="text-xs bg-gray-100 p-3 rounded overflow-auto">
-              {error.message}
-              {error.stack}
+            <pre className="text-xs bg-gray-100 p-3 rounded overflow-auto max-h-60">
+              <div className="font-semibold mb-2">Error Message:</div>
+              <div className="mb-4">{error.message}</div>
+              {error.stack && (
+                <>
+                  <div className="font-semibold mb-2">Stack Trace:</div>
+                  <div className="whitespace-pre-wrap">{error.stack}</div>
+                </>
+              )}
             </pre>
           </details>
         )}
         
         <div className="space-y-3">
-          <Button onClick={resetError} className="w-full">
+          <Button onClick={resetError} className="w-full bg-yellow-500 hover:bg-yellow-600 text-white">
             <RefreshCw className="h-4 w-4 mr-2" />
             Try Again
           </Button>
           
           <Button 
             variant="outline" 
-            onClick={() => window.location.href = '/'}
+            onClick={() => {
+              window.location.href = '/'
+            }}
             className="w-full"
           >
             Go Home

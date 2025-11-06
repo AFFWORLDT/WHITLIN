@@ -167,10 +167,10 @@ export default function AdminLayout({
       </div>
 
       {/* Main content */}
-      <div className="md:ml-64">
+      <div className="md:pl-1">
         {/* Top bar */}
-        <header className="bg-card border-b border-border px-4 py-3">
-          <div className="flex items-center justify-between">
+        <header className="bg-card border-b border-border py-3">
+          <div className="flex items-center justify-between pl-0 pr-2 sm:pr-4">
             <Button
               variant="ghost"
               size="icon"
@@ -191,7 +191,7 @@ export default function AdminLayout({
         </header>
 
         {/* Page content */}
-        <main className="p-6">
+        <main className="pl-0 pr-2 sm:pr-4 py-4">
           {children}
         </main>
       </div>
