@@ -11,7 +11,6 @@ import { Separator } from "@/components/ui/separator"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { useAuth } from "@/lib/auth-context"
-import DebugAuth from "@/components/debug-auth"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -179,11 +178,6 @@ export default function LoginPage() {
             </div>
           </CardContent>
         </Card>
-        
-        {/* Debug component - remove in production */}
-        <div className="mt-8">
-          <DebugAuth />
-        </div>
       </div>
     </div>
   )

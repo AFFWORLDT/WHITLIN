@@ -247,11 +247,11 @@ export default function ProductDetailsPage() {
   if (error || !product) {
     return (
       <div className="min-h-screen">
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-12 md:py-16">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-destructive mb-4">Product Not Found</h1>
-            <p className="text-muted-foreground mb-6">{error}</p>
-            <Button onClick={() => window.history.back()}>Go Back</Button>
+            <h1 className="text-xl sm:text-2xl font-bold text-destructive mb-3 sm:mb-4">Product Not Found</h1>
+            <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6">{error}</p>
+            <Button onClick={() => window.history.back()} className="text-sm sm:text-base">Go Back</Button>
           </div>
         </div>
         <Footer />
@@ -262,10 +262,10 @@ export default function ProductDetailsPage() {
   return (
     <div className="min-h-screen">
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
           {/* Product Images */}
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
               {product.images && product.images.length > 0 ? (
                 <UniversalProductImage
@@ -277,20 +277,20 @@ export default function ProductDetailsPage() {
               ) : (
                 <div className="w-full h-full flex items-center justify-center bg-gray-100">
                   <div className="text-center">
-                    <div className="text-6xl text-gray-400 mb-2">📦</div>
-                    <p className="text-gray-500">No image available</p>
+                    <div className="text-4xl sm:text-6xl text-gray-400 mb-2">📦</div>
+                    <p className="text-sm sm:text-base text-gray-500">No image available</p>
                   </div>
                 </div>
               )}
               {product.originalPrice && product.originalPrice > product.price && (
-                <Badge className="absolute top-4 left-4 bg-red-500 text-white">
+                <Badge className="absolute top-2 left-2 sm:top-4 sm:left-4 bg-red-500 text-white text-xs sm:text-sm">
                   Sale
                 </Badge>
               )}
             </div>
             
             {product.images && product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-4 gap-2 sm:gap-3">
                 {product.images.map((image, index) => (
                   <button
                     key={index}
@@ -310,36 +310,36 @@ export default function ProductDetailsPage() {
           </div>
 
           {/* Product Details */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <Badge variant="outline" className="text-primary border-primary">
+              <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-3">
+                <Badge variant="outline" className="text-primary border-primary text-xs sm:text-sm">
                   {product.category.name}
                 </Badge>
-                <Badge className="bg-green-100 text-green-800">In Stock</Badge>
+                <Badge className="bg-green-100 text-green-800 text-xs sm:text-sm">In Stock</Badge>
               </div>
               
-              <h1 className="text-3xl font-serif font-bold mb-4">{product.name}</h1>
+              <h1 className="text-2xl sm:text-3xl font-serif font-bold mb-3 sm:mb-4">{product.name}</h1>
               
-              <div className="flex items-center gap-1 mb-4">
+              <div className="flex items-center gap-1 mb-3 sm:mb-4">
                 {[...Array(5)].map((_, i) => (
                   <Star
                     key={i}
-                    className={`h-5 w-5 ${
+                    className={`h-4 w-4 sm:h-5 sm:w-5 ${
                       i < 4 ? "fill-primary text-primary" : "text-muted-foreground"
                     }`}
                   />
                 ))}
-                <span className="text-sm text-muted-foreground ml-2">(4.8) 124 reviews</span>
+                <span className="text-xs sm:text-sm text-muted-foreground ml-2">(4.8) 124 reviews</span>
               </div>
 
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-3xl font-bold">AED {product.price}</span>
+              <div className="flex flex-wrap items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                <span className="text-2xl sm:text-3xl font-bold">AED {product.price}</span>
                 {product.originalPrice && (
-                  <span className="text-xl text-muted-foreground line-through">AED {product.originalPrice}</span>
+                  <span className="text-lg sm:text-xl text-muted-foreground line-through">AED {product.originalPrice}</span>
                 )}
                 {product.originalPrice && (
-                  <Badge className="bg-red-100 text-red-800">
+                  <Badge className="bg-red-100 text-red-800 text-xs sm:text-sm">
                     Save AED {product.originalPrice - product.price}
                   </Badge>
                 )}
@@ -349,15 +349,15 @@ export default function ProductDetailsPage() {
             <Separator />
 
             <div>
-              <h3 className="font-semibold mb-2">Description</h3>
-              <p className="text-muted-foreground leading-relaxed">
+              <h3 className="font-semibold mb-2 text-sm sm:text-base">Description</h3>
+              <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
                 {product.longDescription || product.description}
               </p>
             </div>
 
             <div>
-              <h3 className="font-semibold mb-3">Product Details</h3>
-              <div className="grid grid-cols-2 gap-3">
+              <h3 className="font-semibold mb-3 text-sm sm:text-base">Product Details</h3>
+              <div className="grid grid-cols-2 gap-3 sm:gap-4">
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Size:</span>
                   <span className="font-medium">{getProductAttribute('size')}</span>
@@ -380,43 +380,45 @@ export default function ProductDetailsPage() {
             <Separator />
 
             <div>
-              <h3 className="font-semibold mb-3">Quantity</h3>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center border rounded-lg">
+              <h3 className="font-semibold mb-3 text-sm sm:text-base">Quantity</h3>
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                <div className="flex items-center border rounded-lg w-full sm:w-auto justify-center">
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
                     disabled={quantity <= 1}
+                    className="h-10 w-10"
                   >
                     -
                   </Button>
-                  <span className="px-4 py-2 min-w-[3rem] text-center">{quantity}</span>
+                  <span className="px-4 py-2 min-w-[3rem] text-center text-sm sm:text-base">{quantity}</span>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setQuantity(quantity + 1)}
+                    className="h-10 w-10"
                   >
                     +
                   </Button>
                 </div>
                 <Button
                   onClick={handleAddToCart}
-                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground"
+                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground text-sm sm:text-base h-10 sm:h-auto"
                 >
                   <ShoppingCart className="h-4 w-4 mr-2" />
                   Add to Cart
                 </Button>
                 <Button
                   onClick={handleBuyNow}
-                  className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold"
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white font-semibold text-sm sm:text-base h-10 sm:h-auto"
                 >
                   ⚡ Buy Now
                 </Button>
               </div>
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
               <Button 
                 variant="outline" 
                 className="flex-1"

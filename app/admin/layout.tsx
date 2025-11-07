@@ -96,13 +96,13 @@ export default function AdminLayout({
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-black bg-opacity-50 md:hidden"
+          className="fixed inset-0 z-40 bg-black bg-opacity-50 lg:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-200 ease-in-out md:translate-x-0 ${
+      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-200 ease-in-out lg:translate-x-0 ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
       }`}>
         <div className="flex flex-col h-full">
@@ -122,7 +122,7 @@ export default function AdminLayout({
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
+              className="lg:hidden"
               onClick={() => setSidebarOpen(false)}
             >
               <X className="h-5 w-5" />
@@ -130,18 +130,20 @@ export default function AdminLayout({
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4 space-y-2">
-            {adminNavItems.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="flex items-center space-x-3 px-3 py-2 rounded-lg text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-                onClick={() => setSidebarOpen(false)}
-              >
-                <item.icon className="h-5 w-5" />
-                <span>{item.label}</span>
-              </Link>
-            ))}
+          <nav className="flex-1 p-4">
+            <div className="space-y-2 flex flex-col">
+              {adminNavItems.map((item) => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className="block w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+                  onClick={() => setSidebarOpen(false)}
+                >
+                  <item.icon className="h-5 w-5 flex-shrink-0" />
+                  <span>{item.label}</span>
+                </Link>
+              ))}
+            </div>
           </nav>
 
           {/* User info and logout */}
@@ -169,22 +171,24 @@ export default function AdminLayout({
       </div>
 
       {/* Main content */}
-      <div className="md:pl-1">
+      <div className="lg:pl-64">
         {/* Top bar */}
         <header className="bg-card border-b border-border py-3">
-          <div className="flex items-center justify-between pl-0 pr-2 sm:pr-4">
-            <Button
-              variant="ghost"
-              size="icon"
-              className="md:hidden"
-              onClick={() => setSidebarOpen(true)}
-            >
-              <Menu className="h-5 w-5" />
-            </Button>
-            <h1 className="text-lg font-semibold">Admin Panel</h1>
+          <div className="flex items-center justify-between px-3 sm:px-4 md:px-6">
+            <div className="flex items-center gap-3">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden"
+                onClick={() => setSidebarOpen(true)}
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+              <h1 className="text-base sm:text-lg font-semibold">Admin Panel</h1>
+            </div>
             <div className="flex items-center space-x-2">
               <Link href="/" target="_blank">
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" className="text-xs sm:text-sm">
                   View Site
                 </Button>
               </Link>
@@ -193,7 +197,7 @@ export default function AdminLayout({
         </header>
 
         {/* Page content */}
-        <main className="pl-0 pr-2 sm:pr-4 py-4">
+        <main className="px-3 sm:px-4 md:px-6 py-4 sm:py-6">
           {children}
         </main>
       </div>

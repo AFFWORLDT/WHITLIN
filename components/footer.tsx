@@ -54,12 +54,12 @@ export function Footer() {
 
   return (
     <footer className="bg-black text-white">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-10 md:py-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* Brand */}
-          <div className="space-y-4">
+          <div className="space-y-3 sm:space-y-4">
             <div className="flex items-center space-x-3">
-              <div className="relative w-16 h-16">
+              <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16">
                 <Image
                   src="/images/logonew.png"
                   alt="KeraGold PRO Logo"
@@ -68,36 +68,36 @@ export function Footer() {
                 />
               </div>
               <div>
-                <span className="font-serif text-xl font-bold">KeraGold</span>
+                <span className="font-serif text-lg sm:text-xl font-bold">KeraGold</span>
                 <span className="text-xs text-gray-400 block -mt-1">PRO</span>
               </div>
             </div>
-            <p className="text-gray-400 text-sm text-pretty">
+            <p className="text-gray-400 text-xs sm:text-sm text-pretty">
               Professional hair care solutions for the modern woman. Transform your hair with luxury treatments.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h3 className="font-serif text-lg font-semibold mb-4">{t('footer.quickLinks')}</h3>
+            <h3 className="font-serif text-base sm:text-lg font-semibold mb-3 sm:mb-4">{t('footer.quickLinks')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/products" className="text-gray-400 hover:text-primary transition-colors">
+                <Link href="/products" className="text-gray-400 hover:text-primary transition-colors text-sm sm:text-base">
                   Products
                 </Link>
               </li>
               <li>
-                <Link href="/collections" className="text-gray-400 hover:text-primary transition-colors">
+                <Link href="/collections" className="text-gray-400 hover:text-primary transition-colors text-sm sm:text-base">
                   Collections
                 </Link>
               </li>
               <li>
-                <Link href="/about" className="text-gray-400 hover:text-primary transition-colors">
+                <Link href="/about" className="text-gray-400 hover:text-primary transition-colors text-sm sm:text-base">
                   About Us
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="text-gray-400 hover:text-primary transition-colors">
+                <Link href="/contact" className="text-gray-400 hover:text-primary transition-colors text-sm sm:text-base">
                   Contact
                 </Link>
               </li>
@@ -106,25 +106,25 @@ export function Footer() {
 
           {/* Customer Care */}
           <div>
-            <h3 className="font-serif text-lg font-semibold mb-4">{t('footer.customerCare')}</h3>
+            <h3 className="font-serif text-base sm:text-lg font-semibold mb-3 sm:mb-4">{t('footer.customerCare')}</h3>
             <ul className="space-y-2">
               <li>
-                <Link href="/shipping" className="text-gray-400 hover:text-primary transition-colors">
+                <Link href="/shipping" className="text-gray-400 hover:text-primary transition-colors text-sm sm:text-base">
                   Shipping Info
                 </Link>
               </li>
               <li>
-                <Link href="/returns" className="text-gray-400 hover:text-primary transition-colors">
+                <Link href="/returns" className="text-gray-400 hover:text-primary transition-colors text-sm sm:text-base">
                   Returns
                 </Link>
               </li>
               <li>
-                <Link href="/faq" className="text-gray-400 hover:text-primary transition-colors">
+                <Link href="/faq" className="text-gray-400 hover:text-primary transition-colors text-sm sm:text-base">
                   FAQ
                 </Link>
               </li>
               <li>
-                <Link href="/support" className="text-gray-400 hover:text-primary transition-colors">
+                <Link href="/support" className="text-gray-400 hover:text-primary transition-colors text-sm sm:text-base">
                   Support
                 </Link>
               </li>
@@ -132,22 +132,22 @@ export function Footer() {
           </div>
 
           {/* Newsletter */}
-          <div>
-            <h3 className="font-serif text-lg font-semibold mb-4">{t('footer.contactUs')}</h3>
-            <p className="text-gray-400 text-sm mb-4">Get the latest updates on new products and exclusive offers.</p>
-            <form onSubmit={handleNewsletterSubscribe} className="flex gap-2 mb-4">
+          <div className="sm:col-span-2 lg:col-span-1">
+            <h3 className="font-serif text-base sm:text-lg font-semibold mb-3 sm:mb-4">{t('footer.contactUs')}</h3>
+            <p className="text-gray-400 text-xs sm:text-sm mb-3 sm:mb-4">Get the latest updates on new products and exclusive offers.</p>
+            <form onSubmit={handleNewsletterSubscribe} className="flex flex-col sm:flex-row gap-2 mb-3 sm:mb-4">
               <Input
                 type="email"
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500"
+                className="bg-gray-800 border-gray-700 text-white placeholder:text-gray-500 text-sm sm:text-base flex-1"
                 disabled={isSubscribing}
                 required
               />
               <Button 
                 type="submit"
-                className="bg-primary hover:bg-primary/90 text-black"
+                className="bg-primary hover:bg-primary/90 text-black w-full sm:w-auto"
                 disabled={isSubscribing}
               >
                 {isSubscribing ? (
@@ -158,21 +158,21 @@ export function Footer() {
               </Button>
             </form>
             <div className="flex space-x-4">
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-primary">
-                <Instagram className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-primary h-8 w-8 sm:h-10 sm:w-10">
+                <Instagram className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-primary">
-                <Facebook className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-primary h-8 w-8 sm:h-10 sm:w-10">
+                <Facebook className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
-              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-primary">
-                <Twitter className="h-5 w-5" />
+              <Button variant="ghost" size="icon" className="text-gray-400 hover:text-primary h-8 w-8 sm:h-10 sm:w-10">
+                <Twitter className="h-4 w-4 sm:h-5 sm:w-5" />
               </Button>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-gray-800 mt-8 pt-8 text-center">
-          <p className="text-gray-400 text-sm">
+        <div className="border-t border-gray-800 mt-6 sm:mt-8 pt-6 sm:pt-8 text-center">
+          <p className="text-gray-400 text-xs sm:text-sm px-2">
             © 2025 KeraGold Pro. All rights reserved. |
             <Link href="/privacy" className="hover:text-primary transition-colors ml-1">
               Privacy Policy

@@ -138,20 +138,20 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back! Here's what's happening with your store.</p>
+          <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">Welcome back! Here's what's happening with your store.</p>
         </div>
-        <Button onClick={fetchDashboardData} variant="outline" size="sm">
+        <Button onClick={fetchDashboardData} variant="outline" size="sm" className="w-full sm:w-auto">
           <TrendingUp className="h-4 w-4 mr-2" />
           Refresh
         </Button>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Products</CardTitle>
@@ -205,7 +205,7 @@ export default function AdminDashboard() {
         </Card>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Recent Orders */}
         <Card>
           <CardHeader>
@@ -282,7 +282,7 @@ export default function AdminDashboard() {
           <CardDescription>Common administrative tasks</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <Card 
               className="cursor-pointer hover:bg-accent transition-colors"
               onClick={() => router.push('/admin/products/add')}

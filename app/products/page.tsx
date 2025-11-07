@@ -201,8 +201,8 @@ export default function ProductsPage() {
   if (loading) {
     return (
       <div className="min-h-screen">
-        <div className="container mx-auto px-4 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
             {Array.from({ length: 8 }).map((_, index) => (
               <ProductSkeleton key={index} />
             ))}
@@ -216,11 +216,11 @@ export default function ProductsPage() {
   if (error) {
     return (
       <div className="min-h-screen">
-        <div className="container mx-auto px-4 py-16">
+        <div className="container mx-auto px-3 sm:px-4 py-8 sm:py-12 md:py-16">
           <div className="text-center">
-            <h1 className="text-2xl font-bold text-destructive mb-4">Error Loading Products</h1>
-            <p className="text-muted-foreground mb-6">{error}</p>
-            <Button onClick={() => window.location.reload()}>Retry</Button>
+            <h1 className="text-xl sm:text-2xl font-bold text-destructive mb-3 sm:mb-4">Error Loading Products</h1>
+            <p className="text-sm sm:text-base text-muted-foreground mb-4 sm:mb-6 px-4">{error}</p>
+            <Button onClick={() => window.location.reload()} className="text-sm sm:text-base">Retry</Button>
           </div>
         </div>
         <Footer />
@@ -231,33 +231,33 @@ export default function ProductsPage() {
   return (
     <div className="min-h-screen">
       
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">All Products</h1>
-          <p className="text-muted-foreground">
+      <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
+        <div className="mb-4 sm:mb-6 md:mb-8">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 md:mb-4">All Products</h1>
+          <p className="text-sm sm:text-base text-muted-foreground">
             Discover our complete range of professional hair care products
           </p>
         </div>
 
         {/* Filters and Search */}
-        <div className="flex flex-col lg:flex-row gap-4 mb-8">
-          <div className="flex-1">
+        <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="w-full">
             <div className="relative">
               <Input
                 placeholder="Search by name, description, or SKU..."
                 value={searchTerm}
                 onChange={(e) => handleSearch(e.target.value)}
-                className="pl-10"
+                className="pl-9 sm:pl-10 h-10 sm:h-11 text-sm sm:text-base"
               />
               <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             </div>
           </div>
           
-          <div className="flex gap-4">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             <select
               value={selectedCategory}
               onChange={(e) => handleCategoryChange(e.target.value)}
-              className="px-3 py-2 border border-input bg-background rounded-md text-sm"
+              className="w-full sm:w-auto sm:flex-1 px-3 py-2 h-10 sm:h-11 border border-input bg-background rounded-md text-sm sm:text-base"
             >
               <option value="all">All Categories</option>
               {categories.map(category => (
@@ -270,7 +270,7 @@ export default function ProductsPage() {
             <select
               value={sortBy}
               onChange={(e) => handleSortChange(e.target.value)}
-              className="px-3 py-2 border border-input bg-background rounded-md text-sm"
+              className="w-full sm:w-auto sm:flex-1 px-3 py-2 h-10 sm:h-11 border border-input bg-background rounded-md text-sm sm:text-base"
             >
               <option value="newest">Newest First</option>
               <option value="price-low">Price: Low to High</option>
@@ -278,20 +278,24 @@ export default function ProductsPage() {
               <option value="name">Name: A to Z</option>
             </select>
             
-            <div className="flex border border-input rounded-md">
+            <div className="flex border border-input rounded-md w-full sm:w-auto">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("grid")}
+                className="flex-1 sm:flex-none h-10 sm:h-11"
               >
-                <Grid className="h-4 w-4" />
+                <Grid className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Grid</span>
               </Button>
               <Button
                 variant={viewMode === "list" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => setViewMode("list")}
+                className="flex-1 sm:flex-none h-10 sm:h-11"
               >
-                <List className="h-4 w-4" />
+                <List className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">List</span>
               </Button>
             </div>
           </div>
@@ -299,15 +303,15 @@ export default function ProductsPage() {
 
         {/* Products Grid/List */}
         {products.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-muted-foreground text-lg">No products found</p>
-            <p className="text-muted-foreground">Try adjusting your search or filters</p>
+          <div className="text-center py-8 sm:py-12 md:py-16">
+            <p className="text-muted-foreground text-base sm:text-lg mb-2">No products found</p>
+            <p className="text-muted-foreground text-sm sm:text-base">Try adjusting your search or filters</p>
           </div>
         ) : (
           <>
             <div className={
               viewMode === "grid" 
-                ? "grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6"
+                ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4 md:gap-6"
                 : "space-y-3 sm:space-y-4"
             }>
               {products.map((product, index) => (
@@ -338,44 +342,45 @@ export default function ProductsPage() {
                     </div>
                   </Link>
 
-                  <CardContent className="p-6">
+                  <CardContent className="p-3 sm:p-4 md:p-6">
                     <div className="flex items-center gap-1 mb-2">
                       {[...Array(5)].map((_, i) => (
                         <Star
                           key={i}
-                          className={`h-4 w-4 ${
+                          className={`h-3 w-3 sm:h-4 sm:w-4 ${
                             i < 4 ? "fill-primary text-primary" : "text-muted-foreground"
                           }`}
                         />
                       ))}
-                      <span className="text-sm text-muted-foreground ml-1">(4.8)</span>
+                      <span className="text-xs sm:text-sm text-muted-foreground ml-1">(4.8)</span>
                     </div>
 
                     <Link href={`/products/${product._id}`}>
-                      <h3 className="font-serif text-lg font-semibold mb-1 text-balance hover:text-primary transition-colors cursor-pointer">
+                      <h3 className="font-serif text-base sm:text-lg font-semibold mb-1 text-balance hover:text-primary transition-colors cursor-pointer line-clamp-2">
                         {product.name}
                       </h3>
                     </Link>
                     <p className="text-xs text-primary font-medium mb-1">{product.category.name} Range</p>
                     <p className="text-xs text-muted-foreground mb-1">SKU: {product.sku || 'N/A'}</p>
-                    <p className="text-sm text-muted-foreground mb-3 text-pretty line-clamp-2">
+                    <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3 text-pretty line-clamp-2">
                       {product.description}
                     </p>
 
-                    <div className="flex items-center justify-between">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-xl font-bold">AED {product.price}</span>
+                        <span className="text-lg sm:text-xl font-bold">AED {product.price}</span>
                         {product.originalPrice && (
-                          <span className="text-sm text-muted-foreground line-through">AED {product.originalPrice}</span>
+                          <span className="text-xs sm:text-sm text-muted-foreground line-through">AED {product.originalPrice}</span>
                         )}
                       </div>
                       <Button
                         size="sm"
-                        className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto text-xs sm:text-sm"
                         onClick={() => handleAddToCart(product)}
                       >
-                        <ShoppingCart className="h-4 w-4 mr-1" />
-                        Add to Cart
+                        <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                        <span className="hidden sm:inline">Add to Cart</span>
+                        <span className="sm:hidden">Add</span>
                       </Button>
                     </div>
                   </CardContent>
@@ -385,108 +390,116 @@ export default function ProductsPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="mt-8 flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
-                {/* Page Info */}
-                <div className="text-sm text-muted-foreground">
-                  Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalProducts)} of {totalProducts} products
-                </div>
+              <div className="mt-6 sm:mt-8 space-y-4">
+                {/* Page Info and Items Per Page - Mobile */}
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                  <div className="text-xs sm:text-sm text-muted-foreground">
+                    Showing {((currentPage - 1) * itemsPerPage) + 1} to {Math.min(currentPage * itemsPerPage, totalProducts)} of {totalProducts} products
+                  </div>
 
-                {/* Items Per Page */}
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-muted-foreground">Items per page:</span>
-                  <select
-                    value={itemsPerPage.toString()}
-                    onChange={(e) => handleItemsPerPageChange(e.target.value)}
-                    className="px-2 py-1 border border-input bg-background rounded text-sm"
-                  >
-                    <option value="12">12</option>
-                    <option value="24">24</option>
-                    <option value="48">48</option>
-                    <option value="96">96</option>
-                  </select>
+                  {/* Items Per Page */}
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs sm:text-sm text-muted-foreground">Items per page:</span>
+                    <select
+                      value={itemsPerPage.toString()}
+                      onChange={(e) => handleItemsPerPageChange(e.target.value)}
+                      className="px-2 py-1 h-8 sm:h-9 border border-input bg-background rounded text-xs sm:text-sm"
+                    >
+                      <option value="12">12</option>
+                      <option value="24">24</option>
+                      <option value="48">48</option>
+                      <option value="96">96</option>
+                    </select>
+                  </div>
                 </div>
 
                 {/* Pagination Controls */}
-                <div className="flex items-center space-x-2">
-                  {/* First Page */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handlePageChange(1)}
-                    disabled={currentPage === 1}
-                  >
-                    <ChevronsLeft className="h-4 w-4" />
-                  </Button>
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4">
+                  <div className="flex items-center space-x-1 sm:space-x-2 w-full sm:w-auto justify-center">
+                    {/* First Page */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(1)}
+                      disabled={currentPage === 1}
+                      className="h-8 w-8 sm:h-9 sm:w-9 p-0"
+                    >
+                      <ChevronsLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                    </Button>
 
-                  {/* Previous Page */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
+                    {/* Previous Page */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                      className="h-8 w-8 sm:h-9 sm:w-9 p-0"
+                    >
+                      <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+                    </Button>
 
-                  {/* Page Numbers */}
-                  <div className="flex items-center space-x-1">
-                    {getVisiblePages().map((page, index) => (
-                      page === '...' ? (
-                        <span key={index} className="px-2 py-1 text-muted-foreground">...</span>
-                      ) : (
-                        <Button
-                          key={index}
-                          variant={currentPage === page ? "default" : "outline"}
-                          size="sm"
-                          onClick={() => handlePageChange(page as number)}
-                          className={currentPage === page ? "bg-primary text-white" : ""}
-                        >
-                          {page}
-                        </Button>
-                      )
-                    ))}
+                    {/* Page Numbers */}
+                    <div className="flex items-center space-x-1 overflow-x-auto max-w-[200px] sm:max-w-none">
+                      {getVisiblePages().map((page, index) => (
+                        page === '...' ? (
+                          <span key={index} className="px-1 sm:px-2 py-1 text-xs sm:text-sm text-muted-foreground">...</span>
+                        ) : (
+                          <Button
+                            key={index}
+                            variant={currentPage === page ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => handlePageChange(page as number)}
+                            className={`h-8 w-8 sm:h-9 sm:w-9 p-0 text-xs sm:text-sm ${currentPage === page ? "bg-primary text-white" : ""}`}
+                          >
+                            {page}
+                          </Button>
+                        )
+                      ))}
+                    </div>
+
+                    {/* Next Page */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                      className="h-8 w-8 sm:h-9 sm:w-9 p-0"
+                    >
+                      <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
+                    </Button>
+
+                    {/* Last Page */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handlePageChange(totalPages)}
+                      disabled={currentPage === totalPages}
+                      className="h-8 w-8 sm:h-9 sm:w-9 p-0"
+                    >
+                      <ChevronsRight className="h-3 w-3 sm:h-4 sm:w-4" />
+                    </Button>
                   </div>
 
-                  {/* Next Page */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-
-                  {/* Last Page */}
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handlePageChange(totalPages)}
-                    disabled={currentPage === totalPages}
-                  >
-                    <ChevronsRight className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                {/* Jump to Page */}
-                <div className="flex items-center space-x-2">
-                  <span className="text-sm text-muted-foreground">Go to:</span>
-                  <Input
-                    type="number"
-                    min="1"
-                    max={totalPages}
-                    placeholder="Page"
-                    className="w-20"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        const page = parseInt((e.target as HTMLInputElement).value)
-                        if (page >= 1 && page <= totalPages) {
-                          handleJumpToPage(page)
-                          ;(e.target as HTMLInputElement).value = ''
+                  {/* Jump to Page */}
+                  <div className="flex items-center space-x-2 w-full sm:w-auto justify-center sm:justify-end">
+                    <span className="text-xs sm:text-sm text-muted-foreground">Go to:</span>
+                    <Input
+                      type="number"
+                      min="1"
+                      max={totalPages}
+                      placeholder="Page"
+                      className="w-16 sm:w-20 h-8 sm:h-9 text-xs sm:text-sm"
+                      onKeyPress={(e) => {
+                        if (e.key === 'Enter') {
+                          const page = parseInt((e.target as HTMLInputElement).value)
+                          if (page >= 1 && page <= totalPages) {
+                            handleJumpToPage(page)
+                            ;(e.target as HTMLInputElement).value = ''
+                          }
                         }
-                      }
-                    }}
-                  />
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             )}

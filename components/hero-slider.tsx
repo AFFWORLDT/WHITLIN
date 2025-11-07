@@ -60,7 +60,7 @@ const heroSlides: HeroSlide[] = [
       href: "/contact"
     },
     overlay: "PREMIUM",
-    textPosition: 'left',
+    textPosition: 'center',
     theme: 'light'
   },
   {
@@ -78,7 +78,7 @@ const heroSlides: HeroSlide[] = [
       href: "/about"
     },
     overlay: "LUXURY",
-    textPosition: 'right',
+    textPosition: 'center',
     theme: 'dark'
   }
 ]
@@ -258,13 +258,7 @@ export function HeroSlider() {
         {/* Enhanced Content - Mobile Optimized */}
         <div className="relative z-10 h-full flex items-center">
           <div className="container mx-auto px-3 sm:px-4 md:px-6">
-            <div className={`max-w-6xl ${
-              currentSlideData.textPosition === 'left' 
-                ? 'text-left' 
-                : currentSlideData.textPosition === 'right'
-                ? 'text-right ml-auto'
-                : 'text-center mx-auto'
-            }`}>
+            <div className="max-w-6xl text-center mx-auto">
               {/* Enhanced Title with Gradient Text - Mobile Responsive */}
               <h1 className={`font-serif text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-3 sm:mb-4 md:mb-6 text-balance transition-all duration-700 transform ${
                 isTransitioning ? 'opacity-0 translate-y-8 scale-95' : 'opacity-100 translate-y-0 scale-100'
@@ -286,10 +280,8 @@ export function HeroSlider() {
               </h1>
 
               {/* Enhanced Description - Mobile Optimized */}
-              <p className={`text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 md:mb-10 text-pretty max-w-4xl transition-all duration-700 transform delay-100 ${
+              <p className={`text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 md:mb-10 text-pretty max-w-4xl mx-auto transition-all duration-700 transform delay-100 ${
                 isTransitioning ? 'opacity-0 translate-y-6 scale-95' : 'opacity-100 translate-y-0 scale-100'
-              } ${
-                currentSlideData.textPosition === 'center' ? 'mx-auto' : ''
               } ${
                 currentSlideData.theme === 'dark' 
                   ? 'text-white/95 drop-shadow-lg' 
@@ -299,10 +291,8 @@ export function HeroSlider() {
               </p>
 
               {/* Enhanced Buttons - Mobile Optimized */}
-              <div className={`flex flex-col xs:flex-row gap-3 sm:gap-4 md:gap-6 transition-all duration-700 transform delay-200 ${
+              <div className={`flex flex-col xs:flex-row gap-3 sm:gap-4 md:gap-6 justify-center transition-all duration-700 transform delay-200 ${
                 isTransitioning ? 'opacity-0 translate-y-6 scale-95' : 'opacity-100 translate-y-0 scale-100'
-              } ${
-                currentSlideData.textPosition === 'center' ? 'justify-center' : ''
               }`}>
                 <Link href={currentSlideData.primaryButton.href}>
                   <Button 

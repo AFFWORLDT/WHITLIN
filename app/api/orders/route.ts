@@ -8,8 +8,25 @@ export async function POST(request: NextRequest) {
   try {
     await connectDB()
     
-    const requestBody = await request.json()
-    console.log('Order API - Request body:', JSON.stringify(requestBody, null, 2))
+    let requestBody
+    try {
+      requestBody = await request.json()
+      console.log('Order API - Request body:', JSON.stringify(requestBody, null, 2))
+    } catch (parseError) {
+      console.error('Order API - Failed to parse request body:', parseError)
+      return NextResponse.json(
+        { success: false, error: 'Invalid request format. Please try again.' },
+        { status: 400 }
+      )
+    }
+    
+    if (!requestBody || typeof requestBody !== 'object') {
+      console.error('Order API - Invalid request body type:', typeof requestBody)
+      return NextResponse.json(
+        { success: false, error: 'Invalid request data' },
+        { status: 400 }
+      )
+    }
     
     const {
       userId,
@@ -35,10 +52,51 @@ export async function POST(request: NextRequest) {
       console.log('Order API - Missing required fields:', {
         hasUserId: !!userId,
         hasItems: !!items,
-        hasShippingAddress: !!shippingAddress
+        hasShippingAddress: !!shippingAddress,
+        shippingAddressType: typeof shippingAddress
       })
       return NextResponse.json(
-        { success: false, error: 'Missing required fields' },
+        { success: false, error: 'Missing required fields: userId, items, or shippingAddress' },
+        { status: 400 }
+      )
+    }
+
+    // Ensure shippingAddress is an object
+    if (typeof shippingAddress !== 'object' || Array.isArray(shippingAddress)) {
+      console.log('Order API - Invalid shippingAddress type:', typeof shippingAddress, shippingAddress)
+      return NextResponse.json(
+        { success: false, error: 'Invalid shipping address format' },
+        { status: 400 }
+      )
+    }
+
+    // Validate shipping address has all required fields
+    console.log('Order API - Full shipping address received:', JSON.stringify(shippingAddress, null, 2))
+    
+    const requiredAddressFields = ['name', 'address', 'city', 'state', 'zipCode', 'country', 'phone']
+    const missingFields = requiredAddressFields.filter(field => {
+      const value = shippingAddress[field]
+      // Check if field is missing, null, undefined, or empty after trimming
+      if (value === null || value === undefined) return true
+      if (typeof value !== 'string') return true
+      if (value.trim() === '') return true
+      return false
+    })
+    
+    if (missingFields.length > 0) {
+      console.log('Order API - Missing address fields:', missingFields)
+      console.log('Order API - Field values:', requiredAddressFields.map(field => ({
+        field,
+        value: shippingAddress[field],
+        type: typeof shippingAddress[field],
+        isEmpty: !shippingAddress[field] || (typeof shippingAddress[field] === 'string' && shippingAddress[field].trim() === '')
+      })))
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: `Missing required address fields: ${missingFields.join(', ')}. Please fill in all fields.`,
+          details: `Received values: ${JSON.stringify(shippingAddress)}`
+        },
         { status: 400 }
       )
     }
@@ -101,15 +159,29 @@ export async function POST(request: NextRequest) {
     
     // Transform shipping address to match Order model schema
     const transformedShippingAddress = {
-      name: shippingAddress.name,
-      address: shippingAddress.address,
-      city: shippingAddress.city,
-      state: shippingAddress.state,
-      zipCode: shippingAddress.zipCode,
-      country: shippingAddress.country,
-      phone: shippingAddress.phone
+      name: shippingAddress.name?.trim() || '',
+      address: shippingAddress.address?.trim() || '',
+      city: shippingAddress.city?.trim() || '',
+      state: shippingAddress.state?.trim() || '',
+      zipCode: shippingAddress.zipCode?.trim() || '',
+      country: shippingAddress.country?.trim() || 'UAE',
+      phone: shippingAddress.phone?.trim() || ''
     }
-    
+
+    // Validate transformed address
+    if (!transformedShippingAddress.name || !transformedShippingAddress.address || 
+        !transformedShippingAddress.city || !transformedShippingAddress.state || 
+        !transformedShippingAddress.zipCode || !transformedShippingAddress.phone) {
+      console.log('Order API - Invalid transformed address:', transformedShippingAddress)
+      return NextResponse.json(
+        { 
+          success: false, 
+          error: 'All address fields are required (name, address, city, state, zipCode, phone)' 
+        },
+        { status: 400 }
+      )
+    }
+
     console.log('Order API - Transformed shipping address:', transformedShippingAddress)
     
     // Generate order number

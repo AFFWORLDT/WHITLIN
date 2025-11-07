@@ -229,15 +229,15 @@ export default function GuestCheckoutPage() {
 
   if (orderSuccess && orderData) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <div className="text-center mb-8">
-            <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Order Placed Successfully!</h1>
-            <p className="text-gray-600">Your order has been confirmed and account created</p>
+      <div className="min-h-screen bg-gray-50 py-4 sm:py-6 md:py-8">
+        <div className="container mx-auto px-3 sm:px-4 max-w-4xl">
+          <div className="text-center mb-6 sm:mb-8">
+            <CheckCircle className="w-12 h-12 sm:w-16 sm:h-16 text-green-500 mx-auto mb-3 sm:mb-4" />
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Order Placed Successfully!</h1>
+            <p className="text-sm sm:text-base text-gray-600">Your order has been confirmed and account created</p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -311,36 +311,37 @@ export default function GuestCheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="flex items-center gap-4 mb-8">
+    <div className="min-h-screen bg-gray-50 py-4 sm:py-6 md:py-8">
+      <div className="container mx-auto px-3 sm:px-4 max-w-6xl">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
           <Button
             variant="outline"
             size="sm"
             onClick={() => router.back()}
+            className="w-full sm:w-auto"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Cart
           </Button>
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Guest Checkout</h1>
-            <p className="text-gray-600 mt-1">Complete your order without creating an account</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Guest Checkout</h1>
+            <p className="text-sm sm:text-base text-gray-600 mt-1">Complete your order without creating an account</p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {/* Order Form */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6">
             {/* Contact Information */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <User className="w-5 h-5" />
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <User className="w-4 h-4 sm:w-5 sm:h-5" />
                   Contact Information
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                   <div>
                     <Label htmlFor="email">Email Address *</Label>
                     <Input
@@ -395,26 +396,26 @@ export default function GuestCheckoutPage() {
 
             {/* Shipping Address */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MapPin className="w-5 h-5" />
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <MapPin className="w-4 h-4 sm:w-5 sm:h-5" />
                   Shipping Address
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
                 <div>
-                  <Label htmlFor="address">Address *</Label>
+                  <Label htmlFor="address" className="text-sm sm:text-base">Address *</Label>
                   <Textarea
                     id="address"
                     value={formData.address}
                     onChange={(e) => handleInputChange('address', e.target.value)}
-                    className={errors.address ? 'border-red-500' : ''}
+                    className={`text-sm sm:text-base ${errors.address ? 'border-red-500' : ''}`}
                     placeholder="Street address, apartment, suite, etc."
                     rows={3}
                   />
-                  {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
+                  {errors.address && <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.address}</p>}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                   <div>
                     <Label htmlFor="city">City *</Label>
                     <Input
@@ -454,13 +455,13 @@ export default function GuestCheckoutPage() {
 
             {/* Payment Method */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CreditCard className="w-5 h-5" />
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <CreditCard className="w-4 h-4 sm:w-5 sm:h-5" />
                   Payment Method
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-4 sm:p-6">
                 <div className="space-y-3">
                   <label className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
                     <input
@@ -482,15 +483,15 @@ export default function GuestCheckoutPage() {
           </div>
 
           {/* Order Summary */}
-          <div className="space-y-6">
+          <div className="space-y-4 sm:space-y-6">
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <ShoppingCart className="w-5 h-5" />
+              <CardHeader className="p-4 sm:p-6">
+                <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+                  <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5" />
                   Order Summary
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
                 {(state.items || []).map((item) => (
                   <div key={item.id} className="flex items-center gap-3">
                     <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">

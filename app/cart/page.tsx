@@ -29,7 +29,7 @@ interface ShippingAddress {
 
 export default function CartPage() {
   const { state, updateQuantity, removeItem, clearCart } = useCart()
-  const { user } = useAuth()
+  const { user, isLoading: authLoading } = useAuth()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [placingOrder, setPlacingOrder] = useState(false)
@@ -85,6 +85,19 @@ export default function CartPage() {
         name: user.name
       }))
     }
+    // Populate phone if available and not already set
+    if ((user as any)?.phone) {
+      setShippingAddress(prev => {
+        // Only update if phone is empty
+        if (!prev.phone || prev.phone.trim() === '') {
+          return {
+            ...prev,
+            phone: (user as any).phone
+          }
+        }
+        return prev
+      })
+    }
   }, [user])
 
   useEffect(() => {
@@ -119,8 +132,8 @@ export default function CartPage() {
               city: defaultAddress.city,
               state: defaultAddress.state,
               zipCode: defaultAddress.zipCode,
-              country: defaultAddress.country,
-              phone: '' // Phone not saved in address
+              country: defaultAddress.country || 'UAE',
+              phone: (user as any)?.phone || '' // Use user's phone if available
             })
           }
         }
@@ -160,13 +173,46 @@ export default function CartPage() {
 
   // Super fast express checkout
   const handleExpressCheckout = useCallback(async () => {
-    if (!user) {
+    // Wait for auth to finish loading
+    if (authLoading) {
+      toast.info("Please wait, checking authentication...")
+      return
+    }
+
+    // Check if user is signed in (with fallback to localStorage)
+    let userId = user?.id || (user as any)?._id
+    if (!userId && typeof window !== 'undefined') {
+      try {
+        const savedUser = localStorage.getItem("keragold_user")
+        if (savedUser) {
+          const userData = JSON.parse(savedUser)
+          userId = userData.id || userData._id
+        }
+      } catch (err) {
+        // Ignore errors
+      }
+    }
+
+    if (!userId) {
       toast.error("Please sign in to place order")
+      router.push('/login')
       return
     }
 
     if (state.items.length === 0) {
       toast.error("Your cart is empty")
+      return
+    }
+
+    // Check if we have a complete address
+    const hasCompleteAddress = selectedAddress || 
+      (shippingAddress.name && shippingAddress.address && shippingAddress.city && 
+       shippingAddress.state && shippingAddress.zipCode && shippingAddress.phone)
+
+    // If no complete address, show the checkout form first
+    if (!hasCompleteAddress) {
+      setShowCheckout(true)
+      toast.info("Please fill in your shipping address below, then click Express Checkout again")
       return
     }
 
@@ -186,43 +232,145 @@ export default function CartPage() {
           city: selectedAddress.city,
           state: selectedAddress.state,
           zipCode: selectedAddress.zipCode,
-          country: selectedAddress.country,
-          phone: (user as any).phone || ''
+          country: selectedAddress.country || 'UAE',
+          phone: (user as any).phone || shippingAddress.phone || ''
         }
-      } else if (shippingAddress.name && shippingAddress.address && shippingAddress.city) {
-        // Use current form address if filled
-        finalAddress = shippingAddress
-      } else {
-        // Use default address from user profile or create minimal address
+      } else if (shippingAddress.name && shippingAddress.address && shippingAddress.city && shippingAddress.state && shippingAddress.zipCode && shippingAddress.phone) {
+        // Use current form address if fully filled
         finalAddress = {
-          name: user.name || (user as any).firstName || 'Customer',
-          address: 'Address to be confirmed',
-          city: 'City to be confirmed',
-          state: 'State to be confirmed',
-          zipCode: '000000',
-          country: 'India',
-          phone: (user as any).phone || '0000000000'
+          ...shippingAddress,
+          country: shippingAddress.country || 'UAE'
         }
-        
-        toast.info("Order placed! We'll contact you for address confirmation.")
+      } else {
+        // This shouldn't happen due to the check above, but just in case
+        toast.error("Please provide a complete shipping address for express checkout")
+        setExpressCheckout(false)
+        setOrderProgress(0)
+        setShowCheckout(true)
+        return
+      }
+
+      // Validate final address has all required fields
+      if (!finalAddress.name || !finalAddress.address || !finalAddress.city || 
+          !finalAddress.state || !finalAddress.zipCode || !finalAddress.phone) {
+        toast.error("Please provide a complete shipping address")
+        setExpressCheckout(false)
+        setOrderProgress(0)
+        setShowCheckout(true)
+        return
       }
 
       // Step 2: Create order data
       setOrderProgress(50)
+      
+      // Validate user and items first - with fallback to localStorage
+      let userId = user?.id || (user as any)?._id
+      
+      // Fallback: Try to get user from localStorage if user object is missing id
+      if (!userId && typeof window !== 'undefined') {
+        try {
+          const savedUser = localStorage.getItem("keragold_user")
+          if (savedUser) {
+            const userData = JSON.parse(savedUser)
+            userId = userData.id || userData._id
+            console.log('Express checkout - Got userId from localStorage:', userId)
+          }
+        } catch (err) {
+          console.error('Express checkout - Error reading localStorage:', err)
+        }
+      }
+      
+      if (!userId) {
+        console.error('Express checkout - No userId found. User object:', user)
+        console.error('Express checkout - localStorage check:', typeof window !== 'undefined' ? localStorage.getItem("keragold_user") : 'N/A')
+        toast.error("Please sign in to place order. If you're already signed in, please refresh the page.")
+        setExpressCheckout(false)
+        setOrderProgress(0)
+        return
+      }
+      
+      if (!user) {
+        console.warn('Express checkout - User object is null but userId found:', userId)
+      }
+
+      if (!state.items || state.items.length === 0) {
+        console.error('Express checkout - No items in cart:', state.items)
+        toast.error("Your cart is empty")
+        setExpressCheckout(false)
+        setOrderProgress(0)
+        return
+      }
+
+      // Ensure all address fields are trimmed and non-empty
+      const cleanedAddress = {
+        name: finalAddress.name?.trim() || '',
+        address: finalAddress.address?.trim() || '',
+        city: finalAddress.city?.trim() || '',
+        state: finalAddress.state?.trim() || '',
+        zipCode: finalAddress.zipCode?.trim() || '',
+        country: finalAddress.country?.trim() || 'UAE',
+        phone: finalAddress.phone?.trim() || ''
+      }
+
+      // Final validation before sending
+      if (!cleanedAddress.name || !cleanedAddress.address || !cleanedAddress.city || 
+          !cleanedAddress.state || !cleanedAddress.zipCode || !cleanedAddress.phone) {
+        console.error('Express checkout - Invalid address:', cleanedAddress)
+        toast.error("Please fill in all address fields (Name, Phone, Address, City, State, ZIP Code)")
+        setExpressCheckout(false)
+        setOrderProgress(0)
+        setShowCheckout(true)
+        return
+      }
+
+      // Map items and validate
+      const orderItems = state.items.map(item => ({
+        productId: item.id,
+        quantity: item.quantity
+      }))
+
+      if (orderItems.length === 0) {
+        console.error('Express checkout - No valid items:', state.items)
+        toast.error("No valid items in cart")
+        setExpressCheckout(false)
+        setOrderProgress(0)
+        return
+      }
+
       const orderData = {
-        userId: user.id,
-        items: state.items.map(item => ({
-          productId: item.id,
-          quantity: item.quantity
-        })),
+        userId: userId, // Use the validated userId
+        items: orderItems,
         subtotal: subtotal,
         shipping: shipping,
         tax: tax,
         totalAmount: total,
-        shippingAddress: finalAddress,
+        shippingAddress: cleanedAddress,
         paymentMethod: 'cash_on_delivery',
         notes: 'Express Checkout'
       }
+
+      // Final validation of orderData
+      if (!orderData.userId || !orderData.items || orderData.items.length === 0 || !orderData.shippingAddress) {
+        console.error('Express checkout - Invalid orderData:', {
+          hasUserId: !!orderData.userId,
+          hasItems: !!orderData.items,
+          itemsLength: orderData.items?.length,
+          hasShippingAddress: !!orderData.shippingAddress,
+          shippingAddress: orderData.shippingAddress
+        })
+        toast.error("Invalid order data. Please try again.")
+        setExpressCheckout(false)
+        setOrderProgress(0)
+        return
+      }
+
+      console.log('Express checkout - Sending order data:', {
+        userId: orderData.userId,
+        itemsCount: orderData.items.length,
+        shippingAddress: orderData.shippingAddress,
+        totalAmount: orderData.totalAmount
+      })
+      console.log('Express checkout - Full order data JSON:', JSON.stringify(orderData, null, 2))
 
       // Step 3: Place order
       setOrderProgress(75)
@@ -235,6 +383,7 @@ export default function CartPage() {
       })
 
       const data = await response.json()
+      console.log('Express checkout - API response:', data)
 
       if (data.success) {
         setOrderProgress(100)
@@ -244,20 +393,44 @@ export default function CartPage() {
           router.push(`/orders/${data.data.orderId}`)
         }, 500)
       } else {
-        throw new Error(data.error || "Failed to place order")
+        console.error('Express checkout - API error response:', data)
+        const errorMsg = data.error || data.details || "Failed to place order"
+        throw new Error(errorMsg)
       }
     } catch (error) {
       console.error('Express checkout error:', error)
-      toast.error("Express checkout failed. Please try again.")
+      const errorMessage = error instanceof Error ? error.message : "Express checkout failed. Please try again."
+      toast.error(errorMessage)
     } finally {
       setExpressCheckout(false)
       setOrderProgress(0)
     }
-  }, [user, state.items, shippingAddress, selectedAddress, clearCart, router])
+  }, [user, authLoading, state.items, shippingAddress, selectedAddress, subtotal, shipping, tax, total, clearCart, router])
 
   const handlePlaceOrder = async () => {
-    if (!user) {
+    // Wait for auth to finish loading
+    if (authLoading) {
+      toast.info("Please wait, checking authentication...")
+      return
+    }
+
+    // Check if user is signed in (with fallback to localStorage)
+    let userId = user?.id || (user as any)?._id
+    if (!userId && typeof window !== 'undefined') {
+      try {
+        const savedUser = localStorage.getItem("keragold_user")
+        if (savedUser) {
+          const userData = JSON.parse(savedUser)
+          userId = userData.id || userData._id
+        }
+      } catch (err) {
+        // Ignore errors
+      }
+    }
+
+    if (!userId) {
       toast.error("Please sign in to place order")
+      router.push('/login')
       return
     }
 
@@ -304,20 +477,114 @@ export default function CartPage() {
 
       // Step 2: Prepare order data
       setOrderProgress(50)
+      
+      // Validate user and items first - with fallback to localStorage
+      let userId = user?.id || (user as any)?._id
+      
+      // Fallback: Try to get user from localStorage if user object is missing id
+      if (!userId && typeof window !== 'undefined') {
+        try {
+          const savedUser = localStorage.getItem("keragold_user")
+          if (savedUser) {
+            const userData = JSON.parse(savedUser)
+            userId = userData.id || userData._id
+            console.log('Place order - Got userId from localStorage:', userId)
+          }
+        } catch (err) {
+          console.error('Place order - Error reading localStorage:', err)
+        }
+      }
+      
+      if (!userId) {
+        console.error('Place order - No userId found. User object:', user)
+        console.error('Place order - localStorage check:', typeof window !== 'undefined' ? localStorage.getItem("keragold_user") : 'N/A')
+        toast.error("Please sign in to place order. If you're already signed in, please refresh the page.")
+        setPlacingOrder(false)
+        setOrderProgress(0)
+        return
+      }
+      
+      if (!user) {
+        console.warn('Place order - User object is null but userId found:', userId)
+      }
+
+      if (!state.items || state.items.length === 0) {
+        console.error('Place order - No items in cart:', state.items)
+        toast.error("Your cart is empty")
+        setPlacingOrder(false)
+        setOrderProgress(0)
+        return
+      }
+      
+      // Clean and validate address
+      const cleanedAddress = {
+        name: shippingAddress.name?.trim() || '',
+        address: shippingAddress.address?.trim() || '',
+        city: shippingAddress.city?.trim() || '',
+        state: shippingAddress.state?.trim() || '',
+        zipCode: shippingAddress.zipCode?.trim() || '',
+        country: shippingAddress.country?.trim() || 'UAE',
+        phone: shippingAddress.phone?.trim() || ''
+      }
+
+      // Final validation
+      if (!cleanedAddress.name || !cleanedAddress.address || !cleanedAddress.city || 
+          !cleanedAddress.state || !cleanedAddress.zipCode || !cleanedAddress.phone) {
+        console.error('Place order - Invalid address:', cleanedAddress)
+        toast.error("Please fill in all address fields (Name, Phone, Address, City, State, ZIP Code)")
+        setPlacingOrder(false)
+        setOrderProgress(0)
+        return
+      }
+
+      // Map items and validate
+      const orderItems = state.items.map(item => ({
+        productId: item.id,
+        quantity: item.quantity
+      }))
+
+      if (orderItems.length === 0) {
+        console.error('Place order - No valid items:', state.items)
+        toast.error("No valid items in cart")
+        setPlacingOrder(false)
+        setOrderProgress(0)
+        return
+      }
+
       const orderData = {
-        userId: user.id,
-        items: state.items.map(item => ({
-          productId: item.id,
-          quantity: item.quantity
-        })),
+        userId: userId, // Use the validated userId
+        items: orderItems,
         subtotal: subtotal,
         shipping: shipping,
         tax: tax,
         totalAmount: total,
-        shippingAddress,
+        shippingAddress: cleanedAddress,
         paymentMethod: 'cash_on_delivery',
         notes
       }
+
+      // Final validation of orderData
+      if (!orderData.userId || !orderData.items || orderData.items.length === 0 || !orderData.shippingAddress) {
+        console.error('Place order - Invalid orderData:', {
+          hasUserId: !!orderData.userId,
+          hasItems: !!orderData.items,
+          itemsLength: orderData.items?.length,
+          hasShippingAddress: !!orderData.shippingAddress,
+          shippingAddress: orderData.shippingAddress
+        })
+        toast.error("Invalid order data. Please try again.")
+        setPlacingOrder(false)
+        setOrderProgress(0)
+        return
+      }
+
+      console.log('Place order - Sending order data:', {
+        userId: orderData.userId,
+        itemsCount: orderData.items.length,
+        shippingAddress: orderData.shippingAddress,
+        totalAmount: orderData.totalAmount
+      })
+      console.log('Place order - Full order data JSON:', JSON.stringify(orderData, null, 2))
 
       // Step 3: Place order
       setOrderProgress(80)
@@ -330,6 +597,7 @@ export default function CartPage() {
       })
 
       const data = await response.json()
+      console.log('Place order - API response:', data)
 
       if (data.success) {
         setOrderProgress(100)
@@ -340,11 +608,13 @@ export default function CartPage() {
         }, 500)
       } else {
         console.error('Cart - Order failed:', data.error, data.details)
-        toast.error(data.error || "Failed to place order")
+        const errorMsg = data.error || data.details || "Failed to place order"
+        toast.error(errorMsg)
       }
     } catch (error) {
       console.error('Error placing order:', error)
-      toast.error("Failed to place order")
+      const errorMessage = error instanceof Error ? error.message : "Failed to place order"
+      toast.error(errorMessage)
     } finally {
       setPlacingOrder(false)
       setOrderProgress(0)
@@ -645,6 +915,37 @@ export default function CartPage() {
                         </div>
                       )}
                       
+                      {/* Express Checkout Button - Show when form is visible */}
+                      {user && (
+                        <Button 
+                          onClick={handleExpressCheckout}
+                          disabled={expressCheckout || placingOrder}
+                          className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold"
+                          size="lg"
+                        >
+                          {expressCheckout ? (
+                            <div className="flex items-center">
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                              Express Checkout...
+                            </div>
+                          ) : (
+                            <div className="flex items-center">
+                              <Zap className="h-5 w-5 mr-2" />
+                              Express Checkout
+                            </div>
+                          )}
+                        </Button>
+                      )}
+                      
+                      <div className="relative">
+                        <div className="absolute inset-0 flex items-center">
+                          <span className="w-full border-t" />
+                        </div>
+                        <div className="relative flex justify-center text-xs uppercase">
+                          <span className="bg-white px-2 text-gray-500">or</span>
+                        </div>
+                      </div>
+                      
                       <div className="text-center">
                         <Truck className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
                         <p className="text-sm text-gray-600">Cash on Delivery Available</p>
@@ -652,7 +953,7 @@ export default function CartPage() {
                       
                       <Button 
                         onClick={handlePlaceOrder}
-                        disabled={placingOrder}
+                        disabled={placingOrder || expressCheckout}
                         className="w-full bg-green-600 hover:bg-green-700 text-white"
                         size="lg"
                       >
@@ -707,8 +1008,8 @@ export default function CartPage() {
                               city: address.city,
                               state: address.state,
                               zipCode: address.zipCode,
-                              country: address.country,
-                              phone: ''
+                              country: address.country || 'UAE',
+                              phone: (user as any)?.phone || shippingAddress.phone || ''
                             })
                             setShowAddressSelector(false)
                           }}
