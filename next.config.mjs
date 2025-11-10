@@ -7,6 +7,7 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+    unoptimized: true, // Disable optimization to avoid platform image resizing 402s
     formats: ['image/webp', 'image/avif'],
     deviceSizes: [320, 375, 414, 480, 640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384, 512],
