@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
+import { executeWithRetry } from '@/lib/mongodb-operations'
 import User from '@/lib/models/User'
 import bcrypt from 'bcryptjs'
 import { authRateLimit } from '@/lib/rate-limit'
 import { validateRequestBody, loginSchema } from '@/lib/validation'
+import { createErrorResponse } from '@/lib/error-handler'
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,8 +28,12 @@ export async function POST(request: NextRequest) {
     
     const { email, password } = validation.data
     
-    // Check if user exists and determine if it's an admin
-    const user = await User.findOne({ email: email.toLowerCase() })
+    // Check if user exists and determine if it's an admin with retry
+    const user = await executeWithRetry(
+      () => User.findOne({ email: email.toLowerCase() }),
+      'User lookup',
+      5
+    )
     const isAdminUser = user && (user.role === 'admin' || user.email === 'admin@keragold.com')
     
     // Apply rate limiting only for non-admin users
@@ -92,9 +98,6 @@ export async function POST(request: NextRequest) {
     
   } catch (error) {
     console.error('Login error:', error)
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+    return createErrorResponse(error, 'Failed to login. Please try again in a moment.')
   }
 }

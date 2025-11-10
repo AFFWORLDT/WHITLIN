@@ -1,106 +1,38 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import Link from "next/link"
-import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { MobileProductImage } from "@/components/ui/mobile-optimized-image"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { Star, ChevronLeft, ChevronRight, ShoppingCart, Sparkles } from "lucide-react"
+import { Star, ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react"
 import { useCart } from "@/lib/cart-context"
 import { toast } from "sonner"
-
-interface SpotlightProduct {
-  _id: string
-  name: string
-  price: number
-  originalPrice?: number
-  description: string
-  images: string[]
-  sku: string
-  category: {
-    name: string
-  }
-  attributes: Array<{
-    name: string
-    value: string
-  }>
-  isActive: boolean
-  createdAt: string
-  isNewProduct?: boolean
-  isBestSeller?: boolean
-}
+import { useProducts } from "@/hooks/use-products"
+import { getProductSize, getProductBadge, type NormalizedProduct } from "@/lib/product-utils"
 
 export function InTheSpotlight() {
-  const [products, setProducts] = useState<SpotlightProduct[]>([])
-  const [loading, setLoading] = useState(true)
+  // Use stable URL - cache bypassing is handled by the API
+  const { products, loading } = useProducts({
+    url: '/api/products?featured=true&limit=8&noCache=true',
+    fallbackToAll: true
+  })
   const [currentIndex, setCurrentIndex] = useState(0)
   const { addItem } = useCart()
 
-  useEffect(() => {
-    const fetchSpotlightProducts = async () => {
-      try {
-        const response = await fetch('/api/products?featured=true&limit=8')
-        const data = await response.json()
-        
-        console.log('API Response:', data)
-        console.log('Products received:', data.data?.length || 0)
-        console.log('First product images:', data.data?.[0]?.images)
-        
-        if (data.success) {
-          console.log('Products with images:', data.data.map(p => ({ name: p.name, images: p.images, hasImages: p.images && p.images.length > 0 })))
-          setProducts(data.data)
-        } else {
-          // Fallback to regular products if no featured products
-          const fallbackResponse = await fetch('/api/products?limit=8&sort=newest')
-          const fallbackData = await fallbackResponse.json()
-          console.log('Fallback Response:', fallbackData)
-          if (fallbackData.success) {
-            console.log('Fallback Products with images:', fallbackData.data.map(p => ({ name: p.name, images: p.images })))
-            setProducts(fallbackData.data)
-          }
-        }
-      } catch (error) {
-        console.error('Error fetching spotlight products:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchSpotlightProducts()
-  }, [])
-
-  const handleAddToCart = (product: SpotlightProduct) => {
-    const size = product.attributes?.find(attr => attr.name.toLowerCase() === 'size')?.value || 'Standard'
+  const handleAddToCart = (product: NormalizedProduct) => {
+    const size = getProductSize(product)
     
     addItem({
-      id: product._id,
+      id: product._id || product.id,
       name: product.name,
       price: product.price,
-      image: product.images?.[0] || "/placeholder.svg",
+      image: product.image || product.images[0] || "/placeholder.svg",
       size: size,
       range: product.category?.name || 'General',
     })
     
     toast.success(`${product.name} added to cart!`)
-  }
-
-  const getProductBadge = (product: SpotlightProduct) => {
-    if (product.originalPrice && product.originalPrice > product.price) {
-      return "Sale"
-    }
-    if (product.isNewProduct) {
-      return "New"
-    }
-    if (product.isBestSeller) {
-      return "Best Seller"
-    }
-    return null
-  }
-
-  const getProductSize = (product: SpotlightProduct) => {
-    return product.attributes?.find(attr => attr.name.toLowerCase() === 'size')?.value || 'Standard'
   }
 
   const nextSlide = () => {
@@ -198,107 +130,98 @@ export function InTheSpotlight() {
             </>
           )}
 
-        {/* Product Grid - Mobile First Design */}
-        <div className="overflow-hidden">
-          <div className="flex gap-2 md:gap-4 overflow-x-auto scrollbar-hide">
-            {products.map((product, index) => (
-              <div key={product._id} className="flex-shrink-0 w-60 md:w-72">
-                  <Card className="group bg-white shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-gray-100 rounded-none">
-                    {/* Product Image - Compact */}
-                    <Link href={`/products/${product._id}`}>
-                      <div className="relative h-40 md:h-48 bg-gray-50 overflow-hidden cursor-pointer">
-                        {product.images && product.images.length > 0 && product.images[0] ? (
+          {/* Product Grid - Mobile First Design */}
+          <div className="overflow-hidden">
+            <div className="flex gap-2 md:gap-4 overflow-x-auto scrollbar-hide">
+              {products.map((product) => {
+                const productId = product._id || product.id
+                const badge = getProductBadge(product)
+                const imageUrl = product.image || product.images[0] || "/placeholder.jpg"
+                
+                return (
+                  <div key={productId} className="flex-shrink-0 w-60 md:w-72">
+                    <Card className="group bg-white shadow-sm hover:shadow-md transition-all duration-200 overflow-hidden border border-gray-100 rounded-none">
+                      {/* Product Image - Compact */}
+                      <Link href={`/products/${productId}`}>
+                        <div className="relative h-40 md:h-48 bg-gray-50 overflow-hidden cursor-pointer">
                           <div className="relative w-full h-full">
                             <img
-                              src={product.images[0]}
+                              src={imageUrl}
                               alt={product.name}
                               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                               onError={(e) => {
-                                console.error('Image failed to load for product:', product.name, 'URL:', product.images[0])
                                 const target = e.target as HTMLImageElement
                                 target.src = '/placeholder.jpg'
                               }}
-                              onLoad={() => {
-                                console.log('Image loaded successfully for product:', product.name)
-                              }}
                             />
                           </div>
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
-                            <div className="text-center">
-                              <div className="text-4xl text-gray-400 mb-2">💄</div>
-                              <p className="text-gray-500 text-xs font-medium">KeraGold Pro</p>
-                              <p className="text-gray-400 text-xs">Premium Hair Care</p>
-                            </div>
-                          </div>
-                        )}
-                        
-                        {/* Badge - Compact */}
-                        {getProductBadge(product) && (
-                          <Badge className="absolute top-2 left-2 bg-gray-800 text-white border-0 text-xs px-2 py-1 rounded-none">
-                            {getProductBadge(product)}
-                          </Badge>
-                        )}
-                      </div>
-                    </Link>
-
-                    <CardContent className="p-4">
-                      {/* Brand - Compact */}
-                      <div className="text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">
-                        KeraGold Pro
-                      </div>
-                      
-                      {/* Product Name - Compact */}
-                      <Link href={`/products/${product._id}`}>
-                        <h3 className="font-bold text-sm text-gray-900 mb-2 line-clamp-2 leading-tight cursor-pointer hover:text-gray-700 transition-colors">
-                          {product.name}
-                        </h3>
-                      </Link>
-                      
-                      {/* Price - Compact */}
-                      <div className="flex items-center gap-2 mb-3">
-                        <span className="text-lg font-bold text-gray-900">
-                          AED {product.price}
-                        </span>
-                        {product.originalPrice && (
-                          <span className="text-sm text-gray-500 line-through">
-                            AED {product.originalPrice}
-                          </span>
-                        )}
-                      </div>
-                      
-                      {/* Rating - Compact */}
-                      <div className="flex items-center gap-1 mb-3">
-                        <div className="flex items-center">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-3 h-3 ${
-                                i < 4 ? "fill-gray-900 text-gray-900" : "text-gray-300"
-                              }`}
-                            />
-                          ))}
+                          
+                          {/* Badge - Compact */}
+                          {badge && (
+                            <Badge className="absolute top-2 left-2 bg-gray-800 text-white border-0 text-xs px-2 py-1 rounded-none">
+                              {badge}
+                            </Badge>
+                          )}
                         </div>
-                        <span className="text-xs text-gray-600 font-medium">
-                          4.8 (127)
-                        </span>
-                      </div>
-                      
-                      {/* Add to Cart Button - Compact */}
-                      <Button
-                        onClick={() => handleAddToCart(product)}
-                        className="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold text-sm py-2 rounded-none transition-all duration-200"
-                      >
-                        BUY PRODUCT
-                      </Button>
-                    </CardContent>
-                  </Card>
-                </div>
-              ))}
+                      </Link>
+
+                      <CardContent className="p-4">
+                        {/* Brand - Compact */}
+                        <div className="text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">
+                          KeraGold Pro
+                        </div>
+                        
+                        {/* Product Name - Compact */}
+                        <Link href={`/products/${productId}`}>
+                          <h3 className="font-bold text-sm text-gray-900 mb-2 line-clamp-2 leading-tight cursor-pointer hover:text-gray-700 transition-colors">
+                            {product.name}
+                          </h3>
+                        </Link>
+                        
+                        {/* Price - Compact */}
+                        <div className="flex items-center gap-2 mb-3">
+                          <span className="text-lg font-bold text-gray-900">
+                            AED {product.price}
+                          </span>
+                          {product.originalPrice && product.originalPrice > product.price && (
+                            <span className="text-sm text-gray-500 line-through">
+                              AED {product.originalPrice}
+                            </span>
+                          )}
+                        </div>
+                        
+                        {/* Rating - Compact */}
+                        <div className="flex items-center gap-1 mb-3">
+                          <div className="flex items-center">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-3 h-3 ${
+                                  i < Math.floor(product.rating || 4.8) ? "fill-gray-900 text-gray-900" : "text-gray-300"
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <span className="text-xs text-gray-600 font-medium">
+                            {product.rating?.toFixed(1) || '4.8'} ({product.reviews || 127})
+                          </span>
+                        </div>
+                        
+                        {/* Add to Cart Button - Compact */}
+                        <Button
+                          onClick={() => handleAddToCart(product)}
+                          className="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold text-sm py-2 rounded-none transition-all duration-200"
+                        >
+                          BUY PRODUCT
+                        </Button>
+                      </CardContent>
+                    </Card>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
-
       </div>
     </section>
   )

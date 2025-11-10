@@ -43,23 +43,79 @@ export function ProductCategories() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  // Fetch categories from API
+  // Fetch categories from API with retry logic
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const response = await fetch('/api/categories?active=true')
-        const data = await response.json()
-        
-        if (data.success) {
-          setCategories(data.data)
-        } else {
-          setError(data.error || 'Failed to fetch categories')
+    const fetchCategories = async (retries = 5) => {
+      for (let attempt = 0; attempt < retries; attempt++) {
+        try {
+          setLoading(true)
+          setError(null)
+          
+          // Add timestamp to bypass cache
+          const response = await fetch(`/api/categories?active=true&t=${Date.now()}`)
+          
+          if (!response.ok) {
+            // Try to get error message from response
+            let errorMessage = `HTTP error! status: ${response.status}`
+            try {
+              const errorData = await response.json()
+              errorMessage = errorData.error || errorMessage
+            } catch {
+              // If response is not JSON, use default message
+            }
+            
+            // If it's a database connection error and we have retries left, retry
+            if ((errorMessage.includes('database') || errorMessage.includes('connection') || response.status === 500) && attempt < retries - 1) {
+              const delay = 1000 * Math.pow(2, attempt)
+              console.warn(`Categories fetch failed (attempt ${attempt + 1}/${retries}), retrying in ${delay}ms...`)
+              await new Promise(resolve => setTimeout(resolve, delay))
+              continue
+            }
+            
+            throw new Error(errorMessage)
+          }
+          
+          const data = await response.json()
+          
+          if (data.success) {
+            setCategories(data.data || [])
+            setError(null)
+            setLoading(false)
+            return
+          } else {
+            setError(data.error || 'Failed to fetch categories')
+            setLoading(false)
+            return
+          }
+        } catch (err) {
+          console.error('Error fetching categories:', err)
+          const errorMessage = err instanceof Error ? err.message : 'An unexpected error occurred while fetching categories'
+          
+          // If it's a database connection error and we have retries left, retry
+          if ((errorMessage.includes('database') || errorMessage.includes('connection') || errorMessage.includes('SSL') || errorMessage.includes('TLS')) && attempt < retries - 1) {
+            const delay = 1000 * Math.pow(2, attempt)
+            console.warn(`Categories fetch failed (attempt ${attempt + 1}/${retries}), retrying in ${delay}ms...`)
+            await new Promise(resolve => setTimeout(resolve, delay))
+            continue
+          }
+          
+          // Provide user-friendly error message
+          if (errorMessage.includes('database') || errorMessage.includes('connection') || errorMessage.includes('SSL') || errorMessage.includes('TLS')) {
+            setError('Unable to connect to the database. Please try again in a moment.')
+          } else if (errorMessage.includes('HTTP error') || errorMessage.includes('status: 500')) {
+            setError('Server error occurred. Please try again later.')
+          } else {
+            setError(errorMessage)
+          }
+          
+          // Set loading to false even on error so the component can render
+          setLoading(false)
+          
+          // If this was the last attempt, stop retrying
+          if (attempt === retries - 1) {
+            return
+          }
         }
-      } catch (err) {
-        console.error('Error fetching categories:', err)
-        setError('An unexpected error occurred while fetching categories')
-      } finally {
-        setLoading(false)
       }
     }
 
@@ -95,20 +151,68 @@ export function ProductCategories() {
         </div>
 
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <div className="flex flex-col justify-center items-center h-64">
+            <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
+            <p className="text-muted-foreground text-sm">Loading categories...</p>
           </div>
         ) : error ? (
           <div className="text-center text-destructive py-10">
-            <p>{error}</p>
-            <button onClick={() => window.location.reload()} className="mt-4 px-4 py-2 border border-destructive rounded-md hover:bg-destructive/10">
+            <p className="mb-4">{error}</p>
+            <button 
+              onClick={() => {
+                setLoading(true)
+                setError(null)
+                const fetchCategories = async () => {
+                  try {
+                    const response = await fetch(`/api/categories?active=true&t=${Date.now()}`)
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+                    const data = await response.json()
+                    if (data.success) {
+                      setCategories(data.data || [])
+                      setError(null)
+                    } else {
+                      setError(data.error || 'Failed to fetch categories')
+                    }
+                  } catch (err) {
+                    setError(err instanceof Error ? err.message : 'Failed to fetch categories')
+                  } finally {
+                    setLoading(false)
+                  }
+                }
+                fetchCategories()
+              }} 
+              className="mt-4 px-4 py-2 border border-destructive rounded-md hover:bg-destructive/10 transition-colors"
+            >
               Retry
             </button>
           </div>
         ) : categories.length === 0 ? (
           <div className="text-center text-muted-foreground py-10">
             <p>No categories available at the moment.</p>
-            <p className="text-sm">Check back soon for our latest product ranges!</p>
+            <p className="text-sm mb-4">Check back soon for our latest product ranges!</p>
+            <button 
+              onClick={() => {
+                setLoading(true)
+                const fetchCategories = async () => {
+                  try {
+                    const response = await fetch(`/api/categories?active=true&t=${Date.now()}`)
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+                    const data = await response.json()
+                    if (data.success) {
+                      setCategories(data.data || [])
+                    }
+                  } catch (err) {
+                    console.error('Error fetching categories:', err)
+                  } finally {
+                    setLoading(false)
+                  }
+                }
+                fetchCategories()
+              }}
+              className="px-4 py-2 border border-muted-foreground rounded-md hover:bg-muted transition-colors"
+            >
+              Refresh
+            </button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">

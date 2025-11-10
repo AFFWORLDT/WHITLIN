@@ -1,75 +1,95 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
+import { executeWithRetry } from '@/lib/mongodb-operations'
 import Order from '@/lib/models/Order'
 import User from '@/lib/models/User'
 import Product from '@/lib/models/Product'
+import { createErrorResponse } from '@/lib/error-handler'
 
 export async function GET(request: NextRequest) {
   try {
     await connectDB()
     
-    // Get total counts
-    const totalUsers = await User.countDocuments({ role: 'customer' })
-    const totalOrders = await Order.countDocuments()
-    const totalProducts = await Product.countDocuments({ status: 'active' })
-    
-    // Get total revenue
-    const revenueResult = await Order.aggregate([
-      { $match: { status: { $in: ['delivered', 'shipped', 'processing'] } } },
-      { $group: { _id: null, total: { $sum: '$totalAmount' } } }
+    // Get total counts with retry
+    const [totalUsers, totalOrders, totalProducts] = await Promise.all([
+      executeWithRetry(() => User.countDocuments({ role: 'customer' }), 'User count', 5),
+      executeWithRetry(() => Order.countDocuments(), 'Order count', 5),
+      executeWithRetry(() => Product.countDocuments({ status: 'active' }), 'Product count', 5)
     ])
+    
+    // Get total revenue with retry
+    const revenueResult = await executeWithRetry(
+      () => Order.aggregate([
+        { $match: { status: { $in: ['delivered', 'shipped', 'processing'] } } },
+        { $group: { _id: null, total: { $sum: '$totalAmount' } } }
+      ]),
+      'Revenue calculation',
+      5
+    )
     const totalRevenue = revenueResult.length > 0 ? revenueResult[0].total : 0
     
-    // Get recent orders
-    const recentOrders = await Order.find()
-      .populate('user', 'name email')
-      .sort({ createdAt: -1 })
-      .limit(5)
-      .lean()
+    // Get recent orders with retry
+    const recentOrders = await executeWithRetry(
+      () => Order.find()
+        .populate('user', 'name email')
+        .sort({ createdAt: -1 })
+        .limit(5)
+        .lean(),
+      'Recent orders',
+      5
+    )
     
-    // Get top products (based on order items)
-    const topProductsResult = await Order.aggregate([
-      { $unwind: '$items' },
-      { $group: { 
-          _id: '$items.product', 
-          totalQuantity: { $sum: '$items.quantity' },
-          totalRevenue: { $sum: { $multiply: ['$items.quantity', '$items.price'] } }
-        } 
-      },
-      { $lookup: {
-          from: 'products',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'product'
-        }
-      },
-      { $unwind: '$product' },
-      { $project: {
-          name: '$product.name',
-          sales: '$totalQuantity',
-          revenue: '$totalRevenue',
-          rating: '$product.rating'
-        }
-      },
-      { $sort: { sales: -1 } },
-      { $limit: 4 }
-    ])
+    // Get top products (based on order items) with retry
+    const topProductsResult = await executeWithRetry(
+      () => Order.aggregate([
+        { $unwind: '$items' },
+        { $group: { 
+            _id: '$items.product', 
+            totalQuantity: { $sum: '$items.quantity' },
+            totalRevenue: { $sum: { $multiply: ['$items.quantity', '$items.price'] } }
+          } 
+        },
+        { $lookup: {
+            from: 'products',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'product'
+          }
+        },
+        { $unwind: '$product' },
+        { $project: {
+            name: '$product.name',
+            sales: '$totalQuantity',
+            revenue: '$totalRevenue',
+            rating: '$product.rating'
+          }
+        },
+        { $sort: { sales: -1 } },
+        { $limit: 4 }
+      ]),
+      'Top products',
+      5
+    )
     
-    // Get monthly sales data (last 4 months)
-    const monthlySales = await Order.aggregate([
-      { $match: { status: { $in: ['delivered', 'shipped', 'processing'] } } },
-      { $group: {
-          _id: {
-            year: { $year: '$createdAt' },
-            month: { $month: '$createdAt' }
-          },
-          revenue: { $sum: '$totalAmount' },
-          orders: { $sum: 1 }
-        }
-      },
-      { $sort: { '_id.year': 1, '_id.month': 1 } },
-      { $limit: 4 }
-    ])
+    // Get monthly sales data (last 4 months) with retry
+    const monthlySales = await executeWithRetry(
+      () => Order.aggregate([
+        { $match: { status: { $in: ['delivered', 'shipped', 'processing'] } } },
+        { $group: {
+            _id: {
+              year: { $year: '$createdAt' },
+              month: { $month: '$createdAt' }
+            },
+            revenue: { $sum: '$totalAmount' },
+            orders: { $sum: 1 }
+          }
+        },
+        { $sort: { '_id.year': 1, '_id.month': 1 } },
+        { $limit: 4 }
+      ]),
+      'Monthly sales',
+      5
+    )
     
     // Format monthly data
     const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
@@ -106,11 +126,8 @@ export async function GET(request: NextRequest) {
         }))
       }
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching analytics:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch analytics data' },
-      { status: 500 }
-    )
+    return createErrorResponse(error, 'Failed to fetch analytics data')
   }
 }

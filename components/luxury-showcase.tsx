@@ -518,7 +518,7 @@ export function LuxuryShowcase() {
                   </div>
 
                   <div className="mt-auto">
-                    <Link href={`/collections/${category.id}`}>
+                    <Link href={`/collections/${category.id === 'green' ? 'kg-green' : category.id}`}>
                       <Button 
                         className="w-full bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white font-semibold"
                       >

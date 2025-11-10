@@ -239,8 +239,16 @@ img[src*="cloudinary.com"] {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
+  html, body {
     @apply bg-background text-foreground;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Ensure admin layout has no left margin/padding */
+  body > div {
+    margin: 0;
+    padding: 0;
   }
 
 /* RTL helper class */

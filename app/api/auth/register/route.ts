@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
+import { executeWithRetry } from '@/lib/mongodb-operations'
 import User from '@/lib/models/User'
 import bcrypt from 'bcryptjs'
 import { authRateLimit } from '@/lib/rate-limit'
 import { validateRequestBody, registerSchema } from '@/lib/validation'
 import { sendNewUserNotification, sendWelcomeEmail } from '@/lib/email-service'
+import { createErrorResponse } from '@/lib/error-handler'
 
 export async function POST(request: NextRequest) {
   try {
@@ -45,8 +47,12 @@ export async function POST(request: NextRequest) {
     
     const { name, email, password, phone } = validation.data
     
-    // Check if user already exists
-    const existingUser = await User.findOne({ email: email.toLowerCase() })
+    // Check if user already exists with retry
+    const existingUser = await executeWithRetry(
+      () => User.findOne({ email: email.toLowerCase() }),
+      'User lookup',
+      5
+    )
     
     if (existingUser) {
       return NextResponse.json(
@@ -68,7 +74,12 @@ export async function POST(request: NextRequest) {
       status: 'active'
     })
     
-    await newUser.save()
+    // Save user with retry
+    await executeWithRetry(
+      () => newUser.save(),
+      'User save',
+      5
+    )
     
     // Send email notifications
     try {
@@ -109,9 +120,6 @@ export async function POST(request: NextRequest) {
     
   } catch (error) {
     console.error('Registration error:', error)
-    return NextResponse.json(
-      { success: false, error: 'Internal server error' },
-      { status: 500 }
-    )
+    return createErrorResponse(error, 'Failed to create account. Please try again in a moment.')
   }
 }

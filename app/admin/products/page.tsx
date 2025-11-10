@@ -38,22 +38,27 @@ import {
 } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
+import { normalizeAdminProduct, normalizeApiResponse, getCategoryName } from "@/lib/admin-utils"
+import { fetchWithRetry } from "@/lib/admin-fetch-utils"
 
 interface Product {
   _id: string
+  id: string
   name: string
   description: string
   price: number
-  category: string
+  category: string | { _id: string; name: string }
   stock: number
   sku: string
   image: string
+  images?: string[]
   isBestSeller: boolean
   isNewProduct: boolean
   rating: number
   status: string
   createdAt: string
   updatedAt: string
+  attributes?: Array<{ name: string; value: string }>
 }
 
 interface ProductsResponse {
@@ -86,6 +91,7 @@ export default function ProductsPage() {
   const searchParams = useSearchParams()
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("all")
   const [categories, setCategories] = useState<string[]>([])
@@ -102,54 +108,99 @@ export default function ProductsPage() {
   const router = useRouter()
 
   const fetchProducts = async () => {
-    try {
-      setLoading(true)
-      const params = new URLSearchParams()
-      if (searchTerm) params.append('search', searchTerm)
-      if (selectedCategory !== 'all') params.append('category', selectedCategory)
-      params.append('page', currentPage.toString())
-      params.append('limit', itemsPerPage.toString())
-      
-      const response = await fetch(`/api/products?${params.toString()}`)
-      const data: ProductsResponse = await response.json()
-      
-      if (data.success) {
-        setProducts(data.data)
-        setTotalProducts(data.total || 0)
-        setTotalPages(data.pages || Math.ceil((data.total || 0) / itemsPerPage))
+    setLoading(true)
+    setError(null)
+    
+    const params = new URLSearchParams()
+    if (searchTerm) params.append('search', searchTerm)
+    if (selectedCategory !== 'all') params.append('category', selectedCategory)
+    params.append('page', currentPage.toString())
+    params.append('limit', itemsPerPage.toString())
+    
+    // Add noCache parameter for admin to bypass cache
+    params.append('noCache', 'true')
+    
+    const result = await fetchWithRetry<ProductsResponse>(`/api/products?${params.toString()}`)
+    
+    if (result.success && result.data) {
+      try {
+        // result.data is the full API response { success: true, data: [...], total: ..., page: ..., pages: ... }
+        const productsData = Array.isArray(result.data.data) ? result.data.data : result.data.data || []
+        const normalized = normalizeApiResponse<Product>({ success: true, data: productsData, total: result.data.total, page: result.data.page, pages: result.data.pages }, 'data')
         
-        // Extract unique categories from current page data
-        const uniqueCategories = Array.from(new Set(data.data.map(p => p.category?.name || p.category || 'Unknown')))
-        setCategories(uniqueCategories)
-      } else {
-        toast.error("Failed to fetch products")
+        if (normalized.success) {
+          // Normalize all products with error handling
+          const normalizedProducts = (normalized.data || [])
+            .map(p => {
+              try {
+                return normalizeAdminProduct(p)
+              } catch (err) {
+                console.warn('Error normalizing product:', err, p)
+                return null
+              }
+            })
+            .filter(p => p !== null) as Product[]
+          
+          setProducts(normalizedProducts)
+          setTotalProducts(result.data.total || normalized.total || 0)
+          setTotalPages(result.data.pages || normalized.pages || Math.ceil((result.data.total || normalized.total || 0) / itemsPerPage))
+          
+          // Extract unique categories from current page data with error handling
+          try {
+            const uniqueCategories = Array.from(new Set(normalizedProducts.map(p => getCategoryName(p)).filter(Boolean)))
+            setCategories(uniqueCategories)
+          } catch (err) {
+            console.warn('Error extracting categories:', err)
+            setCategories([])
+          }
+        } else {
+          setError(normalized.error || "Failed to fetch products")
+          setProducts([])
+        }
+      } catch (err) {
+        console.error('Error processing products:', err)
+        setError("Error processing products data")
+        setProducts([])
       }
-    } catch (error) {
-      console.error('Error fetching products:', error)
-      toast.error("Error fetching products")
-    } finally {
-      setLoading(false)
+    } else {
+      setError(result.error || "Failed to fetch products")
+      setProducts([])
     }
+    
+    setLoading(false)
   }
 
   const fetchStats = async () => {
     try {
       const response = await fetch('/api/admin/products/stats')
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      
       const data = await response.json()
       
-      if (data.success) {
+      if (data.success && data.data) {
         setStats({
-          total: data.data.totalProducts,
-          active: data.data.activeProducts,
-          outOfStock: data.data.outOfStockProducts,
-          totalValue: data.data.totalStockValue
+          total: data.data.totalProducts || 0,
+          active: data.data.activeProducts || 0,
+          outOfStock: data.data.outOfStockProducts || 0,
+          totalValue: data.data.totalStockValue || 0
         })
         
-        // Set categories from stats API
-        setCategories(data.data.categories.map((cat: any) => cat.name))
+        // Set categories from stats API with error handling
+        try {
+          const categoryNames = (data.data.categories || [])
+            .map((cat: any) => cat?.name)
+            .filter((name: any) => name && typeof name === 'string')
+          setCategories(categoryNames)
+        } catch (err) {
+          console.warn('Error extracting categories from stats:', err)
+        }
       }
     } catch (error) {
       console.error('Error fetching stats:', error)
+      // Don't show error toast for stats, just log it
     }
   }
 
@@ -469,7 +520,7 @@ export default function ProductsPage() {
                     </TableCell>
                     <TableCell className="font-mono text-sm">{product.sku}</TableCell>
                     <TableCell>
-                      <Badge variant="outline">{product.category?.name || product.category || 'Unknown'}</Badge>
+                      <Badge variant="outline">{getCategoryName(product)}</Badge>
                     </TableCell>
                     <TableCell className="font-medium">AED {product.price}</TableCell>
                     <TableCell>

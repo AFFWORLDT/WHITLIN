@@ -40,13 +40,22 @@ export function createErrorResponse(error: unknown, defaultMessage: string = 'In
       message = 'Invalid ID format'
     } else if (error.name === 'MongoError' || error.name === 'MongoServerError') {
       statusCode = 500
-      message = 'Database error'
+      // Provide user-friendly message for database errors
+      if (message.includes('connection') || message.includes('Connection') || message.includes('SSL') || message.includes('TLS')) {
+        message = 'Unable to connect to the database. Please try again in a moment.'
+      } else {
+        message = 'Database error occurred. Please try again later.'
+      }
     } else if (error.name === 'JsonWebTokenError') {
       statusCode = 401
       message = 'Invalid token'
     } else if (error.name === 'TokenExpiredError') {
       statusCode = 401
       message = 'Token expired'
+    } else if (message.includes('Database connection failed') || message.includes('option keepalive') || message.includes('SSL') || message.includes('TLS')) {
+      // Handle database connection errors with user-friendly messages
+      statusCode = 500
+      message = 'Unable to connect to the database. Please try again in a moment.'
     }
   }
 

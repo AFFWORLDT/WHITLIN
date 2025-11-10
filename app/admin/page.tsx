@@ -17,6 +17,9 @@ import {
   Plus,
   BarChart3
 } from "lucide-react"
+import { normalizeDashboardData } from "@/lib/admin-utils"
+import { fetchWithRetry } from "@/lib/admin-fetch-utils"
+import { toast } from "sonner"
 
 interface DashboardStats {
   totalProducts: number
@@ -66,22 +69,32 @@ export default function AdminDashboard() {
   const router = useRouter()
 
   const fetchDashboardData = async () => {
-    try {
-      setLoading(true)
-      const response = await fetch('/api/admin/dashboard')
-      const data = await response.json()
-      
-      if (data.success) {
-        setDashboardData(data.data)
-      } else {
-        setError(data.error || 'Failed to fetch dashboard data')
+    setLoading(true)
+    setError(null)
+    
+    const result = await fetchWithRetry(`/api/admin/dashboard?t=${Date.now()}`)
+    
+    if (result.success && result.data) {
+      try {
+        // result.data is the full API response { success: true, data: dashboardData }
+        const dashboardData = result.data.data || result.data
+        const normalizedData = normalizeDashboardData(dashboardData)
+        setDashboardData(normalizedData)
+        setError(null)
+      } catch (err) {
+        console.error('Error processing dashboard data:', err)
+        const defaultData = normalizeDashboardData(null)
+        setDashboardData(defaultData)
+        setError('Error processing dashboard data')
       }
-    } catch (err) {
-      console.error('Error fetching dashboard data:', err)
-      setError('An unexpected error occurred')
-    } finally {
-      setLoading(false)
+    } else {
+      // Set default empty data on error so dashboard still renders
+      const defaultData = normalizeDashboardData(null)
+      setDashboardData(defaultData)
+      setError(result.error || 'Failed to fetch dashboard data')
     }
+    
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -111,43 +124,57 @@ export default function AdminDashboard() {
     )
   }
 
-  if (error) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">Error loading dashboard data</p>
-        </div>
-        <div className="text-center py-12">
-          <p className="text-red-600 mb-4">{error}</p>
-          <Button onClick={fetchDashboardData}>Retry</Button>
-        </div>
-      </div>
-    )
-  }
-
-  if (!dashboardData) {
-    return (
-      <div className="space-y-6">
-        <div>
-          <h1 className="text-3xl font-bold">Dashboard</h1>
-          <p className="text-muted-foreground">No data available</p>
-        </div>
-      </div>
-    )
-  }
+  // Always show dashboard with default data if needed, even on error
+  // Don't block the entire dashboard on error
+  const displayData = dashboardData || normalizeDashboardData(null)
 
   return (
     <div className="space-y-4 sm:space-y-6">
+      {error && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 flex items-center justify-between">
+          <p className="text-yellow-800 text-sm">{error}</p>
+          <Button 
+            onClick={() => fetchDashboardData()} 
+            variant="outline" 
+            size="sm"
+            className="ml-4"
+          >
+            Retry
+          </Button>
+        </div>
+      )}
+      
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold">Dashboard</h1>
           <p className="text-sm sm:text-base text-muted-foreground">Welcome back! Here's what's happening with your store.</p>
         </div>
-        <Button onClick={fetchDashboardData} variant="outline" size="sm" className="w-full sm:w-auto">
-          <TrendingUp className="h-4 w-4 mr-2" />
-          Refresh
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={async () => {
+              try {
+                const response = await fetch('/api/admin/clear-cache', { method: 'POST' })
+                if (response.ok) {
+                  toast.success('Cache cleared successfully')
+                  fetchDashboardData()
+                } else {
+                  toast.error('Failed to clear cache')
+                }
+              } catch (err) {
+                toast.error('Error clearing cache')
+              }
+            }} 
+            variant="outline" 
+            size="sm"
+            className="w-full sm:w-auto"
+          >
+            Clear Cache
+          </Button>
+          <Button onClick={fetchDashboardData} variant="outline" size="sm" className="w-full sm:w-auto">
+            <TrendingUp className="h-4 w-4 mr-2" />
+            Refresh
+          </Button>
+        </div>
       </div>
 
       {/* Stats Cards */}
@@ -158,9 +185,9 @@ export default function AdminDashboard() {
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{dashboardData.stats.totalProducts}</div>
-            <p className={`text-xs ${getGrowthColor(dashboardData.stats.productGrowth)}`}>
-              {formatGrowth(dashboardData.stats.productGrowth)} from last month
+            <div className="text-2xl font-bold">{displayData.stats.totalProducts}</div>
+            <p className={`text-xs ${getGrowthColor(displayData.stats.productGrowth)}`}>
+              {formatGrowth(displayData.stats.productGrowth)} from last month
             </p>
           </CardContent>
         </Card>
@@ -171,9 +198,9 @@ export default function AdminDashboard() {
             <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{dashboardData.stats.totalOrders}</div>
-            <p className={`text-xs ${getGrowthColor(dashboardData.stats.orderGrowth)}`}>
-              {formatGrowth(dashboardData.stats.orderGrowth)} from last month
+            <div className="text-2xl font-bold">{displayData.stats.totalOrders}</div>
+            <p className={`text-xs ${getGrowthColor(displayData.stats.orderGrowth)}`}>
+              {formatGrowth(displayData.stats.orderGrowth)} from last month
             </p>
           </CardContent>
         </Card>
@@ -184,9 +211,9 @@ export default function AdminDashboard() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{dashboardData.stats.totalUsers}</div>
-            <p className={`text-xs ${getGrowthColor(dashboardData.stats.userGrowth)}`}>
-              {formatGrowth(dashboardData.stats.userGrowth)} from last month
+            <div className="text-2xl font-bold">{displayData.stats.totalUsers}</div>
+            <p className={`text-xs ${getGrowthColor(displayData.stats.userGrowth)}`}>
+              {formatGrowth(displayData.stats.userGrowth)} from last month
             </p>
           </CardContent>
         </Card>
@@ -197,9 +224,9 @@ export default function AdminDashboard() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">AED {dashboardData.stats.totalRevenue.toLocaleString()}</div>
-            <p className={`text-xs ${getGrowthColor(dashboardData.stats.revenueGrowth)}`}>
-              {formatGrowth(dashboardData.stats.revenueGrowth)} from last month
+            <div className="text-2xl font-bold">AED {displayData.stats.totalRevenue.toLocaleString()}</div>
+            <p className={`text-xs ${getGrowthColor(displayData.stats.revenueGrowth)}`}>
+              {formatGrowth(displayData.stats.revenueGrowth)} from last month
             </p>
           </CardContent>
         </Card>
@@ -214,8 +241,8 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {dashboardData.recentOrders.length > 0 ? (
-                dashboardData.recentOrders.map((order) => (
+              {displayData.recentOrders && displayData.recentOrders.length > 0 ? (
+                displayData.recentOrders.map((order) => (
                   <div key={order.id} className="flex items-center justify-between">
                     <div className="space-y-1">
                       <p className="text-sm font-medium">{order.id}</p>
@@ -248,8 +275,8 @@ export default function AdminDashboard() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {dashboardData.topProducts.length > 0 ? (
-                dashboardData.topProducts.map((product, index) => (
+              {displayData.topProducts && displayData.topProducts.length > 0 ? (
+                displayData.topProducts.map((product, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <div className="space-y-1">
                       <p className="text-sm font-medium truncate max-w-[200px]">{product.name}</p>

@@ -17,6 +17,8 @@ import {
   MoreHorizontal
 } from "lucide-react"
 import { toast } from "sonner"
+import { normalizeAdminCategory, normalizeApiResponse } from "@/lib/admin-utils"
+import { fetchWithRetry } from "@/lib/admin-fetch-utils"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,27 +48,60 @@ export default function CategoriesPage() {
   const router = useRouter()
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState("")
   const [filteredCategories, setFilteredCategories] = useState<Category[]>([])
 
   const fetchCategories = async () => {
-    try {
-      setLoading(true)
-      const response = await fetch('/api/categories')
-      const data = await response.json()
-      
-      if (data.success) {
-        setCategories(data.data)
-        setFilteredCategories(data.data)
-      } else {
-        toast.error("Failed to fetch categories")
+    setLoading(true)
+    setError(null)
+    
+    const result = await fetchWithRetry(`/api/categories?t=${Date.now()}`)
+    
+    if (result.success && result.data) {
+      try {
+        // result.data is the full API response { success: true, data: [...] }
+        // Extract the actual data array
+        const categoriesData = Array.isArray(result.data.data) 
+          ? result.data.data 
+          : Array.isArray(result.data) 
+            ? result.data 
+            : []
+        const normalized = normalizeApiResponse<Category>({ success: true, data: categoriesData }, 'data')
+        
+        if (normalized.success) {
+          // Normalize all categories with error handling
+          const normalizedCategories = (normalized.data || [])
+            .map(cat => {
+              try {
+                return normalizeAdminCategory(cat)
+              } catch (err) {
+                console.warn('Error normalizing category:', err, cat)
+                return null
+              }
+            })
+            .filter(cat => cat !== null) as Category[]
+          
+          setCategories(normalizedCategories)
+          setFilteredCategories(normalizedCategories)
+        } else {
+          setError(normalized.error || "Failed to fetch categories")
+          setCategories([])
+          setFilteredCategories([])
+        }
+      } catch (err) {
+        console.error('Error processing categories:', err)
+        setError('Error processing categories data')
+        setCategories([])
+        setFilteredCategories([])
       }
-    } catch (error) {
-      console.error('Error fetching categories:', error)
-      toast.error("Error fetching categories")
-    } finally {
-      setLoading(false)
+    } else {
+      setError(result.error || "Failed to fetch categories")
+      setCategories([])
+      setFilteredCategories([])
     }
+    
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -74,9 +109,14 @@ export default function CategoriesPage() {
   }, [])
 
   useEffect(() => {
+    if (!Array.isArray(categories)) {
+      setFilteredCategories([])
+      return
+    }
+    
     const filtered = categories.filter(category =>
-      category.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      category.description?.toLowerCase().includes(searchTerm.toLowerCase())
+      category?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      category?.description?.toLowerCase().includes(searchTerm.toLowerCase())
     )
     setFilteredCategories(filtered)
   }, [searchTerm, categories])
@@ -130,10 +170,10 @@ export default function CategoriesPage() {
   }
 
   const stats = {
-    total: categories.length,
-    active: categories.filter(cat => cat.isActive).length,
-    inactive: categories.filter(cat => !cat.isActive).length,
-    withAttributes: categories.filter(cat => cat.attributes.length > 0).length
+    total: categories?.length || 0,
+    active: categories?.filter(cat => cat?.isActive).length || 0,
+    inactive: categories?.filter(cat => !cat?.isActive).length || 0,
+    withAttributes: categories?.filter(cat => cat?.attributes && Array.isArray(cat.attributes) && cat.attributes.length > 0).length || 0
   }
 
   return (
@@ -256,7 +296,7 @@ export default function CategoriesPage() {
                           {category.isActive ? "Active" : "Inactive"}
                         </Badge>
                         <Badge variant="outline">
-                          {category.attributes.length} attributes
+                          {category.attributes && Array.isArray(category.attributes) ? category.attributes.length : 0} attributes
                         </Badge>
                         <span className="text-xs text-muted-foreground">
                           Sort: {category.sortOrder}

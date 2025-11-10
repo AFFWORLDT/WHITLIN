@@ -14,6 +14,8 @@ import {
   Loader2
 } from "lucide-react"
 import { toast } from "sonner"
+import { normalizeAnalyticsData } from "@/lib/admin-utils"
+import { fetchWithRetry } from "@/lib/admin-fetch-utils"
 
 interface AnalyticsData {
   overview: {
@@ -50,24 +52,32 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     const fetchAnalytics = async () => {
-      try {
-        setLoading(true)
-        const response = await fetch('/api/analytics')
-        const data = await response.json()
-        
-        if (data.success) {
-          setAnalyticsData(data.data)
-        } else {
-          setError(data.error || 'Failed to fetch analytics data')
-          toast.error(data.error || 'Failed to fetch analytics data')
+      setLoading(true)
+      setError(null)
+      
+      const result = await fetchWithRetry(`/api/analytics?t=${Date.now()}`)
+      
+      if (result.success && result.data) {
+        try {
+          // result.data is the full API response { success: true, data: analyticsData }
+          const analyticsData = result.data.data || result.data
+          const normalizedData = normalizeAnalyticsData(analyticsData)
+          setAnalyticsData(normalizedData)
+          setError(null)
+        } catch (err) {
+          console.error('Error processing analytics:', err)
+          const defaultData = normalizeAnalyticsData(null)
+          setAnalyticsData(defaultData)
+          setError('Error processing analytics data')
         }
-      } catch (err) {
-        console.error('Error fetching analytics:', err)
-        setError('An unexpected error occurred while fetching analytics')
-        toast.error('An unexpected error occurred while fetching analytics')
-      } finally {
-        setLoading(false)
+      } else {
+        // Set default empty data on error
+        const defaultData = normalizeAnalyticsData(null)
+        setAnalyticsData(defaultData)
+        setError(result.error || 'Failed to fetch analytics data')
       }
+      
+      setLoading(false)
     }
 
     fetchAnalytics()
@@ -84,23 +94,17 @@ export default function AnalyticsPage() {
     )
   }
 
-  if (error || !analyticsData) {
-    return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-center">
-          <p className="text-destructive mb-4">{error || 'Failed to load analytics data'}</p>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    )
-  }
+  // Always show analytics with default data if needed
+  const displayData = analyticsData || normalizeAnalyticsData(null)
+  
   return (
     <div className="space-y-6">
+      {error && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <p className="text-yellow-800 text-sm">{error}</p>
+        </div>
+      )}
+      
       <div>
         <h1 className="text-3xl font-bold">Analytics</h1>
         <p className="text-muted-foreground">Track your store's performance and insights</p>
@@ -114,7 +118,7 @@ export default function AnalyticsPage() {
             <DollarSign className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">AED {analyticsData.overview.totalRevenue.toLocaleString()}</div>
+            <div className="text-2xl font-bold">AED {displayData.overview.totalRevenue.toLocaleString()}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               Total revenue from all orders
             </div>
@@ -127,7 +131,7 @@ export default function AnalyticsPage() {
             <ShoppingCart className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analyticsData.overview.totalOrders}</div>
+            <div className="text-2xl font-bold">{displayData.overview.totalOrders}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               Total number of orders
             </div>
@@ -140,7 +144,7 @@ export default function AnalyticsPage() {
             <Users className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analyticsData.overview.totalUsers}</div>
+            <div className="text-2xl font-bold">{displayData.overview.totalUsers}</div>
             <div className="flex items-center text-xs text-muted-foreground">
               Registered customers
             </div>
@@ -153,7 +157,7 @@ export default function AnalyticsPage() {
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{analyticsData.overview.conversionRate}%</div>
+            <div className="text-2xl font-bold">{displayData.overview.conversionRate}%</div>
             <div className="flex items-center text-xs text-muted-foreground">
               Orders per user ratio
             </div>
@@ -169,9 +173,9 @@ export default function AnalyticsPage() {
             <CardDescription>Monthly revenue and orders trend</CardDescription>
           </CardHeader>
           <CardContent>
-            {analyticsData.salesData.length > 0 ? (
+            {displayData.salesData && displayData.salesData.length > 0 ? (
               <div className="space-y-4">
-                {analyticsData.salesData.map((data, index) => (
+                {displayData.salesData.map((data, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="w-3 h-3 bg-primary rounded-full"></div>
@@ -199,9 +203,9 @@ export default function AnalyticsPage() {
             <CardDescription>Best performing products</CardDescription>
           </CardHeader>
           <CardContent>
-            {analyticsData.topProducts.length > 0 ? (
+            {displayData.topProducts && displayData.topProducts.length > 0 ? (
               <div className="space-y-4">
-                {analyticsData.topProducts.map((product, index) => (
+                {displayData.topProducts.map((product, index) => (
                   <div key={index} className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
                       <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
@@ -238,9 +242,9 @@ export default function AnalyticsPage() {
           <CardDescription>Latest orders from customers</CardDescription>
         </CardHeader>
         <CardContent>
-          {analyticsData.recentOrders.length > 0 ? (
+          {displayData.recentOrders && displayData.recentOrders.length > 0 ? (
             <div className="space-y-4">
-              {analyticsData.recentOrders.map((order, index) => (
+              {displayData.recentOrders.map((order, index) => (
                 <div key={index} className="flex items-center space-x-3">
                   <div className="w-2 h-2 rounded-full bg-green-500"></div>
                   <div className="flex-1">
@@ -267,7 +271,7 @@ export default function AnalyticsPage() {
             <CardTitle className="text-lg">Average Order Value</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">AED {analyticsData.overview.avgOrderValue}</div>
+            <div className="text-3xl font-bold">AED {displayData.overview.avgOrderValue}</div>
             <p className="text-sm text-muted-foreground mt-2">
               Average value per order
             </p>
@@ -276,10 +280,10 @@ export default function AnalyticsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Total Products</CardTitle>
+            <CardTitle className="text-lg">Orders per User</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold">{analyticsData.overview.totalUsers > 0 ? Math.round(analyticsData.overview.totalOrders / analyticsData.overview.totalUsers * 100) / 100 : 0}</div>
+            <div className="text-3xl font-bold">{displayData.overview.totalUsers > 0 ? Math.round(displayData.overview.totalOrders / displayData.overview.totalUsers * 100) / 100 : 0}</div>
             <p className="text-sm text-muted-foreground mt-2">
               Orders per customer ratio
             </p>

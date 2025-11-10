@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
+import { executeWithRetry } from '@/lib/mongodb-operations'
 import Order from '@/lib/models/Order'
 import Product from '@/lib/models/Product'
 import User from '@/lib/models/User'
+import { createErrorResponse } from '@/lib/error-handler'
 
 export async function POST(request: NextRequest) {
   try {
@@ -101,12 +103,20 @@ export async function POST(request: NextRequest) {
       )
     }
     
-    // Optimized: Validate user and products in parallel
+    // Optimized: Validate user and products in parallel with retry
     const [user, products] = await Promise.all([
-      User.findById(userId).select('_id name email').lean(),
-      Product.find({ 
-        _id: { $in: items.map(item => item.productId) } 
-      }).select('_id name price stock image').lean()
+      executeWithRetry(
+        () => User.findById(userId).select('_id name email').lean(),
+        'User lookup',
+        5
+      ),
+      executeWithRetry(
+        () => Product.find({ 
+          _id: { $in: items.map(item => item.productId) } 
+        }).select('_id name price stock image').lean(),
+        'Product lookup',
+        5
+      )
     ])
     
     if (!user) {
@@ -217,19 +227,32 @@ export async function POST(request: NextRequest) {
       status: order.status
     })
     
-    await order.save()
+    // Save order with retry logic for critical operation
+    await executeWithRetry(
+      () => order.save(),
+      'Order save',
+      5
+    )
     
-    // Optimized: Update product stock and user in parallel
+    // Optimized: Update product stock and user in parallel with retry
     const stockUpdates = items.map(item => 
-      Product.findByIdAndUpdate(
-        item.productId,
-        { $inc: { stock: -item.quantity } }
+      executeWithRetry(
+        () => Product.findByIdAndUpdate(
+          item.productId,
+          { $inc: { stock: -item.quantity } }
+        ),
+        `Stock update for product ${item.productId}`,
+        5
       )
     )
     
-    const userUpdate = User.findByIdAndUpdate(userId, {
-      lastOrderDate: new Date()
-    })
+    const userUpdate = executeWithRetry(
+      () => User.findByIdAndUpdate(userId, {
+        lastOrderDate: new Date()
+      }),
+      'User update',
+      5
+    )
     
     await Promise.all([...stockUpdates, userUpdate])
     
@@ -266,14 +289,8 @@ export async function POST(request: NextRequest) {
       console.error('Order API - Validation errors:', error.errors)
     }
     
-    return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Failed to create order',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      },
-      { status: 500 }
-    )
+    // Use createErrorResponse for consistent error handling
+    return createErrorResponse(error, 'Failed to create order. Please try again in a moment.')
   }
 }
 
@@ -299,20 +316,29 @@ export async function GET(request: NextRequest) {
     
     const skip = (page - 1) * limit
     
-    const orders = await Order.find(filter)
-      .populate('user', 'name email')
-      .populate('items.product', 'name image')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean()
-    
-    const totalOrders = await Order.countDocuments(filter)
+    const [orders, totalOrders] = await Promise.all([
+      executeWithRetry(
+        () => Order.find(filter)
+          .populate('user', 'name email')
+          .populate('items.product', 'name image')
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit)
+          .lean(),
+        'Order query',
+        5
+      ),
+      executeWithRetry(
+        () => Order.countDocuments(filter),
+        'Order count',
+        5
+      )
+    ])
     
     return NextResponse.json({
       success: true,
       data: {
-        orders,
+        orders: orders || [],
         pagination: {
           currentPage: page,
           totalPages: Math.ceil(totalOrders / limit),
@@ -323,10 +349,20 @@ export async function GET(request: NextRequest) {
       }
     })
     
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching orders:', error)
+    const errorMessage = error?.message || 'Failed to fetch orders'
+    console.error('Error details:', {
+      message: errorMessage,
+      stack: error?.stack,
+      name: error?.name
+    })
     return NextResponse.json(
-      { success: false, error: 'Failed to fetch orders' },
+      { 
+        success: false, 
+        error: errorMessage,
+        ...(process.env.NODE_ENV === 'development' && { details: error?.stack })
+      },
       { status: 500 }
     )
   }

@@ -36,7 +36,15 @@ export default function LoginPage() {
       })
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
+        // Try to get error message from response
+        let errorMessage = `HTTP error! status: ${response.status}`
+        try {
+          const errorData = await response.json()
+          errorMessage = errorData.error || errorMessage
+        } catch {
+          // If response is not JSON, use default message
+        }
+        throw new Error(errorMessage)
       }
 
       const data = await response.json()
@@ -67,8 +75,19 @@ export default function LoginPage() {
       console.error('Login error:', error)
       if (error instanceof TypeError && error.message === 'Failed to fetch') {
         toast.error("Network error. Please check your connection and try again.")
-      } else if (error instanceof Error && error.message.includes('HTTP error')) {
-        toast.error("Server error. Please try again later.")
+      } else if (error instanceof Error) {
+        // Show the actual error message from the server
+        if (error.message.includes('HTTP error')) {
+          // Extract the actual error message if available
+          const errorMsg = error.message.replace('HTTP error! status: 500', '').trim()
+          if (errorMsg) {
+            toast.error(errorMsg)
+          } else {
+            toast.error("Server error. Please try again in a moment.")
+          }
+        } else {
+          toast.error(error.message || "Login failed. Please check your credentials and try again.")
+        }
       } else {
         toast.error("Login failed. Please check your credentials and try again.")
       }

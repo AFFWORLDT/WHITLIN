@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
+import { executeWithRetry } from '@/lib/mongodb-operations'
 import Category from '@/lib/models/Category'
+import { createErrorResponse } from '@/lib/error-handler'
 
 export async function GET(request: NextRequest) {
   try {
@@ -23,20 +25,21 @@ export async function GET(request: NextRequest) {
       filter.parent = null // Only top-level categories
     }
 
-    const categories = await Category.find(filter)
-      .sort({ sortOrder: 1, name: 1 })
-      .lean()
+    const categories = await executeWithRetry(
+      () => Category.find(filter)
+        .sort({ sortOrder: 1, name: 1 })
+        .lean(),
+      'Category query',
+      5
+    )
 
     return NextResponse.json({
       success: true,
-      data: categories
+      data: categories || []
     })
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error fetching categories:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch categories' },
-      { status: 500 }
-    )
+    return createErrorResponse(error, 'Failed to fetch categories')
   }
 }
 

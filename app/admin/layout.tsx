@@ -92,7 +92,7 @@ export default function AdminLayout({
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       {/* Mobile sidebar overlay */}
       {sidebarOpen && (
         <div 
@@ -104,7 +104,7 @@ export default function AdminLayout({
       {/* Sidebar */}
       <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-200 ease-in-out lg:translate-x-0 ${
         sidebarOpen ? "translate-x-0" : "-translate-x-full"
-      }`}>
+      }`} style={{ marginLeft: 0, paddingLeft: 0 }}>
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center justify-between p-6 border-b border-border">
@@ -171,7 +171,7 @@ export default function AdminLayout({
       </div>
 
       {/* Main content */}
-      <div className="lg:pl-64">
+      <div className="lg:pl-1">
         {/* Top bar */}
         <header className="bg-card border-b border-border py-3">
           <div className="flex items-center justify-between px-3 sm:px-4 md:px-6">

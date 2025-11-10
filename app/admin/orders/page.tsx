@@ -35,6 +35,8 @@ import {
 } from "lucide-react"
 import { toast } from "sonner"
 import { formatCurrency } from "@/lib/utils"
+import { normalizeAdminOrder, normalizeApiResponse } from "@/lib/admin-utils"
+import { fetchWithRetry } from "@/lib/admin-fetch-utils"
 
 interface Order {
   _id: string
@@ -122,34 +124,73 @@ export default function OrdersPage() {
   // Fetch orders from API
   useEffect(() => {
     const fetchOrders = async () => {
-      try {
-        const response = await fetch('/api/orders')
-        const data = await response.json()
-        
-        if (data.success) {
-          setOrders(data.data.orders || [])
-        } else {
-          setError(data.error || 'Failed to fetch orders')
-          toast.error(data.error || 'Failed to fetch orders')
+      setLoading(true)
+      setError(null)
+      
+      const result = await fetchWithRetry(`/api/orders?t=${Date.now()}`)
+      
+      if (result.success && result.data) {
+        try {
+          // result.data is the full API response { success: true, data: { orders: [...], pagination: {...} } }
+          // Extract the actual orders array
+          const responseData = result.data.data || result.data
+          const ordersData = Array.isArray(responseData)
+            ? responseData
+            : responseData.orders || responseData.data || []
+          
+          const normalized = normalizeApiResponse<Order>({ success: true, data: ordersData }, 'data')
+          
+          if (normalized.success) {
+            // Normalize all orders with error handling
+            const normalizedOrders = (normalized.data || [])
+              .map(o => {
+                try {
+                  return normalizeAdminOrder(o)
+                } catch (err) {
+                  console.warn('Error normalizing order:', err, o)
+                  return null
+                }
+              })
+              .filter(o => o !== null) as Order[]
+            
+            setOrders(normalizedOrders)
+          } else {
+            setError(normalized.error || 'Failed to fetch orders')
+            setOrders([])
+          }
+        } catch (err) {
+          console.error('Error processing orders:', err)
+          setError('Error processing orders data')
+          setOrders([])
         }
-      } catch (err) {
-        console.error('Error fetching orders:', err)
-        setError('An unexpected error occurred while fetching orders')
-        toast.error('An unexpected error occurred while fetching orders')
-      } finally {
-        setLoading(false)
+      } else {
+        setError(result.error || 'Failed to fetch orders')
+        setOrders([])
       }
+      
+      setLoading(false)
     }
 
     fetchOrders()
   }, [])
 
   const filteredOrders = (orders || []).filter(order => {
-    const matchesSearch = order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.user.email.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesStatus = selectedStatus === "all" || order.status === selectedStatus
-    return matchesSearch && matchesStatus
+    if (!order) return false
+    try {
+      const orderNumber = (order.orderNumber || '').toLowerCase()
+      const userName = (order.user?.name || '').toLowerCase()
+      const userEmail = (order.user?.email || '').toLowerCase()
+      const searchLower = searchTerm.toLowerCase()
+      
+      const matchesSearch = orderNumber.includes(searchLower) ||
+                           userName.includes(searchLower) ||
+                           userEmail.includes(searchLower)
+      const matchesStatus = selectedStatus === "all" || order.status === selectedStatus
+      return matchesSearch && matchesStatus
+    } catch (err) {
+      console.warn('Error filtering order:', err, order)
+      return false
+    }
   })
 
   const statuses = ["all", "pending", "confirmed", "processing", "packed", "shipped", "out_for_delivery", "delivered", "cancelled", "returned", "refunded"]

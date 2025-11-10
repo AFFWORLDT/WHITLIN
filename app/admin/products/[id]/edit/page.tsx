@@ -11,6 +11,7 @@ import { Switch } from "@/components/ui/switch"
 import { ArrowLeft, Save, Loader2, AlertCircle } from "lucide-react"
 import { toast } from "sonner"
 import { ImageUpload } from "@/components/ui/image-upload"
+import { normalizeAdminProduct, getCategoryId } from "@/lib/admin-utils"
 
 interface Category {
   _id: string
@@ -76,18 +77,25 @@ export default function EditProductPage() {
       const data = await response.json()
       
       if (data.success) {
-        const product: Product = data.data
+        const normalizedProduct = normalizeAdminProduct(data.data)
+        
+        if (!normalizedProduct) {
+          toast.error("Invalid product data")
+          router.push('/admin/products')
+          return
+        }
+        
         setFormData({
-          name: product.name,
-          description: product.description,
-          price: product.price.toString(),
-          category: product.category._id || product.category,
-          stock: product.stock.toString(),
-          sku: product.sku,
-          image: product.image,
-          isBestSeller: product.isBestSeller,
-          isNewProduct: product.isNewProduct,
-          rating: product.rating.toString()
+          name: normalizedProduct.name || '',
+          description: normalizedProduct.description || '',
+          price: normalizedProduct.price.toString(),
+          category: getCategoryId(normalizedProduct),
+          stock: normalizedProduct.stock.toString(),
+          sku: normalizedProduct.sku || '',
+          image: normalizedProduct.image || '',
+          isBestSeller: normalizedProduct.isBestSeller || false,
+          isNewProduct: normalizedProduct.isNewProduct || false,
+          rating: normalizedProduct.rating.toString()
         })
       } else {
         toast.error("Failed to fetch product")

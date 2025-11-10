@@ -20,6 +20,9 @@ import {
   Gem,
   Zap
 } from "lucide-react"
+import { useCart } from "@/lib/cart-context"
+import { toast } from "sonner"
+import { getProductSize, type NormalizedProduct } from "@/lib/product-utils"
 
 interface Product {
   id: string
@@ -58,6 +61,45 @@ export function LuxuryProductGallery({
 }: LuxuryGalleryProps) {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const { addItem } = useCart()
+
+  const handleAddToCart = (product: Product, event?: React.MouseEvent) => {
+    // Prevent event bubbling if clicked from card
+    if (event) {
+      event.stopPropagation()
+    }
+    
+    // Normalize product data
+    const normalizedProduct: NormalizedProduct = {
+      _id: product.id,
+      id: product.id,
+      name: product.name || 'Product',
+      price: product.price || 0,
+      originalPrice: product.originalPrice,
+      description: product.description || '',
+      images: product.images || [product.image || '/placeholder.jpg'],
+      image: product.image || product.images?.[0] || '/placeholder.jpg',
+      sku: product.sku || `SKU-${product.id}`,
+      category: typeof product.category === 'string' ? { name: product.category } : { name: product.category || 'General' },
+      attributes: product.attributes || [],
+      isActive: true,
+      status: 'active',
+      createdAt: new Date().toISOString()
+    }
+    
+    const size = getProductSize(normalizedProduct)
+    
+    addItem({
+      id: normalizedProduct.id,
+      name: normalizedProduct.name,
+      price: normalizedProduct.price,
+      image: normalizedProduct.image,
+      size: size,
+      range: normalizedProduct.category.name,
+    })
+    
+    toast.success(`${normalizedProduct.name} added to cart!`)
+  }
 
   const nextImage = () => {
     if (selectedProduct) {
@@ -205,7 +247,13 @@ export function LuxuryProductGallery({
                     </div>
                   </div>
 
-                  <Button className="w-full bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white font-semibold">
+                  <Button 
+                    className="w-full bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white font-semibold"
+                    onClick={(e) => {
+                      e.stopPropagation()
+                      handleAddToCart(product, e)
+                    }}
+                  >
                     <ShoppingCart className="w-4 h-4 mr-2" />
                     Add to Cart
                   </Button>
@@ -301,7 +349,10 @@ export function LuxuryProductGallery({
                 </div>
 
                 <div className="flex gap-4">
-                  <Button className="flex-1 bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white font-semibold py-3">
+                  <Button 
+                    className="flex-1 bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white font-semibold py-3"
+                    onClick={() => handleAddToCart(selectedProduct)}
+                  >
                     <ShoppingCart className="w-5 h-5 mr-2" />
                     Add to Cart
                   </Button>

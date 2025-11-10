@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
+import { executeWithRetry } from '@/lib/mongodb-operations'
 import User from '@/lib/models/User'
+import { createErrorResponse } from '@/lib/error-handler'
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,21 +23,22 @@ export async function GET(request: NextRequest) {
       query.status = status
     }
     
-    const users = await User.find(query)
-      .select('-password') // Exclude password from response
-      .sort({ createdAt: -1 })
-      .lean()
+    const users = await executeWithRetry(
+      () => User.find(query)
+        .select('-password') // Exclude password from response
+        .sort({ createdAt: -1 })
+        .lean(),
+      'User query',
+      5
+    )
     
     return NextResponse.json({
       success: true,
-      data: users
+      data: users || []
     })
   } catch (error: any) {
     console.error('Error fetching users:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch users' },
-      { status: 500 }
-    )
+    return createErrorResponse(error, 'Failed to fetch users')
   }
 }
 

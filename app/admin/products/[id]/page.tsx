@@ -8,22 +8,26 @@ import { Badge } from "@/components/ui/badge"
 import { ArrowLeft, Edit, Trash2, Package, Calendar, DollarSign, Hash, Star, Loader2, AlertCircle } from "lucide-react"
 import { toast } from "sonner"
 import { formatCurrency } from "@/lib/utils"
+import { normalizeAdminProduct, getCategoryName } from "@/lib/admin-utils"
 
 interface Product {
   _id: string
+  id: string
   name: string
   description: string
   price: number
-  category: string
+  category: string | { _id: string; name: string }
   stock: number
   sku: string
   image: string
+  images?: string[]
   isBestSeller: boolean
   isNewProduct: boolean
   rating: number
   status: string
   createdAt: string
   updatedAt: string
+  attributes?: Array<{ name: string; value: string }>
 }
 
 export default function ProductViewPage() {
@@ -41,7 +45,13 @@ export default function ProductViewPage() {
       const data = await response.json()
       
       if (data.success) {
-        setProduct(data.data)
+        const normalizedProduct = normalizeAdminProduct(data.data)
+        if (normalizedProduct) {
+          setProduct(normalizedProduct as Product)
+        } else {
+          toast.error("Invalid product data")
+          router.push('/admin/products')
+        }
       } else {
         toast.error("Failed to fetch product")
         router.push('/admin/products')
@@ -199,7 +209,7 @@ export default function ProductViewPage() {
                 <Package className="h-4 w-4 text-muted-foreground" />
                 <div>
                   <p className="text-sm text-muted-foreground">Category</p>
-                  <Badge variant="outline">{product.category}</Badge>
+                  <Badge variant="outline">{getCategoryName(product)}</Badge>
                 </div>
               </div>
 

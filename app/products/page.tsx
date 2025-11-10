@@ -66,6 +66,9 @@ export default function ProductsPage() {
       params.append('page', currentPage.toString())
       params.append('limit', itemsPerPage.toString())
 
+      // Add noCache parameter to bypass cache for fresh data
+      params.append('noCache', 'true')
+      
       const [productsResponse, categoriesResponse] = await Promise.all([
         fetch(`/api/products?${params.toString()}`),
         fetch('/api/categories?active=true')

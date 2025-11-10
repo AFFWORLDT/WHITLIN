@@ -11,11 +11,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, CreditCard, Truck, MapPin, Zap, Clock, Shield, CheckCircle, User } from "lucide-react"
+import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, CreditCard, Truck, MapPin, Zap, Clock, Shield, CheckCircle, User, Edit } from "lucide-react"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
 import { Footer } from "@/components/footer"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 
 interface ShippingAddress {
   name: string
@@ -49,6 +50,16 @@ export default function CartPage() {
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null)
   const [showAddressSelector, setShowAddressSelector] = useState(false)
   const [orderProgress, setOrderProgress] = useState(0)
+  const [showEditAddressDialog, setShowEditAddressDialog] = useState(false)
+  const [editAddressForm, setEditAddressForm] = useState<ShippingAddress>({
+    name: '',
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    country: 'UAE',
+    phone: ''
+  })
 
   // Memoized calculations for better performance
   const subtotal = useMemo(() => {
@@ -209,10 +220,31 @@ export default function CartPage() {
       (shippingAddress.name && shippingAddress.address && shippingAddress.city && 
        shippingAddress.state && shippingAddress.zipCode && shippingAddress.phone)
 
-    // If no complete address, show the checkout form first
+    // If no complete address, show the edit address dialog
     if (!hasCompleteAddress) {
-      setShowCheckout(true)
-      toast.info("Please fill in your shipping address below, then click Express Checkout again")
+      // Pre-fill the edit form with existing data or selected address
+      if (selectedAddress) {
+        setEditAddressForm({
+          name: selectedAddress.name,
+          address: selectedAddress.address,
+          city: selectedAddress.city,
+          state: selectedAddress.state,
+          zipCode: selectedAddress.zipCode,
+          country: selectedAddress.country || 'UAE',
+          phone: (user as any)?.phone || selectedAddress.phone || ''
+        })
+      } else {
+        setEditAddressForm({
+          name: shippingAddress.name || user?.name || '',
+          address: shippingAddress.address,
+          city: shippingAddress.city,
+          state: shippingAddress.state,
+          zipCode: shippingAddress.zipCode,
+          country: shippingAddress.country || 'UAE',
+          phone: shippingAddress.phone || (user as any)?.phone || ''
+        })
+      }
+      setShowEditAddressDialog(true)
       return
     }
 
@@ -406,6 +438,162 @@ export default function CartPage() {
       setOrderProgress(0)
     }
   }, [user, authLoading, state.items, shippingAddress, selectedAddress, subtotal, shipping, tax, total, clearCart, router])
+
+  // Handle saving address from dialog and continuing with express checkout
+  const handleSaveAddressFromDialog = useCallback(async () => {
+    // Validate address form
+    if (!editAddressForm.name || !editAddressForm.address || !editAddressForm.city || 
+        !editAddressForm.state || !editAddressForm.zipCode || !editAddressForm.phone) {
+      toast.error("Please fill in all required address fields")
+      return
+    }
+
+    try {
+      // Update shipping address state
+      setShippingAddress(editAddressForm)
+      
+      // Save address to user's saved addresses if user is logged in
+      if (user?.id) {
+        const userId = user.id || (user as any)?._id
+        const response = await fetch('/api/user/addresses', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            userId: userId,
+            name: editAddressForm.name,
+            address: editAddressForm.address,
+            city: editAddressForm.city,
+            state: editAddressForm.state,
+            zipCode: editAddressForm.zipCode,
+            country: editAddressForm.country || 'UAE',
+            phone: editAddressForm.phone,
+            isDefault: savedAddresses.length === 0 // Set as default if it's the first address
+          })
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          if (data.success) {
+            // Refresh saved addresses
+            const addressesResponse = await fetch(`/api/user/addresses?userId=${userId}`)
+            const addressesData = await addressesResponse.json()
+            if (addressesData.success) {
+              setSavedAddresses(addressesData.data)
+              // Select the newly saved address
+              if (data.data._id) {
+                setSelectedAddressId(data.data._id)
+              }
+            }
+          }
+        }
+      }
+
+      // Close dialog
+      setShowEditAddressDialog(false)
+      
+      // Continue with express checkout after state is updated
+      toast.success("Address saved! Proceeding with express checkout...")
+      
+      // Small delay to ensure state is updated, then trigger express checkout
+      setTimeout(async () => {
+        // Re-check if we have complete address now
+        const hasCompleteAddress = editAddressForm.name && editAddressForm.address && 
+          editAddressForm.city && editAddressForm.state && 
+          editAddressForm.zipCode && editAddressForm.phone
+        
+        if (hasCompleteAddress) {
+          // Trigger express checkout
+          setExpressCheckout(true)
+          setOrderProgress(0)
+          
+          try {
+            // Get userId
+            let userId = user?.id || (user as any)?._id
+            if (!userId && typeof window !== 'undefined') {
+              try {
+                const savedUser = localStorage.getItem("keragold_user")
+                if (savedUser) {
+                  const userData = JSON.parse(savedUser)
+                  userId = userData.id || userData._id
+                }
+              } catch (err) {
+                // Ignore errors
+              }
+            }
+            
+            if (!userId) {
+              toast.error("Please sign in to place order")
+              setExpressCheckout(false)
+              return
+            }
+            
+            if (state.items.length === 0) {
+              toast.error("Your cart is empty")
+              setExpressCheckout(false)
+              return
+            }
+            
+            // Use the saved address
+            const finalAddress = editAddressForm
+            
+            // Create order data
+            setOrderProgress(50)
+            const orderItems = state.items.map(item => ({
+              productId: item.id,
+              quantity: item.quantity
+            }))
+            
+            const orderData = {
+              userId: userId,
+              items: orderItems,
+              subtotal: subtotal,
+              shipping: shipping,
+              tax: tax,
+              totalAmount: total,
+              shippingAddress: finalAddress,
+              paymentMethod: 'cash_on_delivery',
+              notes: 'Express Checkout'
+            }
+            
+            // Place order
+            setOrderProgress(75)
+            const response = await fetch('/api/orders', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(orderData)
+            })
+            
+            const data = await response.json()
+            
+            if (data.success) {
+              setOrderProgress(100)
+              toast.success("🚀 Order placed in seconds! Thank you!")
+              clearCart()
+              setTimeout(() => {
+                router.push(`/orders/${data.data.orderId}`)
+              }, 500)
+            } else {
+              const errorMsg = data.error || data.details || "Failed to place order"
+              throw new Error(errorMsg)
+            }
+          } catch (error) {
+            console.error('Express checkout error:', error)
+            const errorMessage = error instanceof Error ? error.message : "Express checkout failed. Please try again."
+            toast.error(errorMessage)
+            setExpressCheckout(false)
+            setOrderProgress(0)
+          }
+        }
+      }, 200)
+    } catch (error) {
+      console.error('Error saving address:', error)
+      toast.error("Failed to save address. Please try again.")
+    }
+  }, [editAddressForm, user, state.items, subtotal, shipping, tax, total, savedAddresses, clearCart, router])
 
   const handlePlaceOrder = async () => {
     // Wait for auth to finish loading
@@ -1210,6 +1398,118 @@ export default function CartPage() {
           </div>
         </div>
       </div>
+      {/* Edit Address Dialog for Express Checkout */}
+      <Dialog open={showEditAddressDialog} onOpenChange={setShowEditAddressDialog}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Edit className="h-5 w-5" />
+              Edit Shipping Address
+            </DialogTitle>
+            <DialogDescription>
+              Please fill in your shipping address to continue with express checkout
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div>
+              <Label htmlFor="edit-name">Full Name *</Label>
+              <Input
+                id="edit-name"
+                value={editAddressForm.name}
+                onChange={(e) => setEditAddressForm(prev => ({ ...prev, name: e.target.value }))}
+                placeholder="Enter your full name"
+                className="mt-1"
+              />
+            </div>
+            
+            <div>
+              <Label htmlFor="edit-address">Street Address *</Label>
+              <Input
+                id="edit-address"
+                value={editAddressForm.address}
+                onChange={(e) => setEditAddressForm(prev => ({ ...prev, address: e.target.value }))}
+                placeholder="Enter street address"
+                className="mt-1"
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="edit-city">City *</Label>
+                <Input
+                  id="edit-city"
+                  value={editAddressForm.city}
+                  onChange={(e) => setEditAddressForm(prev => ({ ...prev, city: e.target.value }))}
+                  placeholder="Enter city"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-state">State *</Label>
+                <Input
+                  id="edit-state"
+                  value={editAddressForm.state}
+                  onChange={(e) => setEditAddressForm(prev => ({ ...prev, state: e.target.value }))}
+                  placeholder="Enter state"
+                  className="mt-1"
+                />
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="edit-zipCode">ZIP Code *</Label>
+                <Input
+                  id="edit-zipCode"
+                  value={editAddressForm.zipCode}
+                  onChange={(e) => setEditAddressForm(prev => ({ ...prev, zipCode: e.target.value }))}
+                  placeholder="Enter ZIP code"
+                  className="mt-1"
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-country">Country *</Label>
+                <Input
+                  id="edit-country"
+                  value={editAddressForm.country}
+                  onChange={(e) => setEditAddressForm(prev => ({ ...prev, country: e.target.value }))}
+                  placeholder="Enter country"
+                  className="mt-1"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <Label htmlFor="edit-phone">Phone Number *</Label>
+              <Input
+                id="edit-phone"
+                value={editAddressForm.phone}
+                onChange={(e) => setEditAddressForm(prev => ({ ...prev, phone: e.target.value }))}
+                placeholder="Enter phone number"
+                className="mt-1"
+              />
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowEditAddressDialog(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveAddressFromDialog}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+            >
+              <Zap className="h-4 w-4 mr-2" />
+              Save & Continue Checkout
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       <Footer />
     </div>
   )

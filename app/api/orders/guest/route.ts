@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
+import { executeWithRetry } from '@/lib/mongodb-operations'
 import Order from '@/lib/models/Order'
 import User from '@/lib/models/User'
 import bcrypt from 'bcryptjs'
 import mongoose from 'mongoose'
+import { createErrorResponse } from '@/lib/error-handler'
 
 export async function POST(request: NextRequest) {
   try {
@@ -40,9 +42,13 @@ export async function POST(request: NextRequest) {
 
     console.log('Validation passed')
 
-    // Check if user exists
+    // Check if user exists with retry
     console.log('Looking up user with email:', email.toLowerCase().trim())
-    let user = await User.findOne({ email: email.toLowerCase().trim() })
+    let user = await executeWithRetry(
+      () => User.findOne({ email: email.toLowerCase().trim() }),
+      'User lookup',
+      5
+    )
     console.log('User lookup result:', user ? 'found' : 'not found')
 
     let isNewUser = false
@@ -74,7 +80,11 @@ export async function POST(request: NextRequest) {
       })
 
       console.log('Saving new user...')
-      await user.save()
+      await executeWithRetry(
+        () => user.save(),
+        'User save',
+        5
+      )
       isNewUser = true
       console.log('New user created:', user._id)
     }
@@ -153,7 +163,11 @@ export async function POST(request: NextRequest) {
     })
 
     console.log('Saving order...')
-    await order.save()
+    await executeWithRetry(
+      () => order.save(),
+      'Order save',
+      5
+    )
     console.log('Order created:', order._id)
 
     // Send account creation email if new user
@@ -193,37 +207,7 @@ export async function POST(request: NextRequest) {
       stack: error instanceof Error ? error.stack : undefined
     })
     
-    // Return more specific error messages
-    let errorMessage = 'An unexpected error occurred. Please try again.'
-    let statusCode = 500
-    
-    if (error instanceof Error) {
-      // Mongoose validation errors
-      if (error.name === 'ValidationError') {
-        const validationError = error as any
-        const errors = Object.values(validationError.errors || {}).map((err: any) => err.message)
-        errorMessage = `Validation error: ${errors.join(', ')}`
-        statusCode = 400
-      }
-      // Duplicate key errors (e.g., duplicate order number)
-      else if ((error as any).code === 11000) {
-        errorMessage = 'Order number already exists. Please try again.'
-        statusCode = 409
-      }
-      // Custom error messages
-      else if (error.message.includes('Invalid product ID')) {
-        errorMessage = error.message
-        statusCode = 400
-      }
-      // Other errors
-      else {
-        errorMessage = error.message || errorMessage
-      }
-    }
-    
-    return NextResponse.json(
-      { success: false, error: errorMessage },
-      { status: statusCode }
-    )
+    // Use createErrorResponse for consistent error handling
+    return createErrorResponse(error, 'Failed to create order. Please try again in a moment.')
   }
 }

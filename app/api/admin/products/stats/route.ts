@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
+import { executeWithRetry } from '@/lib/mongodb-operations'
 import Product from '@/lib/models/Product'
 import Category from '@/lib/models/Category'
+import { createErrorResponse } from '@/lib/error-handler'
 
 export async function GET(request: NextRequest) {
   try {
     await connectDB()
 
-    // Get all products for accurate statistics
+    // Get all products for accurate statistics with retry
     const [
       totalProducts,
       activeProducts,
@@ -15,11 +17,11 @@ export async function GET(request: NextRequest) {
       allProducts,
       categories
     ] = await Promise.all([
-      Product.countDocuments({ status: 'active' }),
-      Product.countDocuments({ status: 'active', stock: { $gt: 0 } }),
-      Product.countDocuments({ status: 'active', stock: 0 }),
-      Product.find({ status: 'active' }).lean(),
-      Category.find({ active: true }).select('name slug').lean()
+      executeWithRetry(() => Product.countDocuments({ status: 'active' }), 'Total products count', 5),
+      executeWithRetry(() => Product.countDocuments({ status: 'active', stock: { $gt: 0 } }), 'Active products count', 5),
+      executeWithRetry(() => Product.countDocuments({ status: 'active', stock: 0 }), 'Out of stock count', 5),
+      executeWithRetry(() => Product.find({ status: 'active' }).lean(), 'All products', 5),
+      executeWithRetry(() => Category.find({ active: true }).select('name slug').lean(), 'Categories', 5)
     ])
 
     // Calculate total stock value
@@ -27,34 +29,42 @@ export async function GET(request: NextRequest) {
       return sum + (product.price * product.stock)
     }, 0)
 
-    // Get category distribution
-    const categoryStats = await Product.aggregate([
-      { $match: { status: 'active' } },
-      { $lookup: {
-        from: 'categories',
-        localField: 'category',
-        foreignField: '_id',
-        as: 'categoryInfo'
-      }},
-      { $unwind: { path: '$categoryInfo', preserveNullAndEmptyArrays: true } },
-      { $group: {
-        _id: '$categoryInfo.name',
-        count: { $sum: 1 },
-        totalValue: { $sum: { $multiply: ['$price', '$stock'] } }
-      }},
-      { $sort: { count: -1 } }
-    ])
+    // Get category distribution with retry
+    const categoryStats = await executeWithRetry(
+      () => Product.aggregate([
+        { $match: { status: 'active' } },
+        { $lookup: {
+          from: 'categories',
+          localField: 'category',
+          foreignField: '_id',
+          as: 'categoryInfo'
+        }},
+        { $unwind: { path: '$categoryInfo', preserveNullAndEmptyArrays: true } },
+        { $group: {
+          _id: '$categoryInfo.name',
+          count: { $sum: 1 },
+          totalValue: { $sum: { $multiply: ['$price', '$stock'] } }
+        }},
+        { $sort: { count: -1 } }
+      ]),
+      'Category stats',
+      5
+    )
 
-    // Get price range statistics
-    const priceStats = await Product.aggregate([
-      { $match: { status: 'active' } },
-      { $group: {
-        _id: null,
-        minPrice: { $min: '$price' },
-        maxPrice: { $max: '$price' },
-        avgPrice: { $avg: '$price' }
-      }}
-    ])
+    // Get price range statistics with retry
+    const priceStats = await executeWithRetry(
+      () => Product.aggregate([
+        { $match: { status: 'active' } },
+        { $group: {
+          _id: null,
+          minPrice: { $min: '$price' },
+          maxPrice: { $max: '$price' },
+          avgPrice: { $avg: '$price' }
+        }}
+      ]),
+      'Price stats',
+      5
+    )
 
     const stats = {
       totalProducts,
@@ -73,9 +83,6 @@ export async function GET(request: NextRequest) {
 
   } catch (error) {
     console.error('Products stats API error:', error)
-    return NextResponse.json(
-      { success: false, error: 'Failed to fetch product statistics' },
-      { status: 500 }
-    )
+    return createErrorResponse(error, 'Failed to fetch product statistics')
   }
 }

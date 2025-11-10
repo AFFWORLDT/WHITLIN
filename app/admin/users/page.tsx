@@ -33,6 +33,8 @@ import {
   Loader2
 } from "lucide-react"
 import { toast } from "sonner"
+import { normalizeAdminUser, normalizeApiResponse } from "@/lib/admin-utils"
+import { fetchWithRetry } from "@/lib/admin-fetch-utils"
 
 interface User {
   _id: string
@@ -71,31 +73,53 @@ export default function UsersPage() {
   // Fetch users from API
   useEffect(() => {
     const fetchUsers = async () => {
-      try {
-        const response = await fetch('/api/users')
-        const data = await response.json()
-        
-        if (data.success) {
-          setUsers(data.data)
-        } else {
-          setError(data.error || 'Failed to fetch users')
-          toast.error(data.error || 'Failed to fetch users')
+      setLoading(true)
+      setError(null)
+      
+      const result = await fetchWithRetry(`/api/users?t=${Date.now()}`)
+      
+      if (result.success && result.data) {
+        try {
+          // result.data is the full API response { success: true, data: [...] }
+          // Extract the actual data array
+          const usersData = Array.isArray(result.data.data) 
+            ? result.data.data 
+            : Array.isArray(result.data) 
+              ? result.data 
+              : []
+          const normalized = normalizeApiResponse<User>({ success: true, data: usersData }, 'data')
+          
+          if (normalized.success) {
+            // Normalize all users
+            const normalizedUsers = normalized.data
+              .map(u => normalizeAdminUser(u))
+              .filter(u => u !== null) as User[]
+            
+            setUsers(normalizedUsers)
+          } else {
+            setError(normalized.error || 'Failed to fetch users')
+            setUsers([])
+          }
+        } catch (err) {
+          console.error('Error processing users:', err)
+          setError('Error processing users data')
+          setUsers([])
         }
-      } catch (err) {
-        console.error('Error fetching users:', err)
-        setError('An unexpected error occurred while fetching users')
-        toast.error('An unexpected error occurred while fetching users')
-      } finally {
-        setLoading(false)
+      } else {
+        setError(result.error || 'Failed to fetch users')
+        setUsers([])
       }
+      
+      setLoading(false)
     }
 
     fetchUsers()
   }, [])
 
-  const filteredUsers = users.filter(user => {
-    const matchesSearch = user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsers = (users || []).filter(user => {
+    if (!user) return false
+    const matchesSearch = (user.name || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         (user.email || '').toLowerCase().includes(searchTerm.toLowerCase())
     const matchesRole = selectedRole === "all" || user.role === selectedRole
     const matchesStatus = selectedStatus === "all" || 
                          (selectedStatus === "active" && user.isActive) ||
@@ -106,9 +130,9 @@ export default function UsersPage() {
   const roles = ["all", "customer", "admin"]
   const statuses = ["all", "active", "inactive"]
 
-  const totalUsers = users.length
-  const activeUsers = users.filter(u => u.isActive).length
-  const customers = users.filter(u => u.role === "customer").length
+  const totalUsers = users?.length || 0
+  const activeUsers = users?.filter(u => u?.isActive).length || 0
+  const customers = users?.filter(u => u?.role === "customer").length || 0
 
   return (
     <div className="space-y-6">
