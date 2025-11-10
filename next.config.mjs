@@ -13,9 +13,6 @@ const nextConfig = {
     minimumCacheTTL: 31536000, // 1 year cache
     dangerouslyAllowSVG: true,
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    // Ensure local images work on all devices
-    unoptimized: false,
-    loader: 'default',
     remotePatterns: [
       {
         protocol: 'https',

@@ -86,33 +86,6 @@ img {
   transition: opacity 0.3s ease-in-out;
 }
 
-/* Ensure logo is always visible on all devices */
-img[alt*="Logo"],
-img[alt*="logo"],
-img[src*="logonew.png"],
-img[src*="logo.png"] {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  max-width: 100% !important;
-  height: auto !important;
-}
-
-/* Fix for Next.js Image component on mobile */
-.next-image-wrapper,
-[class*="next-image"] {
-  display: block !important;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-/* Ensure logo container is always visible */
-[class*="logo"] {
-  display: flex !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-}
-
 /* Fallback for broken images */
 img[src*="placeholder.svg"] {
   background-color: #f3f4f6;
