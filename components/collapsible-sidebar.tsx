@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import Image from "next/image"
+import { Logo } from "@/components/logo"
 import { Button } from "@/components/ui/button"
 import { 
   Home, 
@@ -114,37 +114,10 @@ export function CollapsibleSidebar({ user, logout }: SidebarProps) {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-slate-700">
-            {!isCollapsed && (
-              <Link href="/" className="flex items-center space-x-3">
-                <div className="relative w-8 h-8">
-                  <Image
-                    src="/images/logonew.png"
-                    alt="KeraGold PRO Logo"
-                    fill
-                    className="object-contain"
-                    priority
-                  />
-                </div>
-                <div>
-                  <span className="font-serif text-lg font-bold">KeraGold</span>
-                  <span className="text-xs text-slate-400 block -mt-1">PRO</span>
-                </div>
-              </Link>
-            )}
-            
-            {/* Logo when collapsed */}
-            {isCollapsed && (
-              <Link href="/" className="flex items-center justify-center w-full">
-                <div className="relative w-8 h-8">
-                  <Image
-                    src="/images/logonew.png"
-                    alt="KeraGold PRO Logo"
-                    fill
-                    className="object-contain"
-                    priority
-                  />
-                </div>
-              </Link>
+            {!isCollapsed ? (
+              <Logo size="sm" showText={true} href="/" />
+            ) : (
+              <Logo size="sm" showText={false} href="/" />
             )}
             
             {/* Desktop Controls */}

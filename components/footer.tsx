@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useI18n } from "@/components/language-provider"
 import Link from "next/link"
-import Image from "next/image"
+import { Logo } from "@/components/logo"
 import { Instagram, Facebook, Twitter, Mail, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -58,20 +58,7 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
           {/* Brand */}
           <div className="space-y-3 sm:space-y-4">
-            <div className="flex items-center space-x-3">
-              <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16">
-                <Image
-                  src="/images/logonew.png"
-                  alt="KeraGold PRO Logo"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <div>
-                <span className="font-serif text-lg sm:text-xl font-bold">KeraGold</span>
-                <span className="text-xs text-gray-400 block -mt-1">PRO</span>
-              </div>
-            </div>
+            <Logo size="lg" showText={true} href="/" />
             <p className="text-gray-400 text-xs sm:text-sm text-pretty">
               Professional hair care solutions for the modern woman. Transform your hair with luxury treatments.
             </p>

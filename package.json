@@ -11,7 +11,8 @@
     "seed-categories": "tsx lib/seed-categories.ts",
     "seed-products": "tsx lib/seed-products.ts",
     "clear-db": "tsx lib/clear-database.ts",
-    "create-admin": "tsx lib/create-admin.ts"
+    "create-admin": "tsx lib/create-admin.ts",
+    "clear-cache": "node scripts/clear-next-cache.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",

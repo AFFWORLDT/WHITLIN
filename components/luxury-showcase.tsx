@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { MobileProductGridImage } from "@/components/ui/mobile-optimized-image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -303,13 +304,15 @@ export function LuxuryShowcase() {
         onTouchEnd={onTouchEnd}
       >
         {/* Background Image with Enhanced Effects */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 overflow-hidden">
           <Image
-            src={currentSlideData.image}
+            src={currentSlideData.image || '/hero.png'}
             alt={currentSlideData.title}
             fill
             className="object-cover transition-all duration-1000 ease-in-out scale-105 hover:scale-100"
             priority={currentSlide === 0}
+            sizes="100vw"
+            quality={85}
           />
           
           {/* Enhanced Dynamic Overlay with Gradient */}
@@ -456,28 +459,27 @@ export function LuxuryShowcase() {
       </section>
 
       {/* Collections Grid */}
-      <section id="collections" className="py-20 px-6">
+      <section id="collections" className="py-12 sm:py-16 md:py-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="font-serif text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
               Luxury Collections
             </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
               Each collection is meticulously crafted with premium ingredients and cutting-edge technology
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
             {luxuryCategories.map((category) => (
               <Card 
                 key={category.id}
-                className="group hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-200 bg-white/95 backdrop-blur-sm h-[520px] flex flex-col rounded-xl shadow-lg hover:shadow-2xl"
+                className="group hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-200 bg-white/95 backdrop-blur-sm h-auto sm:h-[520px] flex flex-col rounded-xl shadow-lg hover:shadow-2xl"
               >
-                <div className={`relative h-48 ${category.color} overflow-hidden flex-shrink-0`}>
-                  <Image
-                    src={category.groupImage}
+                <div className={`relative h-48 sm:h-56 md:h-64 ${category.color} overflow-hidden flex-shrink-0 w-full`}>
+                  <MobileProductGridImage
+                    src={category.groupImage || category.image || '/placeholder.jpg'}
                     alt={category.name}
-                    fill
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-black/20" />
@@ -496,11 +498,11 @@ export function LuxuryShowcase() {
                   </div>
                 </div>
 
-                <CardContent className="p-6 flex flex-col flex-grow min-h-0">
-                  <h3 className="font-serif text-xl font-bold text-gray-900 mb-3 line-clamp-1 h-8 flex items-center">
+                <CardContent className="p-4 sm:p-6 flex flex-col flex-grow min-h-0">
+                  <h3 className="font-serif text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 line-clamp-1 h-7 sm:h-8 flex items-center">
                     {category.name}
                   </h3>
-                  <p className="text-gray-600 mb-4 line-clamp-3 h-16 flex items-start">
+                  <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-3 h-14 sm:h-16 flex items-start">
                     {category.description}
                   </p>
                   

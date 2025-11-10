@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
-import Image from "next/image"
+import { Logo } from "@/components/logo"
 import { useRouter } from "next/navigation"
 import { 
   LayoutDashboard, 
@@ -108,17 +108,7 @@ export default function AdminLayout({
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center justify-between p-6 border-b border-border">
-            <Link href="/admin" className="flex items-center space-x-3">
-              <div className="relative w-14 h-14">
-                <Image
-                  src="/images/logonew.png"
-                  alt="KeraGold PRO Logo"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <span className="font-serif text-lg font-bold">KeraGold Admin</span>
-            </Link>
+            <Logo size="md" showText={true} href="/admin" text="KeraGold Admin" subtext="" />
             <Button
               variant="ghost"
               size="icon"

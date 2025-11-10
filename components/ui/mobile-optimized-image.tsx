@@ -35,9 +35,16 @@ export function MobileOptimizedImage({
 
   const handleError = useCallback(() => {
     console.error('Mobile image failed to load:', imageSrc)
-    setHasError(true)
-    setImageSrc('/placeholder.jpg')
-    onError?.()
+    // Only set placeholder if it's not already the placeholder
+    if (imageSrc !== '/placeholder.jpg' && imageSrc !== '/placeholder.svg') {
+      setHasError(true)
+      setImageSrc('/placeholder.jpg')
+      onError?.()
+    } else {
+      // If placeholder also fails, show fallback UI
+      setHasError(true)
+      onError?.()
+    }
   }, [imageSrc, onError])
 
   const handleLoad = useCallback(() => {

@@ -74,7 +74,7 @@ export function BestSellers() {
                   <Link href={`/products/${productId}`}>
                     <div className="relative aspect-square overflow-hidden cursor-pointer">
                       <MobileProductGridImage
-                        src={product.image || product.images[0] || "/placeholder.jpg"}
+                        src={product.image || product.images?.[0] || "/placeholder.jpg"}
                         alt={product.name}
                         className="group-hover:scale-105 transition-transform duration-500"
                       />

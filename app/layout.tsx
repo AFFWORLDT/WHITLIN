@@ -14,6 +14,7 @@ import { PerformanceMonitor } from "@/components/performance-monitor"
 import { ErrorBoundary } from "@/components/error-boundary"
 import { MobileOptimizer } from "@/components/mobile-optimizer"
 import { PerformanceDashboard } from "@/components/performance-dashboard"
+import { ChunkErrorHandler } from "@/components/chunk-error-handler"
 import "./globals.css"
 
 const playfairDisplay = Playfair_Display({
@@ -76,6 +77,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} ${playfairDisplay.variable}`}>
+        <ChunkErrorHandler />
         <MobileOptimizer />
         <ErrorBoundary>
           <LanguageProvider>

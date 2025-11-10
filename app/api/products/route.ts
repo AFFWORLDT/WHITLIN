@@ -190,12 +190,39 @@ export async function GET(request: NextRequest) {
         )
       }
 
+      // Helper function to validate image URL
+      const isValidImageUrl = (url: string): boolean => {
+        if (!url || typeof url !== 'string') return false
+        const trimmed = url.trim()
+        if (trimmed === '' || trimmed === 'null' || trimmed === 'undefined') return false
+        // Check if it's a valid URL (http/https) or a valid path (/...)
+        return trimmed.startsWith('http://') || 
+               trimmed.startsWith('https://') || 
+               trimmed.startsWith('/') ||
+               trimmed.startsWith('data:image/')
+      }
+
       // Ensure images array is properly formatted and all required fields exist
       const formattedProducts = products.map(product => {
-        // Ensure images array exists
-        const images = product.images && product.images.length > 0 
-          ? product.images.filter(img => img && typeof img === 'string')
-          : (product.image && typeof product.image === 'string' ? [product.image] : ['/placeholder.jpg'])
+        // Filter and validate images
+        let images: string[] = []
+        
+        // First, try to get images from images array
+        if (Array.isArray(product.images) && product.images.length > 0) {
+          images = product.images
+            .filter(img => isValidImageUrl(img))
+            .map(img => img.trim())
+        }
+        
+        // If no valid images from array, try single image field
+        if (images.length === 0 && product.image && isValidImageUrl(product.image)) {
+          images = [product.image.trim()]
+        }
+        
+        // If still no valid images, use placeholder
+        if (images.length === 0) {
+          images = ['/placeholder.jpg']
+        }
         
         // Ensure category exists
         const category = product.category || { name: 'General' }
@@ -212,7 +239,7 @@ export async function GET(request: NextRequest) {
           name: product.name || 'Product',
           price: typeof product.price === 'number' && product.price >= 0 ? product.price : 0,
           description: product.description || 'Premium quality product',
-          images: images.length > 0 ? images : ['/placeholder.jpg'],
+          images: images,
           image: images[0] || '/placeholder.jpg',
           category: typeof category === 'string' ? { name: category } : category,
           attributes: attributes,

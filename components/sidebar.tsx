@@ -2,7 +2,7 @@
 
 import { useState, memo, useCallback, useEffect } from "react"
 import Link from "next/link"
-import Image from "next/image"
+import { Logo } from "@/components/logo"
 import { 
   ShoppingBag, 
   Search, 
@@ -99,21 +99,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onToggle }: SidebarProps)
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-slate-700">
-            <Link href="/" className="flex items-center space-x-3">
-              <div className="relative w-12 h-12">
-                <Image
-                  src="/images/logonew.png"
-                  alt="KeraGold PRO Logo"
-                  fill
-                  className="object-contain"
-                  priority
-                />
-              </div>
-              <div className="hidden lg:block">
-                <span className="font-serif text-lg font-bold text-white">KeraGold</span>
-                <span className="text-xs text-slate-400 block -mt-1">PRO</span>
-              </div>
-            </Link>
+            <Logo size="md" showText={true} href="/" className="text-white" />
             
             {/* Mobile Close Button */}
             <Button 

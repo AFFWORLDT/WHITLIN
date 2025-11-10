@@ -3,13 +3,13 @@
 import { useState, memo, useCallback } from "react"
 import Link from "next/link"
 import { useI18n } from "@/components/language-provider"
-import Image from "next/image"
 import { ShoppingBag, Search, Menu, X, User, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { useCart } from "@/lib/cart-context"
 import { useAuth } from "@/lib/auth-context"
+import { Logo } from "@/components/logo"
 
 export const Header = memo(function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -30,21 +30,7 @@ export const Header = memo(function Header() {
       <div className="container mx-auto px-3 sm:px-4">
         <div className="flex items-center justify-between h-16 sm:h-18 md:h-20">
           {/* Logo - Mobile Optimized */}
-          <Link href="/" className="flex items-center space-x-2 sm:space-x-3">
-            <div className="relative w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16">
-              <Image
-                src="/images/logonew.png"
-                alt="KeraGold PRO Logo"
-                fill
-                className="object-contain"
-                priority
-              />
-            </div>
-            <div className="hidden sm:block">
-              <span className="font-serif text-lg sm:text-xl font-bold">KeraGold</span>
-              <span className="text-xs text-muted-foreground block -mt-1">PRO</span>
-            </div>
-          </Link>
+          <Logo size="md" showText={true} href="/" />
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">

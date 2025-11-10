@@ -49,14 +49,34 @@ export function normalizeProduct(product: any): NormalizedProduct {
     return createDefaultProduct()
   }
 
-  // Ensure images array exists and has at least one image
-  const images = Array.isArray(product.images) 
-    ? product.images.filter(img => img && typeof img === 'string')
-    : product.image 
-      ? [product.image]
-      : []
+  // Helper function to validate image URL
+  const isValidImageUrl = (url: string): boolean => {
+    if (!url || typeof url !== 'string') return false
+    const trimmed = url.trim()
+    if (trimmed === '' || trimmed === 'null' || trimmed === 'undefined') return false
+    // Check if it's a valid URL (http/https) or a valid path (/...)
+    return trimmed.startsWith('http://') || 
+           trimmed.startsWith('https://') || 
+           trimmed.startsWith('/') ||
+           trimmed.startsWith('data:image/')
+  }
 
-  // If no images, add placeholder
+  // Filter and validate images
+  let images: string[] = []
+  
+  // First, try to get images from images array
+  if (Array.isArray(product.images) && product.images.length > 0) {
+    images = product.images
+      .filter(img => isValidImageUrl(img))
+      .map(img => img.trim())
+  }
+  
+  // If no valid images from array, try single image field
+  if (images.length === 0 && product.image && isValidImageUrl(product.image)) {
+    images = [product.image.trim()]
+  }
+  
+  // If still no valid images, use placeholder
   if (images.length === 0) {
     images.push(DEFAULT_PLACEHOLDER_IMAGE)
   }

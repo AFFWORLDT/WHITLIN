@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
+import { MobileProductGridImage } from "@/components/ui/mobile-optimized-image"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -166,11 +167,10 @@ export function LuxuryProductGallery({
                 className="group hover:shadow-2xl transition-all duration-500 overflow-hidden border-0 bg-white/90 backdrop-blur-sm"
                 onClick={() => setSelectedProduct(product)}
               >
-                <div className="relative h-64 overflow-hidden">
-                  <Image
-                    src={product.image}
+                <div className="relative h-48 sm:h-56 md:h-64 overflow-hidden w-full">
+                  <MobileProductGridImage
+                    src={product.image || '/placeholder.jpg'}
                     alt={product.name}
-                    fill
                     className="object-cover group-hover:scale-110 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-300" />
@@ -279,12 +279,14 @@ export function LuxuryProductGallery({
 
             <div className="grid md:grid-cols-2 gap-0">
               {/* Image Section */}
-              <div className="relative h-96 md:h-full">
+              <div className="relative h-96 md:h-full overflow-hidden">
                 <Image
-                  src={selectedProduct.image}
+                  src={selectedProduct.image || '/placeholder.jpg'}
                   alt={selectedProduct.name}
                   fill
                   className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  priority
                 />
                 <div className="absolute bottom-4 left-4 right-4 flex justify-between">
                   <Button size="icon" variant="outline" onClick={prevImage} className="bg-white/90">
