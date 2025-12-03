@@ -439,7 +439,7 @@ export default function PrivacyPage() {
                         <Mail className="w-5 h-5 mr-2 text-amber-600" />
                         Email
                       </h3>
-                      <p className="text-gray-700 mb-2">info@keragold-uae.com</p>
+                      <p className="text-gray-700 mb-2">info@whitlin.com</p>
                       <p className="text-sm text-gray-600">We'll respond within 48 hours</p>
                     </div>
                     
@@ -456,7 +456,7 @@ export default function PrivacyPage() {
                   <div className="mt-8 p-4 bg-blue-50 rounded-lg">
                     <p className="text-blue-800 text-sm">
                       <strong>Data Protection Officer:</strong> For EU residents, you can contact our Data Protection Officer 
-                      at info@keragold-uae.com for any privacy-related concerns.
+                      at info@whitlin.com for any privacy-related concerns.
                     </p>
                   </div>
                 </CardContent>

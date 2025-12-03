@@ -65,8 +65,8 @@ export default function RegisterPage() {
           email: data.data.email,
           role: data.data.role
         }
-        localStorage.setItem("keragold_user", JSON.stringify(userData))
-        document.cookie = `keragold_user=${JSON.stringify(userData)}; path=/; max-age=86400`
+        localStorage.setItem("whitlin_user", JSON.stringify(userData))
+        document.cookie = `whitlin_user=${JSON.stringify(userData)}; path=/; max-age=86400`
         
         // Call login function to update context
         await login(formData.email, formData.password)
@@ -86,7 +86,7 @@ export default function RegisterPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-serif font-bold text-gray-900">KeraGold Pro</h1>
+          <h1 className="text-3xl font-serif font-bold text-gray-900">Whitlin</h1>
           <p className="mt-2 text-sm text-gray-600">Create your account</p>
         </div>
 

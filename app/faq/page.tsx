@@ -27,8 +27,8 @@ const faqData: FAQItem[] = [
   // Product Questions
   {
     id: "1",
-    question: "What makes KeraGold Pro products different from other hair care brands?",
-    answer: "KeraGold Pro products are professional-grade formulations that combine salon-quality ingredients with advanced keratin technology. Our products are developed by cosmetic chemists and hair care experts, ensuring maximum effectiveness and safety. Unlike consumer-grade products, ours deliver salon-quality results in the comfort of your home.",
+    question: "What makes Whitlin products different from other hair care brands?",
+    answer: "Whitlin products are professional-grade formulations that combine salon-quality ingredients with advanced keratin technology. Our products are developed by cosmetic chemists and hair care experts, ensuring maximum effectiveness and safety. Unlike consumer-grade products, ours deliver salon-quality results in the comfort of your home.",
     category: "Products"
   },
   {
@@ -39,13 +39,13 @@ const faqData: FAQItem[] = [
   },
   {
     id: "3",
-    question: "How often should I use KeraGold Pro treatments?",
+    question: "How often should I use Whitlin treatments?",
     answer: "The frequency depends on the specific product and your hair's needs. Keratin treatments typically last 2-3 months with proper care. Hair repair treatments can be used weekly or as needed. Always follow the product instructions and consult with a hair care professional if you have specific concerns.",
     category: "Products"
   },
   {
     id: "4",
-    question: "Can I use KeraGold Pro products if I have color-treated hair?",
+    question: "Can I use Whitlin products if I have color-treated hair?",
     answer: "Absolutely! Our products are specifically formulated to be safe for color-treated hair. In fact, our Color Protection collection is designed to help maintain vibrant color and prevent fading. We recommend using sulfate-free products and avoiding heat styling immediately after coloring.",
     category: "Products"
   },
@@ -72,7 +72,7 @@ const faqData: FAQItem[] = [
   {
     id: "8",
     question: "What if my package is damaged or lost?",
-    answer: "All packages are insured. If your package arrives damaged or is lost in transit, please contact us immediately at info@keragold-uae.com or call +971 45 754 785. We'll arrange for a replacement or refund at no cost to you.",
+    answer: "All packages are insured. If your package arrives damaged or is lost in transit, please contact us immediately at info@whitlin.com or call +971 45 754 785. We'll arrange for a replacement or refund at no cost to you.",
     category: "Shipping"
   },
 
@@ -86,7 +86,7 @@ const faqData: FAQItem[] = [
   {
     id: "10",
     question: "How do I return a product?",
-    answer: "Contact our customer service team at info@keragold-uae.com or call +971 45 754 785 to initiate your return. We'll email you a prepaid return shipping label and return authorization number. Package your items securely and drop off at any authorized shipping location.",
+    answer: "Contact our customer service team at info@whitlin.com or call +971 45 754 785 to initiate your return. We'll email you a prepaid return shipping label and return authorization number. Package your items securely and drop off at any authorized shipping location.",
     category: "Returns"
   },
   {
@@ -120,7 +120,7 @@ const faqData: FAQItem[] = [
   {
     id: "15",
     question: "How do I contact customer support?",
-    answer: "You can reach our customer support team via email at info@keragold-uae.com, phone at +971 45 754 785, or through our contact form. Our team is available Sunday-Thursday 9 AM-6 PM GST and Friday 10 AM-4 PM GST.",
+    answer: "You can reach our customer support team via email at info@whitlin.com, phone at +971 45 754 785, or through our contact form. Our team is available Sunday-Thursday 9 AM-6 PM GST and Friday 10 AM-4 PM GST.",
     category: "Support"
   },
   {

@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
   // Check if the path starts with /admin
   if (pathname.startsWith('/admin')) {
     // Get the token from cookies
-    const token = request.cookies.get('keragold_user')?.value
+    const token = request.cookies.get('whitlin_user')?.value
     
     if (!token) {
       console.log('No token found, redirecting to login')

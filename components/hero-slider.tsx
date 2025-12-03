@@ -41,7 +41,7 @@ const heroSlides: HeroSlide[] = [
       text: "View Collections",
       href: "/collections"
     },
-    overlay: "KERAGOLD PRO",
+    overlay: "WHITLIN",
     textPosition: 'center',
     theme: 'dark'
   },

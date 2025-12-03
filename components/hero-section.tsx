@@ -8,7 +8,7 @@ export function HeroSection() {
       <div className="absolute inset-0">
         <Image
           src="/hero.png"
-          alt="KeraGold Pro Professional Hair Care"
+          alt="Whitlin Professional Hair Care"
           fill
           className="object-cover"
           priority

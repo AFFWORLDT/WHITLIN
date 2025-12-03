@@ -49,7 +49,7 @@ export function LayoutProvider({ children }: LayoutProviderProps) {
             >
               <Menu className="h-6 w-6" />
             </Button>
-            <h1 className="text-lg font-semibold text-foreground">KeraGold PRO</h1>
+            <h1 className="text-lg font-semibold text-foreground">Whitlin</h1>
             <div className="w-10" /> {/* Spacer for centering */}
           </div>
           

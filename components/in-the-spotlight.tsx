@@ -168,7 +168,7 @@ export function InTheSpotlight() {
                       <CardContent className="p-4">
                         {/* Brand - Compact */}
                         <div className="text-xs font-medium text-gray-600 mb-1 uppercase tracking-wide">
-                          KeraGold Pro
+                          Whitlin
                         </div>
                         
                         {/* Product Name - Compact */}

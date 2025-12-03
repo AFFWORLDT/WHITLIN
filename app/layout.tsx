@@ -25,35 +25,35 @@ const playfairDisplay = Playfair_Display({
 
 export const metadata: Metadata = {
   title: {
-    default: "KeraGold Pro - Professional Hair Care",
-    template: "%s | KeraGold Pro"
+    default: "Whitlin - Professional Hair Care",
+    template: "%s | Whitlin"
   },
   description:
     "Luxury professional hair care products with keratin and hyaluronic acid. Transform your hair with our premium treatment systems.",
   keywords: ["hair care", "keratin", "professional", "luxury", "beauty", "hair treatment"],
-  authors: [{ name: "KeraGold Pro" }],
-  creator: "KeraGold Pro",
-  publisher: "KeraGold Pro",
+  authors: [{ name: "Whitlin" }],
+  creator: "Whitlin",
+  publisher: "Whitlin",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://keragold-uae.com'),
+  metadataBase: new URL('https://whitlin.com'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://keragold-uae.com',
-    title: 'KeraGold Pro - Professional Hair Care',
+    url: 'https://whitlin.com',
+    title: 'Whitlin - Professional Hair Care',
     description: 'Luxury professional hair care products with keratin and hyaluronic acid.',
-    siteName: 'KeraGold Pro',
+    siteName: 'Whitlin',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'KeraGold Pro - Professional Hair Care',
+    title: 'Whitlin - Professional Hair Care',
     description: 'Luxury professional hair care products with keratin and hyaluronic acid.',
   },
   robots: {

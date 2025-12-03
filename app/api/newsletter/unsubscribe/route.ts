@@ -113,7 +113,7 @@ export async function GET(request: NextRequest) {
       <!DOCTYPE html>
       <html>
       <head>
-        <title>Unsubscribed - KeraGold Pro</title>
+        <title>Unsubscribed - Whitlin</title>
         <style>
           body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background: #f5f5f5; }
           .container { max-width: 500px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }

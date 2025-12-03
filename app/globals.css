@@ -120,7 +120,7 @@ img[src*="cloudinary.com"] {
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated color tokens to match KeraGold Pro luxury brand design */
+  /* Updated color tokens to match Whitlin luxury brand design */
   --background: oklch(1 0 0); /* Pure white */
   --foreground: oklch(0 0 0); /* Pure black */
   --card: oklch(0.97 0 0); /* Light grey for product cards */

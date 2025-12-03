@@ -13,15 +13,15 @@ interface SEOProps {
 }
 
 export function SEOOptimizer({
-  title = "KeraGold Pro - Professional Hair Care",
+  title = "Whitlin - Professional Hair Care",
   description = "Luxury professional hair care products with keratin and hyaluronic acid. Transform your hair with our premium treatment systems.",
   keywords = ["hair care", "keratin", "professional", "luxury", "beauty"],
   image = "/hero.png",
-  url = "https://keragold-uae.com",
+  url = "https://whitlin.com",
   type = "website",
   structuredData
 }: SEOProps) {
-  const fullTitle = title.includes("KeraGold") ? title : `${title} | KeraGold Pro`
+  const fullTitle = title.includes("Whitlin") ? title : `${title} | Whitlin`
   
   return (
     <Head>
@@ -30,7 +30,7 @@ export function SEOOptimizer({
       <meta name="keywords" content={keywords.join(", ")} />
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <meta name="robots" content="index, follow" />
-      <meta name="author" content="KeraGold Pro" />
+      <meta name="author" content="Whitlin" />
       
       {/* Open Graph */}
       <meta property="og:title" content={fullTitle} />
@@ -38,7 +38,7 @@ export function SEOOptimizer({
       <meta property="og:image" content={image} />
       <meta property="og:url" content={url} />
       <meta property="og:type" content={type} />
-      <meta property="og:site_name" content="KeraGold Pro" />
+      <meta property="og:site_name" content="Whitlin" />
       
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
@@ -72,10 +72,10 @@ export const generateProductStructuredData = (product: any) => ({
   "name": product.name,
   "description": product.description,
   "image": product.images,
-  "brand": {
-    "@type": "Brand",
-    "name": "KeraGold Pro"
-  },
+    "brand": {
+      "@type": "Brand",
+      "name": "Whitlin"
+    },
   "offers": {
     "@type": "Offer",
     "price": product.price,
@@ -87,9 +87,9 @@ export const generateProductStructuredData = (product: any) => ({
 export const generateOrganizationStructuredData = () => ({
   "@context": "https://schema.org",
   "@type": "Organization",
-  "name": "KeraGold Pro",
-  "url": "https://keragold-uae.com",
-  "logo": "https://keragold-uae.com/images/logonew.png",
+  "name": "Whitlin",
+  "url": "https://whitlin.com",
+  "logo": "https://whitlin.com/images/logonew.png",
   "description": "Professional hair care products with keratin and hyaluronic acid",
   "contactPoint": {
     "@type": "ContactPoint",

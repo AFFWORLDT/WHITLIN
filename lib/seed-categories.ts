@@ -10,114 +10,164 @@ const seedCategories = async () => {
     await Category.deleteMany({})
     console.log('Cleared existing categories')
 
-    // Seed Categories
+    // Seed Categories - Collection Categories Only
     const categories = [
       {
-        name: "Treatment Systems",
-        description: "Professional hair treatment systems for salon-quality results",
+        name: "AB Collection",
+        description: "Advanced Bonding Technology for Ultimate Hair Repair and Strength",
         isActive: true,
         sortOrder: 1,
         attributes: [
           {
-            name: "Treatment Type",
+            name: "Product Type",
             type: "select",
-            options: ["Keratin", "Straightening", "Smoothing", "Rebonding"],
+            options: ["Treatment", "Shampoo", "Conditioner", "Mask", "Serum"],
             required: true
           },
           {
-            name: "Duration",
-            type: "text",
-            required: true
-          },
-          {
-            name: "Hair Type",
+            name: "Size",
             type: "select",
-            options: ["All Hair Types", "Fine Hair", "Thick Hair", "Curly Hair", "Damaged Hair"],
+            options: ["100ml", "250ml", "500ml", "1000ml"],
             required: true
           }
         ]
       },
       {
-        name: "Hair Care",
-        description: "Daily hair care products for maintenance and styling",
+        name: "AC Collection",
+        description: "Anti-Curl System for Perfect Straightening Results",
         isActive: true,
         sortOrder: 2,
         attributes: [
           {
             name: "Product Type",
             type: "select",
-            options: ["Shampoo", "Conditioner", "Serum", "Mask", "Oil"],
-            required: true
-          },
-          {
-            name: "Hair Concern",
-            type: "select",
-            options: ["Damage Repair", "Moisture", "Volume", "Smoothness", "Color Protection"],
+            options: ["Treatment", "Shampoo", "Conditioner", "Mask", "Serum"],
             required: true
           },
           {
             name: "Size",
             type: "select",
-            options: ["50ml", "100ml", "250ml", "500ml", "1L"],
+            options: ["100ml", "250ml", "500ml", "1000ml"],
             required: true
           }
         ]
       },
       {
-        name: "Professional Products",
-        description: "Professional-grade products for salon use",
+        name: "BC Collection",
+        description: "Bonding & Conditioning for Healthy Hair Transformation",
         isActive: true,
         sortOrder: 3,
         attributes: [
           {
-            name: "Professional Grade",
+            name: "Product Type",
             type: "select",
-            options: ["Salon Only", "Professional", "Semi-Professional"],
+            options: ["Treatment", "Shampoo", "Conditioner", "Mask"],
             required: true
           },
           {
-            name: "Application Method",
+            name: "Size",
             type: "select",
-            options: ["Brush", "Spray", "Cream", "Gel", "Lotion"],
+            options: ["100ml", "250ml", "500ml", "1000ml"],
             required: true
           }
         ]
       },
       {
-        name: "Accessories",
-        description: "Hair care accessories and tools",
+        name: "CC Collection",
+        description: "Color Care System for Vibrant, Protected Hair",
         isActive: true,
         sortOrder: 4,
         attributes: [
           {
-            name: "Accessory Type",
+            name: "Product Type",
             type: "select",
-            options: ["Brush", "Comb", "Cap", "Gloves", "Bowl", "Applicator"],
+            options: ["Treatment", "Shampoo", "Conditioner", "Mask"],
             required: true
           },
           {
-            name: "Material",
+            name: "Size",
             type: "select",
-            options: ["Plastic", "Metal", "Wood", "Silicone", "Ceramic"],
+            options: ["100ml", "250ml", "500ml", "1000ml"],
             required: true
           }
         ]
       },
       {
-        name: "Maintenance",
-        description: "Post-treatment maintenance products",
+        name: "DD Collection",
+        description: "Deep Detox & Damage Repair for Ultimate Hair Recovery",
         isActive: true,
         sortOrder: 5,
         attributes: [
           {
-            name: "Maintenance Type",
+            name: "Product Type",
             type: "select",
-            options: ["Daily Care", "Weekly Treatment", "Monthly Deep Care"],
+            options: ["Treatment", "Shampoo", "Conditioner", "Mask"],
             required: true
           },
           {
-            name: "Frequency",
-            type: "text",
+            name: "Size",
+            type: "select",
+            options: ["100ml", "250ml", "500ml", "1000ml"],
+            required: true
+          }
+        ]
+      },
+      {
+        name: "FB Collection",
+        description: "Fiber Bonding Technology for Maximum Hair Strength",
+        isActive: true,
+        sortOrder: 6,
+        attributes: [
+          {
+            name: "Product Type",
+            type: "select",
+            options: ["Treatment", "Shampoo", "Conditioner", "Mask", "Serum", "Finishing"],
+            required: true
+          },
+          {
+            name: "Size",
+            type: "select",
+            options: ["100ml", "250ml", "500ml", "1000ml"],
+            required: true
+          }
+        ]
+      },
+      {
+        name: "SV Collection",
+        description: "Silver & Volumizing System for Luxurious Hair Volume",
+        isActive: true,
+        sortOrder: 7,
+        attributes: [
+          {
+            name: "Product Type",
+            type: "select",
+            options: ["Treatment", "Shampoo", "Conditioner", "Mask"],
+            required: true
+          },
+          {
+            name: "Size",
+            type: "select",
+            options: ["100ml", "250ml", "500ml", "1000ml"],
+            required: true
+          }
+        ]
+      },
+      {
+        name: "XL Collection",
+        description: "Extra Long Keratin & Silk for Maximum Hair Length and Strength",
+        isActive: true,
+        sortOrder: 8,
+        attributes: [
+          {
+            name: "Product Type",
+            type: "select",
+            options: ["Treatment", "Shampoo", "Conditioner", "Mask", "Oil"],
+            required: true
+          },
+          {
+            name: "Size",
+            type: "select",
+            options: ["100ml", "250ml", "500ml", "1000ml"],
             required: true
           }
         ]
@@ -140,3 +190,4 @@ const seedCategories = async () => {
 }
 
 seedCategories()
+

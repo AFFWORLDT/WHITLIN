@@ -1,7 +1,7 @@
 # 🔐 Forgot Password System - Complete Implementation
 
 ## 🎯 Overview
-आपके KeraGold e-commerce platform में **complete forgot password system** implement हो गया है जो OTP-based email verification के साथ काम करता है।
+आपके Whitlin e-commerce platform में **complete forgot password system** implement हो गया है जो OTP-based email verification के साथ काम करता है।
 
 ## ✅ **Features Implemented:**
 
@@ -86,7 +86,7 @@ POST /api/auth/reset-password
 ## 📧 **Email Template Features:**
 
 ### **Forgot Password Email Includes:**
-- 🔐 **Professional Design** with KeraGold branding
+- 🔐 **Professional Design** with Whitlin branding
 - 📱 **Large OTP Display** (36px font, letter-spacing)
 - ⏰ **Expiration Warning** (10 minutes)
 - ⚠️ **Security Warnings** and tips
@@ -247,4 +247,4 @@ resetPassword?: {
 
 ---
 
-**🎯 Your KeraGold e-commerce platform now has enterprise-level password reset functionality!**
+**🎯 Your Whitlin e-commerce platform now has enterprise-level password reset functionality!**

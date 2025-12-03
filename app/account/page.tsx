@@ -147,7 +147,7 @@ export default function AccountPage() {
         <div className="max-w-6xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2">My Account</h1>
-            <p className="text-muted-foreground">Manage your KeraGold Pro account and preferences</p>
+            <p className="text-muted-foreground">Manage your Whitlin account and preferences</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

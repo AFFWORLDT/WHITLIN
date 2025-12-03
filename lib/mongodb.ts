@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 // Get MongoDB URI from environment variable or use default
 // Clean connection string without conflicting options - options will be set in connect options
 const MONGO_URI = process.env.MONGODB_URI || 
-  'mongodb+srv://affworldtechnologies:wMbiyR0ZM8JWfOYl@loc.6qmwn3p.mongodb.net/keragold-ecommerce?retryWrites=true&w=majority'
+  'mongodb+srv://affworldtechnologies:wMbiyR0ZM8JWfOYl@loc.6qmwn3p.mongodb.net/whitlin-ecommerce?retryWrites=true&w=majority'
 
 // Validate connection string exists
 if (!MONGO_URI) {

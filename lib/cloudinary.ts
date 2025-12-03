@@ -9,7 +9,7 @@ cloudinary.config({
 
 export default cloudinary
 
-export const uploadImage = async (file: File, folder: string = 'keragold-products') => {
+export const uploadImage = async (file: File, folder: string = 'whitlin-products') => {
   try {
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)

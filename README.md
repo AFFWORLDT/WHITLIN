@@ -1,5 +1,5 @@
-     # KeraGold Pro Ecommerce Platform  
-एक complete ecommerce platform जो KeraGold Pro hair care products के लिए बनाया गया है। यह platform Next.js 15, React 19, और Tailwind CSS पर बना है।
+     # Whitlin Ecommerce Platform  
+एक complete ecommerce platform जो Whitlin hair care products के लिए बनाया गया है। यह platform Next.js 15, React 19, और Tailwind CSS पर बना है।
 
 ## 🚀 Features
 ### 🛍️ Customer Features
@@ -113,7 +113,7 @@ ecommerce/
 ## 👤 Test Accounts
 
 ### Admin Account
-- **Email**: admin@keragold.com
+- **Email**: admin@whitlin.com
 - **Password**: admin123
 - **Access**: Full admin panel access
 
@@ -265,4 +265,4 @@ For support and questions:
 
 ---
 
-**KeraGold Pro Ecommerce Platform** - Professional hair care products for everyone! 💇‍♀️✨
+**Whitlin Ecommerce Platform** - Professional hair care products for everyone! 💇‍♀️✨

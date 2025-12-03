@@ -30,7 +30,7 @@ export default function AboutPage() {
             <div className="max-w-4xl mx-auto text-center">
               <Badge className="mb-4 bg-amber-100 text-amber-800 hover:bg-amber-200">
                 <Heart className="w-4 h-4 mr-2" />
-                About KeraGold Pro
+                About Whitlin
               </Badge>
               <h1 className="text-5xl font-bold text-gray-900 mb-6">
                 Transforming Hair Care with 
@@ -72,7 +72,7 @@ export default function AboutPage() {
                     Born from a Passion for Beautiful Hair
                   </h2>
                   <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                    KeraGold Pro was founded by a team of hair care professionals who noticed a gap 
+                    Whitlin was founded by a team of hair care professionals who noticed a gap 
                     in the market for truly effective, professional-grade products that could be used 
                     at home. After years of working in salons and seeing the limitations of consumer 
                     products, we set out to create something better.
@@ -208,7 +208,7 @@ export default function AboutPage() {
                   Meet Our Team
                 </Badge>
                 <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                  The Experts Behind KeraGold Pro
+                  The Experts Behind Whitlin
                 </h2>
                 <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                   Our team of hair care professionals, cosmetic chemists, and beauty experts 
@@ -269,10 +269,10 @@ export default function AboutPage() {
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
                 <Badge className="mb-4 bg-amber-100 text-amber-800">
-                  Why Choose KeraGold Pro
+                  Why Choose Whitlin
                 </Badge>
                 <h2 className="text-4xl font-bold text-gray-900 mb-6">
-                  The KeraGold Pro Difference
+                  The Whitlin Difference
                 </h2>
               </div>
 

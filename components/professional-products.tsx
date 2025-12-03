@@ -58,7 +58,7 @@ export default function ProfessionalProducts() {
     {
       id: 6,
       name: "Professional Accessories",
-      description: "KeraGold Pro bags and detangling brushes for professional hairstyling.",
+      description: "Whitlin bags and detangling brushes for professional hairstyling.",
       image: "/images/merchandising.jpeg",
       category: "Accessories",
       badge: "Essential",

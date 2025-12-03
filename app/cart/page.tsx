@@ -194,7 +194,7 @@ export default function CartPage() {
     let userId = user?.id || (user as any)?._id
     if (!userId && typeof window !== 'undefined') {
       try {
-        const savedUser = localStorage.getItem("keragold_user")
+        const savedUser = localStorage.getItem("whitlin_user")
         if (savedUser) {
           const userData = JSON.parse(savedUser)
           userId = userData.id || userData._id
@@ -301,7 +301,7 @@ export default function CartPage() {
       // Fallback: Try to get user from localStorage if user object is missing id
       if (!userId && typeof window !== 'undefined') {
         try {
-          const savedUser = localStorage.getItem("keragold_user")
+          const savedUser = localStorage.getItem("whitlin_user")
           if (savedUser) {
             const userData = JSON.parse(savedUser)
             userId = userData.id || userData._id
@@ -314,7 +314,7 @@ export default function CartPage() {
       
       if (!userId) {
         console.error('Express checkout - No userId found. User object:', user)
-        console.error('Express checkout - localStorage check:', typeof window !== 'undefined' ? localStorage.getItem("keragold_user") : 'N/A')
+        console.error('Express checkout - localStorage check:', typeof window !== 'undefined' ? localStorage.getItem("whitlin_user") : 'N/A')
         toast.error("Please sign in to place order. If you're already signed in, please refresh the page.")
         setExpressCheckout(false)
         setOrderProgress(0)
@@ -513,7 +513,7 @@ export default function CartPage() {
             let userId = user?.id || (user as any)?._id
             if (!userId && typeof window !== 'undefined') {
               try {
-                const savedUser = localStorage.getItem("keragold_user")
+                const savedUser = localStorage.getItem("whitlin_user")
                 if (savedUser) {
                   const userData = JSON.parse(savedUser)
                   userId = userData.id || userData._id
@@ -606,7 +606,7 @@ export default function CartPage() {
     let userId = user?.id || (user as any)?._id
     if (!userId && typeof window !== 'undefined') {
       try {
-        const savedUser = localStorage.getItem("keragold_user")
+        const savedUser = localStorage.getItem("whitlin_user")
         if (savedUser) {
           const userData = JSON.parse(savedUser)
           userId = userData.id || userData._id
@@ -672,7 +672,7 @@ export default function CartPage() {
       // Fallback: Try to get user from localStorage if user object is missing id
       if (!userId && typeof window !== 'undefined') {
         try {
-          const savedUser = localStorage.getItem("keragold_user")
+          const savedUser = localStorage.getItem("whitlin_user")
           if (savedUser) {
             const userData = JSON.parse(savedUser)
             userId = userData.id || userData._id
@@ -685,7 +685,7 @@ export default function CartPage() {
       
       if (!userId) {
         console.error('Place order - No userId found. User object:', user)
-        console.error('Place order - localStorage check:', typeof window !== 'undefined' ? localStorage.getItem("keragold_user") : 'N/A')
+        console.error('Place order - localStorage check:', typeof window !== 'undefined' ? localStorage.getItem("whitlin_user") : 'N/A')
         toast.error("Please sign in to place order. If you're already signed in, please refresh the page.")
         setPlacingOrder(false)
         setOrderProgress(0)

@@ -1,20 +1,20 @@
-# 📧 Email Setup Guide for KeraGold E-commerce Platform
+# 📧 Email Setup Guide for Whitlin E-commerce Platform
 
 ## 🎯 Overview
-This guide will help you set up email notifications for your KeraGold e-commerce platform using Zoho Mail.
+This guide will help you set up email notifications for your Whitlin e-commerce platform using Zoho Mail.
 
 ## 📋 Email Features Implemented
 
 ### ✅ **User Registration Notifications**
 - **Admin Notification**: When a new user registers, admin receives detailed email
 - **Welcome Email**: New users receive a welcome email with platform information
-- **Professional Templates**: Beautiful HTML email templates with KeraGold branding
+- **Professional Templates**: Beautiful HTML email templates with Whitlin branding
 
 ### ✅ **Email Templates**
 1. **New User Registration Alert** (to Admin)
    - User details (name, email, phone, registration date)
    - Direct link to admin panel
-   - Professional styling with KeraGold branding
+   - Professional styling with Whitlin branding
 
 2. **Welcome Email** (to New User)
    - Welcome message with platform introduction
@@ -32,7 +32,7 @@ This guide will help you set up email notifications for your KeraGold e-commerce
 ### Step 2: Generate App Password
 1. In Zoho Mail Settings, go to **Security** → **App Passwords**
 2. Click **Generate New App Password**
-3. Give it a name like "KeraGold E-commerce"
+3. Give it a name like "Whitlin E-commerce"
 4. Copy the generated App Password (it will look like: `abcd1234efgh5678`)
 
 ### Step 3: Update Email Configuration
@@ -94,7 +94,7 @@ curl -X POST http://localhost:3000/api/test-email \
 
 ### **Email Content**
 - **Professional HTML templates** with responsive design
-- **KeraGold branding** with golden color scheme
+- **Whitlin branding** with golden color scheme
 - **Mobile-friendly** layouts
 - **Clear call-to-action** buttons
 - **Fallback text versions** for all emails
@@ -160,13 +160,13 @@ curl -X POST http://localhost:3000/api/auth/register \
 ## 📱 Email Templates Preview
 
 ### **Admin Notification Email:**
-- **Header**: KeraGold logo and "New User Registration" title
+- **Header**: Whitlin logo and "New User Registration" title
 - **User Info Card**: Name, email, phone, registration date
 - **Next Steps**: Review profile, send welcome, monitor activity
 - **Action Button**: "View in Admin Panel"
 
 ### **Welcome Email:**
-- **Header**: "Welcome to KeraGold" with golden branding
+- **Header**: "Welcome to Whitlin" with golden branding
 - **Welcome Message**: Personalized greeting
 - **Features Grid**: Shopping, Wishlist, Order Tracking, Reviews
 - **Special Offer**: 10% off first order with WELCOME10 code
@@ -192,7 +192,7 @@ If you encounter any issues:
 
 ---
 
-**🎯 Your KeraGold e-commerce platform now has professional email notifications!**
+**🎯 Your Whitlin e-commerce platform now has professional email notifications!**
 
 **📧 Admin will be notified of every new user registration**
 **👋 New users will receive a warm welcome with special offers**

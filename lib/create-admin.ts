@@ -12,7 +12,7 @@ const createAdmin = async () => {
     
     const adminUser = new User({
       name: 'Admin User',
-      email: 'admin@keragold.com',
+      email: 'admin@whitlin.com',
       password: hashedPassword,
       role: 'admin',
       status: 'active',
@@ -38,7 +38,7 @@ const createAdmin = async () => {
 
     await adminUser.save()
     console.log('Admin user created successfully!')
-    console.log('Email: admin@keragold.com')
+    console.log('Email: admin@whitlin.com')
     console.log('Password: admin123')
     
     process.exit(0)

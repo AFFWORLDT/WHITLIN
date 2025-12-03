@@ -79,12 +79,12 @@ export const emailTemplates = {
       <body>
         <div class="header">
           <h1>🎉 New User Registration</h1>
-          <p>KeraGold E-commerce Platform</p>
+          <p>Whitlin E-commerce Platform</p>
         </div>
         
         <div class="content">
           <h2>Hello Admin!</h2>
-          <p>A new user has registered on your KeraGold platform. Here are the details:</p>
+          <p>A new user has registered on your Whitlin platform. Here are the details:</p>
           
           <div class="user-info">
             <div class="info-row">
@@ -120,14 +120,14 @@ export const emailTemplates = {
         </div>
         
         <div class="footer">
-          <p>This is an automated notification from KeraGold E-commerce Platform</p>
+          <p>This is an automated notification from Whitlin E-commerce Platform</p>
           <p>Generated on ${new Date().toLocaleString()}</p>
         </div>
       </body>
       </html>
     `,
     text: `
-      New User Registration - KeraGold Platform
+      New User Registration - Whitlin Platform
       
       A new user has registered on your platform:
       
@@ -146,7 +146,7 @@ export const emailTemplates = {
     name: string
     email: string
   }) => ({
-    subject: `Welcome to KeraGold - ${userData.name}!`,
+    subject: `Welcome to Whitlin - ${userData.name}!`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -220,14 +220,14 @@ export const emailTemplates = {
       </head>
       <body>
         <div class="header">
-          <h1>🌟 Welcome to KeraGold!</h1>
+          <h1>🌟 Welcome to Whitlin!</h1>
           <p>Professional Hair Care Solutions</p>
         </div>
         
         <div class="content">
           <div class="welcome-message">
             <h2>Hello ${userData.name}!</h2>
-            <p>Welcome to KeraGold - your premium destination for professional hair care products!</p>
+            <p>Welcome to Whitlin - your premium destination for professional hair care products!</p>
             <p>We're excited to have you join our community of hair care enthusiasts.</p>
           </div>
           
@@ -265,7 +265,7 @@ export const emailTemplates = {
         </div>
         
         <div class="footer">
-          <p>Thank you for choosing KeraGold!</p>
+          <p>Thank you for choosing Whitlin!</p>
           <p>If you have any questions, feel free to contact us.</p>
           <p>Generated on ${new Date().toLocaleString()}</p>
         </div>
@@ -273,11 +273,11 @@ export const emailTemplates = {
       </html>
     `,
     text: `
-      Welcome to KeraGold!
+      Welcome to Whitlin!
       
       Hello ${userData.name}!
       
-      Welcome to KeraGold - your premium destination for professional hair care products!
+      Welcome to Whitlin - your premium destination for professional hair care products!
       We're excited to have you join our community of hair care enthusiasts.
       
       What you can do now:
@@ -290,7 +290,7 @@ export const emailTemplates = {
       
       Start shopping at: http://localhost:3000/products
       
-      Thank you for choosing KeraGold!
+      Thank you for choosing Whitlin!
       Generated on ${new Date().toLocaleString()}
     `
   })
@@ -317,7 +317,7 @@ export const sendNewUserNotification = async (userData: {
   registrationDate: string
 }) => {
   const template = emailTemplates.newUserRegistration(userData)
-  return await sendEmail('admin@keragold.com', template.subject, template.html, template.text)
+  return await sendEmail('admin@whitlin.com', template.subject, template.html, template.text)
 }
 
 // Send welcome email to new user

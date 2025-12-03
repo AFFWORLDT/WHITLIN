@@ -36,7 +36,7 @@ export default function ReturnsPage() {
                 <span className="text-amber-600"> Returns & Exchanges</span>
               </h1>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                We want you to love your KeraGold Pro products. If you're not completely satisfied, 
+                We want you to love your Whitlin products. If you're not completely satisfied, 
                 we offer hassle-free returns and exchanges within 30 days.
               </p>
             </div>
@@ -123,7 +123,7 @@ export default function ReturnsPage() {
                             Contact Customer Service
                           </h3>
                           <p className="text-gray-600 leading-relaxed">
-                            Email us at info@keragold-uae.com or call +971 45 754 785 to initiate your return. 
+                            Email us at info@whitlin.com or call +971 45 754 785 to initiate your return. 
                             Please have your order number ready.
                           </p>
                         </div>
@@ -206,7 +206,7 @@ export default function ReturnsPage() {
                           <Mail className="w-5 h-5 text-amber-600" />
                           <div>
                             <p className="font-medium text-gray-900">Email Support</p>
-                            <p className="text-sm text-gray-600">info@keragold-uae.com</p>
+                            <p className="text-sm text-gray-600">info@whitlin.com</p>
                           </div>
                         </div>
                         

@@ -40,9 +40,9 @@ export default function SettingsPage() {
   
   const [settings, setSettings] = useState({
     // Store Settings
-    storeName: "KeraGold Pro",
+    storeName: "Whitlin",
     storeDescription: "Luxury professional hair care products with keratin and hyaluronic acid",
-    storeEmail: "info@keragold.com",
+    storeEmail: "info@whitlin.com",
     storePhone: "+971 50 123 4567",
     storeAddress: "Dubai Mall, Downtown Dubai, UAE",
     

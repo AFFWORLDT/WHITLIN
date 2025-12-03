@@ -24,7 +24,7 @@ const logoPaths = [
   "/placeholder-logo.png"
 ]
 
-export function Logo({ showText = true, size = "md", href = "/", className = "", text = "KeraGold", subtext = "PRO" }: LogoProps) {
+export function Logo({ showText = true, size = "md", href = "/", className = "", text = "Whitlin", subtext = "" }: LogoProps) {
   const [imageSrc, setImageSrc] = useState(logoPaths[0])
   const [imageError, setImageError] = useState(false)
   const [currentIndex, setCurrentIndex] = useState(0)
@@ -58,7 +58,7 @@ export function Logo({ showText = true, size = "md", href = "/", className = "",
           />
         ) : (
           <div className={`w-full h-full bg-primary/10 rounded flex items-center justify-center ${sizes.container}`}>
-            <span className="font-serif font-bold text-primary">KG</span>
+            <span className="font-serif font-bold text-primary">W</span>
           </div>
         )}
       </div>

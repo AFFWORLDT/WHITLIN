@@ -108,7 +108,7 @@ export default function AdminLayout({
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center justify-between p-6 border-b border-border">
-            <Logo size="md" showText={true} href="/admin" text="KeraGold Admin" subtext="" />
+            <Logo size="md" showText={true} href="/admin" text="Whitlin Admin" subtext="" />
             <Button
               variant="ghost"
               size="icon"

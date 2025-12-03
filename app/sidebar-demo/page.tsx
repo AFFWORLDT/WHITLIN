@@ -106,7 +106,7 @@ export default function SidebarDemoPage() {
                   <div className="w-6 h-6 bg-purple-500 text-white rounded-full flex items-center justify-center text-sm font-bold">3</div>
                   <div>
                     <h4 className="font-semibold">Navigation</h4>
-                    <p className="text-gray-600">Use the sidebar to navigate between different sections of your KeraGold PRO website.</p>
+                    <p className="text-gray-600">Use the sidebar to navigate between different sections of your Whitlin website.</p>
                   </div>
                 </div>
               </div>

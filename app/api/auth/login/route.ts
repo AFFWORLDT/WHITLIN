@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
       'User lookup',
       5
     )
-    const isAdminUser = user && (user.role === 'admin' || user.email === 'admin@keragold.com')
+    const isAdminUser = user && (user.role === 'admin' || user.email === 'admin@whitlin.com')
     
     // Apply rate limiting only for non-admin users
     if (!isAdminUser) {

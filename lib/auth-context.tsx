@@ -28,18 +28,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Check for existing session on mount
     const checkAuth = async () => {
       if (typeof window !== 'undefined') {
-        const savedUser = localStorage.getItem("keragold_user")
+        const savedUser = localStorage.getItem("whitlin_user")
         if (savedUser) {
           try {
             const userData = JSON.parse(savedUser)
             setUser(userData)
             // Also set cookie for middleware
             const isProduction = window.location.hostname !== 'localhost'
-            const cookieString = `keragold_user=${savedUser}; path=/; max-age=86400; SameSite=Lax${isProduction ? '; Secure' : ''}`
+            const cookieString = `whitlin_user=${savedUser}; path=/; max-age=86400; SameSite=Lax${isProduction ? '; Secure' : ''}`
             document.cookie = cookieString
           } catch (error) {
             console.error('Error parsing user data:', error)
-            localStorage.removeItem("keragold_user")
+            localStorage.removeItem("whitlin_user")
           }
         }
       }
@@ -72,10 +72,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUser(userData)
         if (typeof window !== 'undefined') {
           const userDataString = JSON.stringify(userData)
-          localStorage.setItem("keragold_user", userDataString)
+          localStorage.setItem("whitlin_user", userDataString)
           // Set cookie for middleware
           const isProduction = window.location.hostname !== 'localhost'
-          const cookieString = `keragold_user=${userDataString}; path=/; max-age=86400; SameSite=Lax${isProduction ? '; Secure' : ''}`
+          const cookieString = `whitlin_user=${userDataString}; path=/; max-age=86400; SameSite=Lax${isProduction ? '; Secure' : ''}`
           document.cookie = cookieString
         }
         setIsLoading(false)
@@ -114,7 +114,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
         setUser(userData)
         if (typeof window !== 'undefined') {
-          localStorage.setItem("keragold_user", JSON.stringify(userData))
+          localStorage.setItem("whitlin_user", JSON.stringify(userData))
         }
         setIsLoading(false)
         return true
@@ -132,18 +132,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Initialize with admin user for testing
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const users = JSON.parse(localStorage.getItem("keragold_users") || "[]")
-      const adminExists = users.find((u: any) => u.email === "admin@keragold.com")
+      const users = JSON.parse(localStorage.getItem("whitlin_users") || "[]")
+      const adminExists = users.find((u: any) => u.email === "admin@whitlin.com")
       
       if (!adminExists) {
         const adminUser = {
           id: "admin-001",
-          email: "admin@keragold.com",
+          email: "admin@whitlin.com",
           password: "admin123",
           name: "Admin User",
         }
         users.push(adminUser)
-        localStorage.setItem("keragold_users", JSON.stringify(users))
+        localStorage.setItem("whitlin_users", JSON.stringify(users))
       }
     }
   }, [])
@@ -151,9 +151,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const logout = () => {
     setUser(null)
     if (typeof window !== 'undefined') {
-      localStorage.removeItem("keragold_user")
+      localStorage.removeItem("whitlin_user")
       // Clear cookie
-      document.cookie = "keragold_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+      document.cookie = "whitlin_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
     }
   }
 

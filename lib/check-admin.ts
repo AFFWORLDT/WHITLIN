@@ -6,7 +6,7 @@ async function checkAdmin() {
     await connectDB()
     console.log('Connected to MongoDB')
 
-    const admin = await User.findOne({ email: 'admin@keragold.com' })
+    const admin = await User.findOne({ email: 'admin@whitlin.com' })
     
     if (admin) {
       console.log('Admin user found:')

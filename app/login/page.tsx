@@ -58,11 +58,11 @@ export default function LoginPage() {
           email: data.data.email,
           role: data.data.role
         }
-        localStorage.setItem("keragold_user", JSON.stringify(userData))
+        localStorage.setItem("whitlin_user", JSON.stringify(userData))
         // Set cookie with proper attributes for production
         const cookieValue = JSON.stringify(userData)
         const isProduction = window.location.hostname !== 'localhost'
-        const cookieString = `keragold_user=${cookieValue}; path=/; max-age=86400; SameSite=Lax${isProduction ? '; Secure' : ''}`
+        const cookieString = `whitlin_user=${cookieValue}; path=/; max-age=86400; SameSite=Lax${isProduction ? '; Secure' : ''}`
         document.cookie = cookieString
         
         // Call login function to update context
@@ -100,7 +100,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h1 className="text-3xl font-serif font-bold text-gray-900">KeraGold Pro</h1>
+          <h1 className="text-3xl font-serif font-bold text-gray-900">Whitlin</h1>
           <p className="mt-2 text-sm text-gray-600">Sign in to your account</p>
         </div>
 

@@ -23,8 +23,8 @@ export default function DebugAuth() {
   }
 
   const clearAuth = () => {
-    localStorage.removeItem("keragold_user")
-    document.cookie = "keragold_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
+    localStorage.removeItem("whitlin_user")
+    document.cookie = "whitlin_user=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT"
     setDebugInfo(null)
   }
 
@@ -60,7 +60,7 @@ export default function DebugAuth() {
               <h3 className="font-semibold">Client-side Auth Status:</h3>
               <pre className="bg-gray-100 p-2 rounded text-sm overflow-auto">
                 {JSON.stringify({
-                  localStorage: typeof window !== 'undefined' ? localStorage.getItem("keragold_user") : 'N/A',
+                  localStorage: typeof window !== 'undefined' ? localStorage.getItem("whitlin_user") : 'N/A',
                   cookies: typeof document !== 'undefined' ? document.cookie : 'N/A',
                   hostname: typeof window !== 'undefined' ? window.location.hostname : 'N/A'
                 }, null, 2)}

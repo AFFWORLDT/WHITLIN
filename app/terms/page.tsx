@@ -63,7 +63,7 @@ export default function TermsPage() {
                     </div>
                     <h3 className="text-2xl font-bold text-gray-900 mb-4">Legal Agreement</h3>
                     <p className="text-gray-600 leading-relaxed">
-                      These terms form a legally binding agreement between you and KeraGold Pro.
+                      These terms form a legally binding agreement between you and Whitlin.
                     </p>
                   </CardContent>
                 </Card>
@@ -108,7 +108,7 @@ export default function TermsPage() {
                 <CardContent className="p-0">
                   <h3 className="text-2xl font-bold text-gray-900 mb-6">Agreement to Terms</h3>
                   <p className="text-gray-700 leading-relaxed mb-6">
-                    By accessing and using the KeraGold Pro website, you accept and agree to be bound by the terms 
+                    By accessing and using the Whitlin website, you accept and agree to be bound by the terms 
                     and provision of this agreement. If you do not agree to abide by the above, please do not use this service.
                   </p>
                   
@@ -382,7 +382,7 @@ export default function TermsPage() {
 
                   <h3 className="text-2xl font-bold text-gray-900 mb-6">Limitation of Damages</h3>
                   <p className="text-gray-700 leading-relaxed mb-4">
-                    In no event shall KeraGold Pro be liable for any indirect, incidental, special, consequential, 
+                    In no event shall Whitlin be liable for any indirect, incidental, special, consequential, 
                     or punitive damages, including but not limited to:
                   </p>
                   
@@ -426,7 +426,7 @@ export default function TermsPage() {
                   <h3 className="text-2xl font-bold text-gray-900 mb-6">Ownership</h3>
                   <p className="text-gray-700 leading-relaxed mb-6">
                     All content on this website, including but not limited to text, graphics, logos, images, 
-                    and software, is the property of KeraGold Pro and is protected by copyright and other 
+                    and software, is the property of Whitlin and is protected by copyright and other 
                     intellectual property laws.
                   </p>
                   
@@ -457,7 +457,7 @@ export default function TermsPage() {
                   <div className="p-4 bg-blue-50 rounded-lg">
                     <p className="text-blue-800 text-sm">
                       <strong>Note:</strong> If you believe your intellectual property rights have been violated, 
-                      please contact us immediately at info@keragold-uae.com.
+                      please contact us immediately at info@whitlin.com.
                     </p>
                   </div>
                 </CardContent>
@@ -486,7 +486,7 @@ export default function TermsPage() {
                         <Mail className="w-5 h-5 mr-2 text-amber-600" />
                         Email
                       </h3>
-                      <p className="text-gray-700 mb-2">info@keragold-uae.com</p>
+                      <p className="text-gray-700 mb-2">info@whitlin.com</p>
                       <p className="text-sm text-gray-600">For legal and terms-related inquiries</p>
                     </div>
                     
@@ -503,7 +503,7 @@ export default function TermsPage() {
                   <div className="mt-8 p-4 bg-amber-50 rounded-lg">
                     <p className="text-amber-800 text-sm">
                       <strong>Mailing Address:</strong><br />
-                      KeraGold Pro Legal Department<br />
+                      Whitlin Legal Department<br />
                       Aspin Tower<br />
                       Sheikh Zayed Road<br />
                       Dubai, United Arab Emirates

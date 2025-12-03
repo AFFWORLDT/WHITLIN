@@ -160,7 +160,7 @@ export function Footer() {
 
         <div className="border-t border-gray-800 mt-6 sm:mt-8 pt-6 sm:pt-8 text-center">
           <p className="text-gray-400 text-xs sm:text-sm px-2">
-            © 2025 KeraGold Pro. All rights reserved. |
+            © 2025 Whitlin. All rights reserved. |
             <Link href="/privacy" className="hover:text-primary transition-colors ml-1">
               Privacy Policy
             </Link>{" "}

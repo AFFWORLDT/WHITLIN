@@ -47,7 +47,7 @@ export class NewsletterAutomationService {
       })
 
       const welcomeNewsletter = new Newsletter({
-        title: 'Welcome to KeraGold Pro',
+        title: 'Welcome to Whitlin',
         subject: welcomeTemplate.subject,
         content: welcomeTemplate.text,
         htmlContent: welcomeTemplate.html.replace(/UNSUBSCRIBE_TOKEN/g, subscriber.unsubscribeToken),

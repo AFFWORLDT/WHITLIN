@@ -7,14 +7,14 @@ export interface EmailTemplate {
 export const emailTemplates = {
   // Welcome email template
   welcome: (userData: { name: string; email: string }): EmailTemplate => ({
-    subject: "Welcome to KeraGold Pro - Your Hair Transformation Journey Begins!",
+    subject: "Welcome to Whitlin - Your Hair Transformation Journey Begins!",
     html: `
       <!DOCTYPE html>
       <html>
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Welcome to KeraGold Pro</title>
+        <title>Welcome to Whitlin</title>
         <style>
           body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5; }
           .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
@@ -30,13 +30,13 @@ export const emailTemplates = {
       <body>
         <div class="container">
           <div class="header">
-            <h1 style="margin: 0; font-size: 32px;">Welcome to KeraGold Pro!</h1>
+            <h1 style="margin: 0; font-size: 32px;">Welcome to Whitlin!</h1>
             <p style="margin: 10px 0 0 0; font-size: 18px; opacity: 0.9;">Professional Hair Care Solutions</p>
           </div>
           <div class="content">
             <h2 style="color: #333; margin-bottom: 20px;">Hello ${userData.name}!</h2>
             <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
-              Welcome to the KeraGold Pro family! We're thrilled to have you join our community of hair care enthusiasts 
+              Welcome to the Whitlin family! We're thrilled to have you join our community of hair care enthusiasts 
               who believe in the power of professional-grade treatments.
             </p>
             
@@ -70,10 +70,10 @@ export const emailTemplates = {
             </div>
           </div>
           <div class="footer">
-            <p style="margin: 0 0 10px 0;">© 2025 KeraGold Pro. All rights reserved.</p>
+            <p style="margin: 0 0 10px 0;">© 2025 Whitlin. All rights reserved.</p>
             <div class="unsubscribe">
               <a href="UNSUBSCRIBE_TOKEN">Unsubscribe</a> | 
-              <a href="mailto:info@keragold-uae.com">Contact Support</a>
+              <a href="mailto:info@whitlin.com">Contact Support</a>
             </div>
           </div>
         </div>
@@ -81,11 +81,11 @@ export const emailTemplates = {
       </html>
     `,
     text: `
-      Welcome to KeraGold Pro!
+      Welcome to Whitlin!
       
       Hello ${userData.name}!
       
-      Welcome to the KeraGold Pro family! We're thrilled to have you join our community of hair care enthusiasts 
+      Welcome to the Whitlin family! We're thrilled to have you join our community of hair care enthusiasts 
       who believe in the power of professional-grade treatments.
       
       What's Next?
@@ -102,9 +102,9 @@ export const emailTemplates = {
       
       Explore our products: ${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/products
       
-      © 2025 KeraGold Pro. All rights reserved.
+      © 2025 Whitlin. All rights reserved.
       Unsubscribe: UNSUBSCRIBE_TOKEN
-      Contact Support: support@keragoldpro.com
+      Contact Support: support@whitlin.com
     `
   }),
 
@@ -168,10 +168,10 @@ export const emailTemplates = {
             </p>
           </div>
           <div class="footer">
-            <p style="margin: 0 0 10px 0;">© 2025 KeraGold Pro. All rights reserved.</p>
+            <p style="margin: 0 0 10px 0;">© 2025 Whitlin. All rights reserved.</p>
             <div class="unsubscribe">
               <a href="UNSUBSCRIBE_TOKEN">Unsubscribe</a> | 
-              <a href="mailto:info@keragold-uae.com">Contact Support</a>
+              <a href="mailto:info@whitlin.com">Contact Support</a>
             </div>
           </div>
         </div>
@@ -198,22 +198,22 @@ export const emailTemplates = {
       
       Questions about this product? Our hair care experts are here to help!
       
-      © 2025 KeraGold Pro. All rights reserved.
+      © 2025 Whitlin. All rights reserved.
       Unsubscribe: UNSUBSCRIBE_TOKEN
-      Contact Support: support@keragoldpro.com
+      Contact Support: support@whitlin.com
     `
   }),
 
   // Abandoned cart template
   abandonedCart: (cartData: { items: Array<{ name: string; price: number; image?: string }>; total: number }): EmailTemplate => ({
-    subject: "Don't forget your KeraGold Pro items! Complete your order now",
+    subject: "Don't forget your Whitlin items! Complete your order now",
     html: `
       <!DOCTYPE html>
       <html>
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Complete Your Order - KeraGold Pro</title>
+        <title>Complete Your Order - Whitlin</title>
         <style>
           body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5; }
           .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
@@ -271,10 +271,10 @@ export const emailTemplates = {
             </p>
           </div>
           <div class="footer">
-            <p style="margin: 0 0 10px 0;">© 2025 KeraGold Pro. All rights reserved.</p>
+            <p style="margin: 0 0 10px 0;">© 2025 Whitlin. All rights reserved.</p>
             <div class="unsubscribe">
               <a href="UNSUBSCRIBE_TOKEN">Unsubscribe</a> | 
-              <a href="mailto:info@keragold-uae.com">Contact Support</a>
+              <a href="mailto:info@whitlin.com">Contact Support</a>
             </div>
           </div>
         </div>
@@ -301,9 +301,9 @@ export const emailTemplates = {
       
       Need help? Our customer service team is here to assist you with any questions.
       
-      © 2025 KeraGold Pro. All rights reserved.
+      © 2025 Whitlin. All rights reserved.
       Unsubscribe: UNSUBSCRIBE_TOKEN
-      Contact Support: support@keragoldpro.com
+      Contact Support: support@whitlin.com
     `
   }),
 
@@ -316,7 +316,7 @@ export const emailTemplates = {
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>${promoData.title} - KeraGold Pro</title>
+        <title>${promoData.title} - Whitlin</title>
         <style>
           body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5; }
           .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
@@ -370,10 +370,10 @@ export const emailTemplates = {
             </p>
           </div>
           <div class="footer">
-            <p style="margin: 0 0 10px 0;">© 2025 KeraGold Pro. All rights reserved.</p>
+            <p style="margin: 0 0 10px 0;">© 2025 Whitlin. All rights reserved.</p>
             <div class="unsubscribe">
               <a href="UNSUBSCRIBE_TOKEN">Unsubscribe</a> | 
-              <a href="mailto:info@keragold-uae.com">Contact Support</a>
+              <a href="mailto:info@whitlin.com">Contact Support</a>
             </div>
           </div>
         </div>
@@ -398,9 +398,9 @@ export const emailTemplates = {
       
       Questions about this offer? Contact our support team for assistance.
       
-      © 2025 KeraGold Pro. All rights reserved.
+      © 2025 Whitlin. All rights reserved.
       Unsubscribe: UNSUBSCRIBE_TOKEN
-      Contact Support: support@keragoldpro.com
+      Contact Support: support@whitlin.com
     `
   })
 }

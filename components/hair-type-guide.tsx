@@ -8,7 +8,7 @@ export default function HairTypeGuide() {
         <div className="text-center mb-12">
           <h2 className="text-4xl font-serif font-bold text-gray-900 mb-4">Find Your Perfect Hair Treatment</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Discover which KeraGold Pro system is ideal for your unique hair type and needs
+            Discover which Whitlin system is ideal for your unique hair type and needs
           </p>
         </div>
 

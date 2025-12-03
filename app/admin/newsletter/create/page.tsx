@@ -153,17 +153,17 @@ export default function CreateNewsletterPage() {
       <body>
         <div class="container">
           <div class="header">
-            <h1 style="margin: 0; font-size: 28px;">KeraGold Pro</h1>
+            <h1 style="margin: 0; font-size: 28px;">Whitlin</h1>
             <p style="margin: 5px 0 0 0; opacity: 0.9;">Professional Hair Care</p>
           </div>
           <div class="content">
             ${formData.content.replace(/\n/g, '<br>')}
           </div>
           <div class="footer">
-            <p>© 2025 KeraGold Pro. All rights reserved.</p>
+            <p>© 2025 Whitlin. All rights reserved.</p>
             <div class="unsubscribe">
               <a href="UNSUBSCRIBE_TOKEN">Unsubscribe</a> | 
-              <a href="mailto:info@keragold-uae.com">Contact Support</a>
+              <a href="mailto:info@whitlin.com">Contact Support</a>
             </div>
           </div>
         </div>

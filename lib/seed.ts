@@ -15,7 +15,7 @@ const seedData = async () => {
     // Seed Products
     const products = [
       {
-        name: "KeraGold Expert Liss System",
+        name: "Whitlin Expert Liss System",
         category: "Treatment Systems",
         price: 299.99,
         originalPrice: 349.99,
@@ -51,7 +51,7 @@ const seedData = async () => {
         status: "active"
       },
       {
-        name: "KeraGold Inforcer Range",
+        name: "Whitlin Inforcer Range",
         category: "Hair Care",
         price: 199.99,
         originalPrice: null,
@@ -87,7 +87,7 @@ const seedData = async () => {
         status: "active"
       },
       {
-        name: "KeraGold Nourishing System",
+        name: "Whitlin Nourishing System",
         category: "Treatment Systems",
         price: 249.99,
         originalPrice: 299.99,
@@ -122,7 +122,7 @@ const seedData = async () => {
         status: "out_of_stock"
       },
       {
-        name: "KeraGold Repair Range",
+        name: "Whitlin Repair Range",
         category: "Hair Care",
         price: 179.99,
         originalPrice: null,
@@ -156,7 +156,7 @@ const seedData = async () => {
         stock: 60
       },
       {
-        name: "KeraGold Restructuring System",
+        name: "Whitlin Restructuring System",
         category: "Treatment Systems",
         price: 329.99,
         originalPrice: null,
@@ -190,7 +190,7 @@ const seedData = async () => {
         stock: 25
       },
       {
-        name: "KeraGold Regenerating Range",
+        name: "Whitlin Regenerating Range",
         category: "Hair Care",
         price: 159.99,
         originalPrice: 199.99,
@@ -232,7 +232,7 @@ const seedData = async () => {
     const users = [
       {
         name: "Admin User",
-        email: "admin@keragold.com",
+        email: "admin@whitlin.com",
         password: "admin123",
         role: "admin",
         status: "active",

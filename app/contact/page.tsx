@@ -94,10 +94,10 @@ export default function ContactPage() {
                       Send us an email and we'll respond within 24 hours
                     </p>
                     <a 
-                      href="mailto:info@keragold-uae.com" 
+                      href="mailto:info@whitlin.com" 
                       className="text-amber-600 font-medium hover:text-amber-700"
                     >
-                      info@keragold-uae.com
+                      info@whitlin.com
                     </a>
                   </CardContent>
                 </Card>
@@ -277,7 +277,7 @@ export default function ContactPage() {
                     <CardContent className="p-0">
                       <div className="flex space-x-4">
                         <a 
-                          href="https://instagram.com/keragoldpro" 
+                          href="https://instagram.com/whitlin" 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"
@@ -285,7 +285,7 @@ export default function ContactPage() {
                           <Instagram className="w-6 h-6" />
                         </a>
                         <a 
-                          href="https://facebook.com/keragoldpro" 
+                          href="https://facebook.com/whitlin" 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"
@@ -293,7 +293,7 @@ export default function ContactPage() {
                           <Facebook className="w-6 h-6" />
                         </a>
                         <a 
-                          href="https://twitter.com/keragoldpro" 
+                          href="https://twitter.com/whitlin" 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="w-12 h-12 bg-sky-500 rounded-full flex items-center justify-center text-white hover:scale-110 transition-transform"

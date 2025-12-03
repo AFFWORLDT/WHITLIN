@@ -5,7 +5,7 @@ import nodemailer from 'nodemailer'
 // Steps:
 // 1. Login to Zoho Mail
 // 2. Go to Settings > Security > App Passwords
-// 3. Generate new App Password for "KeraGold E-commerce"
+// 3. Generate new App Password for "Whitlin E-commerce"
 // 4. Replace the pass below with your App Password
 
 // Option 1: SSL Configuration (Port 465)
@@ -14,7 +14,7 @@ const ZOHO_CONFIG_SSL = {
   port: 465, // SSL port
   secure: true, // true for SSL
   auth: {
-    user: 'info@keragold-uae.com',
+    user: 'info@whitlin.com',
     pass: 'Ad34%@hRFd' // Replace with your Zoho App Password
   }
 }
@@ -25,7 +25,7 @@ const ZOHO_CONFIG = {
   port: 587, // TLS port
   secure: false, // false for TLS
   auth: {
-    user: 'info@keragold-uae.com',
+    user: 'info@whitlin.com',
     pass: 'Ad34%@hRFd' // Replace with your Zoho App Password
   },
   tls: {
@@ -35,7 +35,7 @@ const ZOHO_CONFIG = {
 }
 
 // Admin email for notifications
-const ADMIN_EMAIL = 'info@keragold-uae.com'
+const ADMIN_EMAIL = 'info@whitlin.com'
 
 // Create transporter - Using SSL configuration (Port 465)
 const createTransporter = () => {
@@ -120,12 +120,12 @@ export const emailTemplates = {
       <body>
         <div class="header">
           <h1>🎉 New User Registration</h1>
-          <p>KeraGold E-commerce Platform</p>
+          <p>Whitlin E-commerce Platform</p>
         </div>
         
         <div class="content">
           <h2>Hello Admin!</h2>
-          <p>A new user has registered on your KeraGold platform. Here are the details:</p>
+          <p>A new user has registered on your Whitlin platform. Here are the details:</p>
           
           <div class="user-info">
             <div class="info-row">
@@ -161,14 +161,14 @@ export const emailTemplates = {
         </div>
         
         <div class="footer">
-          <p>This is an automated notification from KeraGold E-commerce Platform</p>
+          <p>This is an automated notification from Whitlin E-commerce Platform</p>
           <p>Generated on ${new Date().toLocaleString()}</p>
         </div>
       </body>
       </html>
     `,
     text: `
-      New User Registration - KeraGold Platform
+      New User Registration - Whitlin Platform
       
       A new user has registered on your platform:
       
@@ -187,7 +187,7 @@ export const emailTemplates = {
     name: string
     email: string
   }) => ({
-    subject: `Welcome to KeraGold - ${userData.name}!`,
+    subject: `Welcome to Whitlin - ${userData.name}!`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -261,14 +261,14 @@ export const emailTemplates = {
       </head>
       <body>
         <div class="header">
-          <h1>🌟 Welcome to KeraGold!</h1>
+          <h1>🌟 Welcome to Whitlin!</h1>
           <p>Professional Hair Care Solutions</p>
         </div>
         
         <div class="content">
           <div class="welcome-message">
             <h2>Hello ${userData.name}!</h2>
-            <p>Welcome to KeraGold - your premium destination for professional hair care products!</p>
+            <p>Welcome to Whitlin - your premium destination for professional hair care products!</p>
             <p>We're excited to have you join our community of hair care enthusiasts.</p>
           </div>
           
@@ -306,7 +306,7 @@ export const emailTemplates = {
         </div>
         
         <div class="footer">
-          <p>Thank you for choosing KeraGold!</p>
+          <p>Thank you for choosing Whitlin!</p>
           <p>If you have any questions, feel free to contact us.</p>
           <p>Generated on ${new Date().toLocaleString()}</p>
         </div>
@@ -314,11 +314,11 @@ export const emailTemplates = {
       </html>
     `,
     text: `
-      Welcome to KeraGold!
+      Welcome to Whitlin!
       
       Hello ${userData.name}!
       
-      Welcome to KeraGold - your premium destination for professional hair care products!
+      Welcome to Whitlin - your premium destination for professional hair care products!
       We're excited to have you join our community of hair care enthusiasts.
       
       What you can do now:
@@ -331,7 +331,7 @@ export const emailTemplates = {
       
       Start shopping at: http://localhost:3000/products
       
-      Thank you for choosing KeraGold!
+      Thank you for choosing Whitlin!
       Generated on ${new Date().toLocaleString()}
     `
   }),
@@ -341,7 +341,7 @@ export const emailTemplates = {
     email: string
     otp: string
   }) => ({
-    subject: `🔐 Password Reset OTP - KeraGold`,
+    subject: `🔐 Password Reset OTP - Whitlin`,
     html: `
       <!DOCTYPE html>
       <html>
@@ -424,12 +424,12 @@ export const emailTemplates = {
       <body>
         <div class="header">
           <h1>🔐 Password Reset</h1>
-          <p>KeraGold E-commerce Platform</p>
+          <p>Whitlin E-commerce Platform</p>
         </div>
         
         <div class="content">
           <h2>Hello ${userData.name}!</h2>
-          <p>We received a request to reset your password for your KeraGold account.</p>
+          <p>We received a request to reset your password for your Whitlin account.</p>
           
           <div class="otp-container">
             <h3>Your Password Reset OTP</h3>
@@ -442,7 +442,7 @@ export const emailTemplates = {
             <ul>
               <li>This OTP is valid for 10 minutes only</li>
               <li>Do not share this OTP with anyone</li>
-              <li>KeraGold will never ask for your OTP via phone or email</li>
+              <li>Whitlin will never ask for your OTP via phone or email</li>
             </ul>
           </div>
           
@@ -460,19 +460,19 @@ export const emailTemplates = {
         </div>
         
         <div class="footer">
-          <p>This is an automated security email from KeraGold</p>
-          <p>For support, contact us at support@keragold.com</p>
+          <p>This is an automated security email from Whitlin</p>
+          <p>For support, contact us at support@whitlin.com</p>
           <p>Generated on ${new Date().toLocaleString()}</p>
         </div>
       </body>
       </html>
     `,
     text: `
-      Password Reset OTP - KeraGold
+      Password Reset OTP - Whitlin
       
       Hello ${userData.name}!
       
-      We received a request to reset your password for your KeraGold account.
+      We received a request to reset your password for your Whitlin account.
       
       Your Password Reset OTP: ${userData.otp}
       
@@ -481,7 +481,7 @@ export const emailTemplates = {
       IMPORTANT SECURITY INFORMATION:
       - This OTP is valid for 10 minutes only
       - Do not share this OTP with anyone
-      - KeraGold will never ask for your OTP via phone or email
+      - Whitlin will never ask for your OTP via phone or email
       
       SECURITY TIPS:
       - Use a strong, unique password
@@ -491,7 +491,7 @@ export const emailTemplates = {
       
       If you didn't request this password reset, please ignore this email or contact our support team immediately.
       
-      For support, contact us at support@keragold.com
+      For support, contact us at support@whitlin.com
       Generated on ${new Date().toLocaleString()}
     `
   })
@@ -503,7 +503,7 @@ export const sendEmail = async (to: string, subject: string, html: string, text?
     const transporter = createTransporter()
     
     const mailOptions = {
-      from: `"KeraGold Admin" <${ZOHO_CONFIG.auth.user}>`,
+      from: `"Whitlin Admin" <${ZOHO_CONFIG.auth.user}>`,
       to: to,
       subject: subject,
       html: html,
@@ -599,7 +599,7 @@ export const sendAccountCreatedEmail = async ({
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Account Created - KeraGold Pro</title>
+      <title>Account Created - Whitlin Pro</title>
       <style>
         body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5; }
         .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
@@ -618,13 +618,13 @@ export const sendAccountCreatedEmail = async ({
     <body>
       <div class="container">
         <div class="header">
-          <h1 style="margin: 0; font-size: 32px;">Welcome to KeraGold Pro!</h1>
+          <h1 style="margin: 0; font-size: 32px;">Welcome to Whitlin Pro!</h1>
           <p style="margin: 10px 0 0 0; font-size: 18px; opacity: 0.9;">Your Account Has Been Created</p>
         </div>
         <div class="content">
           <h2 style="color: #333; margin-bottom: 20px;">Hello ${name}!</h2>
           <p style="color: #666; line-height: 1.6; margin-bottom: 20px;">
-            Thank you for your order! We've automatically created your KeraGold Pro account 
+            Thank you for your order! We've automatically created your Whitlin Pro account 
             so you can track your order and enjoy future shopping with us.
           </p>
           
@@ -675,9 +675,9 @@ export const sendAccountCreatedEmail = async ({
           </p>
         </div>
         <div class="footer">
-          <p style="margin: 0 0 10px 0;">© 2025 KeraGold Pro. All rights reserved.</p>
+          <p style="margin: 0 0 10px 0;">© 2025 Whitlin Pro. All rights reserved.</p>
           <div class="unsubscribe">
-            <a href="mailto:support@keragoldpro.com">Contact Support</a>
+            <a href="mailto:support@whitlin.com">Contact Support</a>
           </div>
         </div>
       </div>
@@ -686,11 +686,11 @@ export const sendAccountCreatedEmail = async ({
   `
 
   const textContent = `
-    Welcome to KeraGold Pro!
+    Welcome to Whitlin Pro!
     
     Hello ${name}!
     
-    Thank you for your order! We've automatically created your KeraGold Pro account 
+    Thank you for your order! We've automatically created your Whitlin Pro account 
     so you can track your order and enjoy future shopping with us.
     
     📦 Your Order Details
@@ -718,13 +718,13 @@ export const sendAccountCreatedEmail = async ({
     
     Questions about your order or account? Our customer service team is here to help!
     
-    © 2025 KeraGold Pro. All rights reserved.
-    Contact Support: support@keragoldpro.com
+    © 2025 Whitlin Pro. All rights reserved.
+    Contact Support: support@whitlin.com
   `
 
   return await sendEmail({
     to: email,
-    subject: 'Your KeraGold Pro Account Has Been Created - Order Confirmation',
+    subject: 'Your Whitlin Pro Account Has Been Created - Order Confirmation',
     html: htmlContent,
     text: textContent
   })

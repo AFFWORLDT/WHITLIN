@@ -38,9 +38,9 @@ export async function GET(request: NextRequest) {
     // In a real app, you'd fetch from MongoDB
     // For now, return default settings
     const defaultSettings = {
-      storeName: "KeraGold Pro",
+      storeName: "Whitlin",
       storeDescription: "Luxury professional hair care products with keratin and hyaluronic acid",
-      storeEmail: "info@keragold.com",
+      storeEmail: "info@whitlin.com",
       storePhone: "+971 50 123 4567",
       storeAddress: "Dubai Mall, Downtown Dubai, UAE",
       emailNotifications: true,

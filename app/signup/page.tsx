@@ -53,7 +53,7 @@ export default function SignupPage() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-serif text-amber-900">Create Account</CardTitle>
-          <CardDescription>Join KeraGold Pro for exclusive hair care</CardDescription>
+          <CardDescription>Join Whitlin for exclusive hair care</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

@@ -32,7 +32,7 @@ export function BrandStory() {
             Professional Hair Care Excellence
           </h2>
           <p className="text-lg text-muted-foreground text-pretty leading-relaxed">
-            KeraGold Pro offers exclusive solutions and products for hair care and beauty. Our products are made to meet
+            Whitlin offers exclusive solutions and products for hair care and beauty. Our products are made to meet
             the needs of all professionals who work daily with creativity and passion to make every woman unique.
           </p>
         </div>

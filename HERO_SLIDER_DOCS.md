@@ -1,7 +1,7 @@
 # Hero Slider Component Documentation
 
 ## Overview
-The HeroSlider component is a sophisticated, mobile-optimized image slider for the KeraGold Pro homepage. It features smooth transitions, touch gestures, keyboard navigation, and responsive design.
+The HeroSlider component is a sophisticated, mobile-optimized image slider for the Whitlin homepage. It features smooth transitions, touch gestures, keyboard navigation, and responsive design.
 
 ## Features
 
@@ -24,7 +24,7 @@ The HeroSlider component is a sophisticated, mobile-optimized image slider for t
 - **Smooth Transitions**: Fade effects between slides
 - **Dynamic Overlays**: Adjustable background overlays
 - **Text Animations**: Staggered content animations
-- **Brand Integration**: KeraGold Pro branding elements
+- **Brand Integration**: Whitlin branding elements
 - **Theme Support**: Light and dark theme variations
 
 ## Usage

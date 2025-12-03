@@ -220,7 +220,7 @@ export default function InvoicePage() {
         </head>
         <body>
           <div class="header">
-            <div class="company-name">KeraGold Pro</div>
+            <div class="company-name">Whitlin</div>
             <div class="company-tagline">Premium Hair Care Products</div>
             <div class="invoice-title">INVOICE</div>
             <div class="invoice-number">Order #${order.orderNumber}</div>
@@ -310,9 +310,9 @@ export default function InvoicePage() {
           
           <div class="footer">
             <p style="font-size: 16px; margin-bottom: 10px;"><strong>Thank you for your business!</strong></p>
-            <p>KeraGold Pro - Premium Hair Care Products</p>
+            <p>Whitlin - Premium Hair Care Products</p>
             <p style="font-size: 12px; margin-top: 15px;">
-              For any queries, please contact us at support@keragold.com
+              For any queries, please contact us at support@whitlin.com
             </p>
           </div>
         </body>
@@ -409,7 +409,7 @@ export default function InvoicePage() {
           <div className="bg-white rounded-lg shadow-lg p-8 print:shadow-none print:p-4">
             {/* Invoice Header */}
             <div className="text-center mb-8 border-b pb-8">
-              <h1 className="text-4xl font-bold text-yellow-600 mb-2">KeraGold Pro</h1>
+              <h1 className="text-4xl font-bold text-yellow-600 mb-2">Whitlin</h1>
               <h2 className="text-2xl font-semibold text-gray-900 mb-2">INVOICE</h2>
               <p className="text-gray-600">Premium Hair Care Products</p>
             </div>
@@ -549,7 +549,7 @@ export default function InvoicePage() {
             <div className="text-center pt-8 border-t">
               <p className="text-gray-600 mb-2">Thank you for your business!</p>
               <p className="text-sm text-gray-500">
-                KeraGold Pro - Premium Hair Care Products
+                Whitlin - Premium Hair Care Products
               </p>
             </div>
           </div>

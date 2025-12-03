@@ -20,7 +20,7 @@
 ### Step 3: Generate App Password
 1. In **Security** section, find **App Passwords**
 2. Click **Generate New App Password**
-3. Give it a name: `KeraGold E-commerce`
+3. Give it a name: `Whitlin E-commerce`
 4. Click **Generate**
 5. **Copy the generated App Password** (it will look like: `abcd1234efgh5678`)
 

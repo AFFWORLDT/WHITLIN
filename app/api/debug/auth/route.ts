@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   try {
-    const token = request.cookies.get('keragold_user')?.value
+    const token = request.cookies.get('whitlin_user')?.value
     
     return NextResponse.json({
       success: true,
