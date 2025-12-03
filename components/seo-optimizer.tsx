@@ -89,7 +89,7 @@ export const generateOrganizationStructuredData = () => ({
   "@type": "Organization",
   "name": "Whitlin",
   "url": "https://whitlin.com",
-  "logo": "https://whitlin.com/images/logonew.png",
+  "logo": "https://whitlin.com/whitelin-logo.png",
   "description": "Professional hair care products with keratin and hyaluronic acid",
   "contactPoint": {
     "@type": "ContactPoint",

@@ -82,7 +82,7 @@ export function ResourcePreloader() {
 
     // Check and preload critical images
     const criticalImages = [
-      '/images/logonew.png',
+      '/whitelin-logo.png',
       '/hero.png'
     ]
 

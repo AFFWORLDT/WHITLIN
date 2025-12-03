@@ -19,6 +19,7 @@ const sizeMap = {
 }
 
 const logoPaths = [
+  "/whitelin-logo.png",
   "/images/logonew.png",
   "/images/logo.png",
   "/placeholder-logo.png"
