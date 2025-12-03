@@ -29,10 +29,10 @@ interface HeroSlide {
 const heroSlides: HeroSlide[] = [
   {
     id: "slide-1",
-    title: "Professional Hair Care",
-    subtitle: "Redefined",
-    description: "Transform your hair with our luxury keratin and hyaluronic acid treatments. Professional results, salon-quality care that exceeds expectations.",
-    image: "/hero.png",
+    title: "Trusted Linen Excellence",
+    subtitle: "Since 1984",
+    description: "Discover premium-quality linen crafted with care and expertise. From luxurious duvets, bed sheets, and duvet covers to plush towels and more — Whitlin has been delivering comfort, style, and durability for over four decades around the globe.",
+    image: "/hero.jpg",
     primaryButton: {
       text: "Shop Now",
       href: "/products"
@@ -43,21 +43,21 @@ const heroSlides: HeroSlide[] = [
     },
     overlay: "WHITLIN",
     textPosition: 'center',
-    theme: 'dark'
+    theme: 'light'
   },
   {
     id: "slide-2",
-    title: "Premium Hair Solutions",
-    subtitle: "Expert Formulations",
-    description: "Discover our exclusive range of professional-grade hair treatments. Advanced technology meets luxury ingredients for unparalleled results.",
-    image: "/hero2.png",
+    title: "Elevate Your Everyday Living",
+    subtitle: "Premium Hospitality Linen Solutions",
+    description: "We proudly serve both B2B and B2C markets, partnering with leading hotels, corporate clients, and individual customers across the region. Experience the Whitlin standard — where quality meets elegance.",
+    image: "/hero2.jpg",
     primaryButton: {
       text: "Explore Products",
       href: "/products"
     },
     secondaryButton: {
-      text: "Book Consultation",
-      href: "/contact"
+      text: "Learn More",
+      href: "/about"
     },
     overlay: "PREMIUM",
     textPosition: 'center',
@@ -65,21 +65,21 @@ const heroSlides: HeroSlide[] = [
   },
   {
     id: "slide-3",
-    title: "Luxury Hair Care",
-    subtitle: "Salon Quality",
-    description: "Experience the ultimate in hair transformation with our cutting-edge formulations. Professional-grade treatments for salon-perfect results at home.",
-    image: "/hero3.png",
+    title: "Trusted by Prestigious Partners",
+    subtitle: "Global Excellence in Hospitality Linen",
+    description: "Deliver a five-star guest experience with Whitlin's Premium Hospitality Linen Collection—designed to meet the demanding standards of top-tier hotels, resorts, and serviced residences worldwide.",
+    image: "/hero3.avif",
     primaryButton: {
-      text: "Shop Luxury",
+      text: "Shop Now",
       href: "/products"
     },
     secondaryButton: {
-      text: "Learn More",
-      href: "/about"
+      text: "View Collections",
+      href: "/collections"
     },
     overlay: "LUXURY",
     textPosition: 'center',
-    theme: 'dark'
+    theme: 'light'
   }
 ]
 
@@ -195,112 +195,88 @@ export function HeroSlider() {
   return (
     <section 
       ref={sliderRef}
-      className="relative h-[60vh] min-h-[400px] sm:h-[65vh] sm:min-h-[450px] md:h-[70vh] md:min-h-[500px] lg:h-[80vh] lg:min-h-[600px] xl:min-h-[700px] overflow-hidden"
+      className="relative h-[70vh] min-h-[500px] sm:h-[75vh] sm:min-h-[550px] md:h-[80vh] md:min-h-[600px] lg:h-[85vh] lg:min-h-[700px] xl:min-h-[800px] overflow-hidden"
       onTouchStart={onTouchStart}
       onTouchMove={onTouchMove}
       onTouchEnd={onTouchEnd}
     >
-      {/* Background Image with Enhanced Effects */}
+      {/* Background Image - Clear and Visible */}
       <div className="absolute inset-0">
         <Image
           src={currentSlideData.image}
           alt={currentSlideData.title}
           fill
-          className="object-cover transition-all duration-1000 ease-in-out scale-105 hover:scale-100"
+          className="object-cover transition-all duration-1000 ease-in-out"
           priority={currentSlide === 0}
         />
-        
-        {/* Enhanced Dynamic Overlay with Gradient */}
-        <div className={`absolute inset-0 transition-all duration-500 ${
-          currentSlideData.theme === 'dark' 
-            ? 'bg-gradient-to-br from-black/50 via-black/30 to-black/60' 
-            : 'bg-gradient-to-br from-white/30 via-white/10 to-white/40'
-        }`} />
-        
-        {/* Animated Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent animate-pulse" />
-        
-        {/* Brand Overlay with Enhanced Styling */}
-        {currentSlideData.overlay && (
-          <div className="absolute top-1/2 right-8 transform -translate-y-1/2 rotate-90 hidden lg:block">
-            <div className="text-white/5 text-8xl font-black tracking-widest drop-shadow-2xl">
-              {currentSlideData.overlay}
-            </div>
-          </div>
-        )}
-        
-        {/* Floating Elements */}
-        <div className="absolute top-20 left-20 w-2 h-2 bg-white/30 rounded-full animate-bounce delay-1000" />
-        <div className="absolute top-32 right-32 w-1 h-1 bg-white/40 rounded-full animate-pulse delay-2000" />
-        <div className="absolute bottom-32 left-32 w-3 h-3 bg-white/20 rounded-full animate-bounce delay-3000" />
       </div>
 
         {/* Enhanced Navigation Arrows - Mobile Optimized */}
         <button
           onClick={prevSlide}
           disabled={isTransitioning}
-          className="absolute left-1 sm:left-2 md:left-4 lg:left-8 top-1/2 -translate-y-1/2 z-20 bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 rounded-full p-2 sm:p-3 md:p-4 transition-all duration-300 disabled:opacity-50 active:scale-95 hover:scale-110 shadow-lg hover:shadow-xl touch-manipulation"
+          className="absolute left-1 sm:left-2 md:left-4 lg:left-8 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/40 rounded-full p-2 sm:p-3 md:p-4 transition-all duration-300 disabled:opacity-50 active:scale-95 hover:scale-110 shadow-xl hover:shadow-2xl touch-manipulation hover:border-white/60 group"
           aria-label="Previous slide"
         >
-          <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white drop-shadow-lg" />
+          <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white drop-shadow-lg group-hover:translate-x-[-2px] transition-transform duration-300" />
         </button>
 
         <button
           onClick={nextSlide}
           disabled={isTransitioning}
-          className="absolute right-1 sm:right-2 md:right-4 lg:right-8 top-1/2 -translate-y-1/2 z-20 bg-white/15 hover:bg-white/25 backdrop-blur-md border border-white/30 rounded-full p-2 sm:p-3 md:p-4 transition-all duration-300 disabled:opacity-50 active:scale-95 hover:scale-110 shadow-lg hover:shadow-xl touch-manipulation"
+          className="absolute right-1 sm:right-2 md:right-4 lg:right-8 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/30 backdrop-blur-md border border-white/40 rounded-full p-2 sm:p-3 md:p-4 transition-all duration-300 disabled:opacity-50 active:scale-95 hover:scale-110 shadow-xl hover:shadow-2xl touch-manipulation hover:border-white/60 group"
           aria-label="Next slide"
         >
-          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white drop-shadow-lg" />
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-white drop-shadow-lg group-hover:translate-x-[2px] transition-transform duration-300" />
         </button>
 
 
         {/* Enhanced Content - Mobile Optimized */}
         <div className="relative z-10 h-full flex items-center">
           <div className="container mx-auto px-3 sm:px-4 md:px-6">
-            <div className="max-w-6xl text-center mx-auto">
+            <div className="max-w-5xl text-center mx-auto">
               {/* Enhanced Title with Gradient Text - Mobile Responsive */}
-              <h1 className={`font-serif text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-black mb-3 sm:mb-4 md:mb-6 text-balance transition-all duration-700 transform ${
+              <h1 className={`font-serif text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-3 sm:mb-4 md:mb-6 text-balance transition-all duration-700 transform ${
                 isTransitioning ? 'opacity-0 translate-y-8 scale-95' : 'opacity-100 translate-y-0 scale-100'
               } ${
                 currentSlideData.theme === 'dark' 
                   ? 'text-white drop-shadow-2xl' 
                   : 'text-gray-900 drop-shadow-lg'
               }`}>
-                <span className="block leading-tight">
+                <span className="block leading-tight mb-2">
                   {currentSlideData.title}
                 </span>
-                <span className={`block text-3xl xs:text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-black leading-tight bg-gradient-to-r ${
+                <span className={`block text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight ${
                   currentSlideData.theme === 'dark' 
-                    ? 'from-primary via-yellow-400 to-primary bg-clip-text text-transparent' 
-                    : 'from-red-600 via-red-500 to-red-700 bg-clip-text text-transparent'
+                    ? 'text-white/90' 
+                    : 'text-gray-800'
                 }`}>
                   {currentSlideData.subtitle}
                 </span>
               </h1>
 
               {/* Enhanced Description - Mobile Optimized */}
-              <p className={`text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 md:mb-10 text-pretty max-w-4xl mx-auto transition-all duration-700 transform delay-100 ${
+              <p className={`text-xs xs:text-sm sm:text-base md:text-lg lg:text-xl mb-6 sm:mb-8 md:mb-10 text-pretty max-w-4xl mx-auto transition-all duration-700 transform delay-100 font-light leading-relaxed ${
                 isTransitioning ? 'opacity-0 translate-y-6 scale-95' : 'opacity-100 translate-y-0 scale-100'
               } ${
                 currentSlideData.theme === 'dark' 
-                  ? 'text-white/95 drop-shadow-lg' 
-                  : 'text-gray-800 drop-shadow-sm'
-              } font-medium leading-relaxed`}>
+                  ? 'text-white/90 drop-shadow-lg' 
+                  : 'text-gray-700 drop-shadow-sm'
+              }`}>
                 {currentSlideData.description}
               </p>
 
               {/* Enhanced Buttons - Mobile Optimized */}
-              <div className={`flex flex-col xs:flex-row gap-3 sm:gap-4 md:gap-6 justify-center transition-all duration-700 transform delay-200 ${
+              <div className={`flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center transition-all duration-700 transform delay-200 ${
                 isTransitioning ? 'opacity-0 translate-y-6 scale-95' : 'opacity-100 translate-y-0 scale-100'
               }`}>
                 <Link href={currentSlideData.primaryButton.href}>
                   <Button 
                     size="lg" 
-                    className={`font-bold px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 text-sm sm:text-base md:text-lg transition-all duration-300 w-full xs:w-auto hover:scale-105 active:scale-95 shadow-xl hover:shadow-2xl touch-manipulation ${
+                    className={`font-bold px-8 sm:px-10 md:px-12 py-4 sm:py-5 md:py-6 text-base sm:text-lg md:text-xl transition-all duration-300 w-full sm:w-auto hover:scale-110 active:scale-95 shadow-2xl hover:shadow-3xl touch-manipulation rounded-none hover-glow ${
                       currentSlideData.theme === 'dark'
-                        ? 'bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground'
-                        : 'bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white'
+                        ? 'bg-primary hover:bg-primary/90 text-primary-foreground border-2 border-primary'
+                        : 'bg-gray-900 hover:bg-gray-800 text-white border-2 border-gray-900'
                     }`}
                   >
                     {currentSlideData.primaryButton.text}
@@ -310,10 +286,10 @@ export function HeroSlider() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className={`border-2 font-bold px-6 sm:px-8 md:px-10 py-3 sm:py-4 md:py-5 text-sm sm:text-base md:text-lg transition-all duration-300 w-full xs:w-auto hover:scale-105 active:scale-95 backdrop-blur-sm touch-manipulation ${
+                    className={`border-2 font-bold px-8 sm:px-10 md:px-12 py-4 sm:py-5 md:py-6 text-base sm:text-lg md:text-xl transition-all duration-300 w-full sm:w-auto hover:scale-110 active:scale-95 backdrop-blur-sm touch-manipulation rounded-none ${
                       currentSlideData.theme === 'dark'
-                        ? 'border-white/80 text-white hover:bg-white hover:text-black bg-white/10'
-                        : 'border-gray-900/80 text-gray-900 hover:bg-gray-900 hover:text-white bg-white/20'
+                        ? 'border-white text-white hover:bg-white hover:text-gray-900 bg-transparent hover:shadow-lg'
+                        : 'border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white bg-white/90 hover:shadow-lg'
                     }`}
                   >
                     {currentSlideData.secondaryButton.text}

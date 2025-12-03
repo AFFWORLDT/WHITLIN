@@ -13,7 +13,9 @@ import {
   X,
   LogOut,
   User,
-  Tags
+  Tags,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/lib/auth-context"
@@ -38,9 +40,27 @@ export default function AdminLayout({
   children: React.ReactNode
 }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const { user, logout, isLoading: authLoading } = useAuth()
   const router = useRouter()
+
+  // Load sidebar state from localStorage
+  useEffect(() => {
+    const savedState = localStorage.getItem('adminSidebarCollapsed')
+    if (savedState !== null) {
+      setSidebarCollapsed(JSON.parse(savedState))
+    }
+  }, [])
+
+  // Save sidebar state to localStorage
+  useEffect(() => {
+    localStorage.setItem('adminSidebarCollapsed', JSON.stringify(sidebarCollapsed))
+  }, [sidebarCollapsed])
+
+  const toggleSidebar = () => {
+    setSidebarCollapsed(!sidebarCollapsed)
+  }
 
   useEffect(() => {
     if (!authLoading) {
@@ -102,35 +122,70 @@ export default function AdminLayout({
       )}
 
       {/* Sidebar */}
-      <div className={`fixed inset-y-0 left-0 z-50 w-64 bg-card border-r border-border transform transition-transform duration-200 ease-in-out lg:translate-x-0 ${
-        sidebarOpen ? "translate-x-0" : "-translate-x-full"
+      <div className={`fixed inset-y-0 left-0 z-50 bg-card border-r border-border transform transition-all duration-300 ease-in-out ${
+        sidebarCollapsed ? 'w-16 lg:w-16' : 'w-64'
+      } ${
+        sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
       }`} style={{ marginLeft: 0, paddingLeft: 0 }}>
         <div className="flex flex-col h-full">
-          {/* Logo */}
-          <div className="flex items-center justify-between p-6 border-b border-border">
-            <Logo size="md" showText={true} href="/admin" text="Whitlin Admin" subtext="" />
-            <Button
-              variant="ghost"
-              size="icon"
-              className="lg:hidden"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <X className="h-5 w-5" />
-            </Button>
+          {/* Logo and Toggle */}
+          <div className="flex items-center justify-between p-4 border-b border-border">
+            {!sidebarCollapsed && (
+              <Logo size="md" href="/admin" />
+            )}
+            {sidebarCollapsed && (
+              <div className="w-full flex justify-center">
+                <Logo size="sm" href="/admin" />
+              </div>
+            )}
+            <div className="flex items-center gap-2">
+              {/* Collapse/Expand Button - Desktop */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hidden lg:flex h-8 w-8"
+                onClick={toggleSidebar}
+                title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+              >
+                {sidebarCollapsed ? (
+                  <ChevronRight className="h-4 w-4" />
+                ) : (
+                  <ChevronLeft className="h-4 w-4" />
+                )}
+              </Button>
+              {/* Close Button - Mobile */}
+              <Button
+                variant="ghost"
+                size="icon"
+                className="lg:hidden h-8 w-8"
+                onClick={() => setSidebarOpen(false)}
+              >
+                <X className="h-5 w-5" />
+              </Button>
+            </div>
           </div>
 
           {/* Navigation */}
-          <nav className="flex-1 p-4">
+          <nav className="flex-1 p-4 overflow-y-auto">
             <div className="space-y-2 flex flex-col">
               {adminNavItems.map((item) => (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className="block w-full flex items-center space-x-3 px-3 py-2 rounded-lg text-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
-                  onClick={() => setSidebarOpen(false)}
+                  className={`block w-full flex items-center rounded-lg text-foreground hover:bg-accent hover:text-accent-foreground transition-colors ${
+                    sidebarCollapsed 
+                      ? 'justify-center px-2 py-3' 
+                      : 'space-x-3 px-3 py-2'
+                  }`}
+                  onClick={() => {
+                    setSidebarOpen(false)
+                  }}
+                  title={sidebarCollapsed ? item.label : undefined}
                 >
                   <item.icon className="h-5 w-5 flex-shrink-0" />
-                  <span>{item.label}</span>
+                  {!sidebarCollapsed && (
+                    <span className="truncate">{item.label}</span>
+                  )}
                 </Link>
               ))}
             </div>
@@ -138,32 +193,53 @@ export default function AdminLayout({
 
           {/* User info and logout */}
           <div className="p-4 border-t border-border">
-            <div className="flex items-center space-x-3 mb-3">
-              <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-                <User className="h-4 w-4 text-primary-foreground" />
+            {!sidebarCollapsed ? (
+              <>
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
+                    <User className="h-4 w-4 text-primary-foreground" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">{user.name}</p>
+                    <p className="text-xs text-muted-foreground truncate">{user.email}</p>
+                  </div>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full"
+                  onClick={handleLogout}
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <div className="flex flex-col items-center space-y-2">
+                <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                  <User className="h-4 w-4 text-primary-foreground" />
+                </div>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="w-full"
+                  onClick={handleLogout}
+                  title="Logout"
+                >
+                  <LogOut className="h-4 w-4" />
+                </Button>
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{user.name}</p>
-                <p className="text-xs text-muted-foreground truncate">{user.email}</p>
-              </div>
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="w-full"
-              onClick={handleLogout}
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              Logout
-            </Button>
+            )}
           </div>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="lg:pl-1">
+      <div className={`transition-all duration-300 ${
+        sidebarCollapsed ? 'lg:pl-16' : 'lg:pl-64'
+      }`}>
         {/* Top bar */}
-        <header className="bg-card border-b border-border py-3">
+        <header className="bg-card border-b border-border py-3 sticky top-0 z-30">
           <div className="flex items-center justify-between px-3 sm:px-4 md:px-6">
             <div className="flex items-center gap-3">
               <Button
@@ -171,6 +247,15 @@ export default function AdminLayout({
                 size="icon"
                 className="lg:hidden"
                 onClick={() => setSidebarOpen(true)}
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hidden lg:flex"
+                onClick={toggleSidebar}
+                title={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
               >
                 <Menu className="h-5 w-5" />
               </Button>

@@ -31,6 +31,11 @@ module.exports = {
         'slide-down': 'slideDown 0.3s ease-out',
         'scale-in': 'scaleIn 0.2s ease-out',
         'bounce-subtle': 'bounceSubtle 2s infinite',
+        'float': 'float 3s ease-in-out infinite',
+        'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+        'shimmer': 'shimmer 2s infinite',
+        'gradient-shift': 'gradientShift 3s ease infinite',
+        'text-reveal': 'textReveal 0.8s ease-out forwards',
       },
       keyframes: {
         fadeIn: {
@@ -52,6 +57,27 @@ module.exports = {
         bounceSubtle: {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-5px)' },
+        },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-20px)' },
+        },
+        pulseGlow: {
+          '0%, 100%': { boxShadow: '0 0 20px rgba(212, 175, 55, 0.4)' },
+          '50%': { boxShadow: '0 0 40px rgba(212, 175, 55, 0.6)' },
+        },
+        shimmer: {
+          '0%': { backgroundPosition: '-1000px 0' },
+          '100%': { backgroundPosition: '1000px 0' },
+        },
+        gradientShift: {
+          '0%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' },
+        },
+        textReveal: {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
         },
       },
       backdropBlur: {

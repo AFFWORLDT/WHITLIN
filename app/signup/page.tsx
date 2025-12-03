@@ -49,11 +49,11 @@ export default function SignupPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-white flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-white flex items-center justify-center p-4 page-entrance">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-serif text-amber-900">Create Account</CardTitle>
-          <CardDescription>Join Whitlin for exclusive hair care</CardDescription>
+          <CardDescription>Join Whitlin for exclusive hospitality linen solutions</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">

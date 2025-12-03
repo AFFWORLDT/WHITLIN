@@ -26,30 +26,34 @@ export const Header = memo(function Header() {
   }, [logout])
 
   return (
-    <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border">
+    <header className="sticky top-0 z-50 bg-black text-white backdrop-blur-md supports-[backdrop-filter]:bg-black/95 border-b border-gray-800 transition-all duration-300 shadow-sm hover:shadow-md">
       <div className="container mx-auto px-3 sm:px-4">
-        <div className="flex items-center justify-between h-16 sm:h-18 md:h-20">
-          {/* Logo - Mobile Optimized */}
-          <Logo size="md" showText={true} href="/" />
+        <div className="flex items-center justify-between h-16 sm:h-18 md:h-20 animate-fade-in">
+          {/* Logo - Responsive */}
+          <div className="mt-5 sm:mt-8 md:mt-10 lg:mt-17">
+            <div className="scale-110 sm:scale-125 md:scale-150 lg:scale-[1.75] xl:scale-[2] origin-left">
+              <Logo size="md" href="/" />
+            </div>
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
-            <Link href="/" className="text-foreground hover:text-primary transition-colors font-medium">
+            <Link href="/" className="text-white hover:text-primary transition-colors font-medium">
               {t('nav.home', 'Home')}
             </Link>
-            <Link href="/products" className="text-foreground hover:text-primary transition-colors font-medium">
+            <Link href="/products" className="text-white hover:text-primary transition-colors font-medium">
               {t('nav.products')}
             </Link>
-            <Link href="/showcase" className="text-foreground hover:text-primary transition-colors font-semibold">
+            <Link href="/showcase" className="text-white hover:text-primary transition-colors font-semibold">
               {t('nav.premium')}
             </Link>
-            <Link href="/collections" className="text-foreground hover:text-primary transition-colors font-medium">
+            <Link href="/collections" className="text-white hover:text-primary transition-colors font-medium">
               {t('nav.collections')}
             </Link>
-            <Link href="/about" className="text-foreground hover:text-primary transition-colors font-medium">
+            <Link href="/about" className="text-white hover:text-primary transition-colors font-medium">
               {t('nav.about')}
             </Link>
-            <Link href="/contact" className="text-foreground hover:text-primary transition-colors font-medium">
+            <Link href="/contact" className="text-white hover:text-primary transition-colors font-medium">
               {t('nav.contact')}
             </Link>
           </nav>

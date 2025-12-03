@@ -730,6 +730,125 @@ export const sendAccountCreatedEmail = async ({
   })
 }
 
+// Send lead notification email to admin
+export const sendLeadNotificationEmail = async (leadData: {
+  name: string
+  email: string
+  phone?: string
+  company?: string
+  subject?: string
+  message?: string
+  source?: string
+}) => {
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>New Lead - Whitlin</title>
+      <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background-color: #ffffff; }
+        .header { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 40px 30px; text-align: center; }
+        .content { padding: 40px 30px; }
+        .footer { background-color: #f8f9fa; padding: 30px; text-align: center; color: #666; font-size: 12px; }
+        .lead-box { background: #fef3c7; padding: 25px; border-radius: 12px; margin: 20px 0; border-left: 4px solid #f59e0b; }
+        .info-row { margin: 12px 0; display: flex; }
+        .label { font-weight: bold; color: #92400e; min-width: 120px; }
+        .value { color: #333; flex: 1; }
+        .message-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .button { display: inline-block; background: #f59e0b; color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }
+      </style>
+    </head>
+    <body>
+      <div class="container">
+        <div class="header">
+          <h1 style="margin: 0; font-size: 28px;">🎯 New Lead Received</h1>
+          <p style="margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">A new lead has been submitted through the website</p>
+        </div>
+        <div class="content">
+          <div class="lead-box">
+            <h2 style="color: #92400e; margin: 0 0 20px 0;">Lead Information</h2>
+            <div class="info-row">
+              <span class="label">Name:</span>
+              <span class="value">${leadData.name}</span>
+            </div>
+            <div class="info-row">
+              <span class="label">Email:</span>
+              <span class="value"><a href="mailto:${leadData.email}" style="color: #f59e0b;">${leadData.email}</a></span>
+            </div>
+            ${leadData.phone ? `
+            <div class="info-row">
+              <span class="label">Phone:</span>
+              <span class="value"><a href="tel:${leadData.phone}" style="color: #f59e0b;">${leadData.phone}</a></span>
+            </div>
+            ` : ''}
+            ${leadData.company ? `
+            <div class="info-row">
+              <span class="label">Company:</span>
+              <span class="value">${leadData.company}</span>
+            </div>
+            ` : ''}
+            ${leadData.subject ? `
+            <div class="info-row">
+              <span class="label">Subject:</span>
+              <span class="value">${leadData.subject}</span>
+            </div>
+            ` : ''}
+            ${leadData.source ? `
+            <div class="info-row">
+              <span class="label">Source:</span>
+              <span class="value">${leadData.source}</span>
+            </div>
+            ` : ''}
+          </div>
+          ${leadData.message ? `
+          <div class="message-box">
+            <h3 style="color: #333; margin: 0 0 15px 0;">Message:</h3>
+            <p style="color: #666; line-height: 1.6; margin: 0; white-space: pre-wrap;">${leadData.message}</p>
+          </div>
+          ` : ''}
+          <div style="text-align: center; margin-top: 30px;">
+            <a href="mailto:${leadData.email}?subject=Re: ${leadData.subject || 'Your Inquiry'}" class="button">
+              Reply to Lead
+            </a>
+          </div>
+        </div>
+        <div class="footer">
+          <p style="margin: 0;">© 2025 Whitlin. All rights reserved.</p>
+          <p style="margin: 10px 0 0 0;">This is an automated notification from the Whitlin website.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `
+
+  const textContent = `
+    New Lead Received - Whitlin
+    
+    Lead Information:
+    Name: ${leadData.name}
+    Email: ${leadData.email}
+    ${leadData.phone ? `Phone: ${leadData.phone}\n` : ''}
+    ${leadData.company ? `Company: ${leadData.company}\n` : ''}
+    ${leadData.subject ? `Subject: ${leadData.subject}\n` : ''}
+    ${leadData.source ? `Source: ${leadData.source}\n` : ''}
+    ${leadData.message ? `\nMessage:\n${leadData.message}\n` : ''}
+    
+    Reply to: ${leadData.email}
+    
+    © 2025 Whitlin. All rights reserved.
+  `
+
+  return await sendEmail({
+    to: ADMIN_EMAIL,
+    subject: `🎯 New Lead: ${leadData.name} - ${leadData.subject || 'General Inquiry'}`,
+    html: htmlContent,
+    text: textContent
+  })
+}
+
 // Test email function
 export const testEmailConnection = async () => {
   try {

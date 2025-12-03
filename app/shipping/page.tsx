@@ -3,6 +3,8 @@
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import { ScrollAnimate } from "@/components/scroll-animate"
+import { useScrollAnimation } from "@/hooks/use-scroll-animation"
 import { 
   Truck, 
   Clock, 
@@ -15,12 +17,14 @@ import {
 } from "lucide-react"
 
 export default function ShippingPage() {
+  const { ref: heroRef, animate: heroAnimate } = useScrollAnimation('animate-fade-in-up', { threshold: 0.1 });
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen page-entrance">
       
       <main>
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-amber-50 to-orange-50 py-20">
+        <section ref={heroRef} className={`bg-gradient-to-br from-amber-50 to-orange-50 py-20 ${heroAnimate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} transition-all duration-700`}>
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <Badge className="mb-4 bg-amber-100 text-amber-800 hover:bg-amber-200">
@@ -32,7 +36,7 @@ export default function ShippingPage() {
                 <span className="text-amber-600"> Shipping</span>
               </h1>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                We deliver your premium hair care products quickly and safely to your doorstep. 
+                We deliver your premium hospitality linen products quickly and safely to your location. 
                 Choose from multiple shipping options to fit your needs.
               </p>
             </div>
@@ -53,7 +57,8 @@ export default function ShippingPage() {
               </div>
 
               <div className="grid md:grid-cols-3 gap-8">
-                <Card className="p-8 hover:shadow-lg transition-shadow">
+                <ScrollAnimate animation="scale-in" delay={0.1}>
+                  <Card className="p-8 hover:shadow-lg transition-shadow hover-lift">
                   <CardHeader className="p-0 mb-6">
                     <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Truck className="w-8 h-8 text-blue-600" />
@@ -63,7 +68,7 @@ export default function ShippingPage() {
                   <CardContent className="p-0">
                     <div className="text-center mb-6">
                       <div className="text-3xl font-bold text-gray-900 mb-2">FREE</div>
-                      <div className="text-gray-600">On orders over $75</div>
+                      <div className="text-gray-600">On orders over AED 200</div>
                     </div>
                     <ul className="space-y-3 mb-6">
                       <li className="flex items-center">
@@ -86,8 +91,10 @@ export default function ShippingPage() {
                     </div>
                   </CardContent>
                 </Card>
+                </ScrollAnimate>
 
-                <Card className="p-8 hover:shadow-lg transition-shadow border-2 border-amber-200">
+                <ScrollAnimate animation="scale-in" delay={0.2}>
+                  <Card className="p-8 hover:shadow-lg transition-shadow border-2 border-amber-200 hover-lift">
                   <CardHeader className="p-0 mb-6">
                     <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Clock className="w-8 h-8 text-amber-600" />
@@ -96,8 +103,8 @@ export default function ShippingPage() {
                   </CardHeader>
                   <CardContent className="p-0">
                     <div className="text-center mb-6">
-                      <div className="text-3xl font-bold text-gray-900 mb-2">$12.99</div>
-                      <div className="text-gray-600">1-2 business days</div>
+                      <div className="text-3xl font-bold text-gray-900 mb-2">AED 25</div>
+                      <div className="text-gray-600">Next day delivery</div>
                     </div>
                     <ul className="space-y-3 mb-6">
                       <li className="flex items-center">
@@ -120,8 +127,10 @@ export default function ShippingPage() {
                     </div>
                   </CardContent>
                 </Card>
+                </ScrollAnimate>
 
-                <Card className="p-8 hover:shadow-lg transition-shadow">
+                <ScrollAnimate animation="scale-in" delay={0.3}>
+                  <Card className="p-8 hover:shadow-lg transition-shadow hover-lift">
                   <CardHeader className="p-0 mb-6">
                     <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                       <Package className="w-8 h-8 text-green-600" />
@@ -130,8 +139,8 @@ export default function ShippingPage() {
                   </CardHeader>
                   <CardContent className="p-0">
                     <div className="text-center mb-6">
-                      <div className="text-3xl font-bold text-gray-900 mb-2">$24.99</div>
-                      <div className="text-gray-600">Next business day</div>
+                      <div className="text-3xl font-bold text-gray-900 mb-2">AED 50</div>
+                      <div className="text-gray-600">Same day (Dubai)</div>
                     </div>
                     <ul className="space-y-3 mb-6">
                       <li className="flex items-center">
@@ -181,8 +190,8 @@ export default function ShippingPage() {
                               Delivery Areas
                             </h3>
                             <p className="text-gray-600 leading-relaxed">
-                              We currently ship to all 50 US states and Canada. International shipping 
-                              is coming soon! Free shipping is available on orders over $75 within the US.
+                              We currently ship throughout the United Arab Emirates. International shipping 
+                              to GCC countries is coming soon! Free shipping is available on orders over AED 200 within UAE.
                             </p>
                           </div>
                         </div>
@@ -200,8 +209,8 @@ export default function ShippingPage() {
                               Processing Time
                             </h3>
                             <p className="text-gray-600 leading-relaxed">
-                              Orders are processed within 1-2 business days. Orders placed after 2 PM EST 
-                              will be processed the next business day. Weekend orders are processed on Monday.
+                              Orders are processed within 1-2 business days. Orders placed after 2 PM GST 
+                              will be processed the next business day. Weekend orders are processed on Sunday.
                             </p>
                           </div>
                         </div>

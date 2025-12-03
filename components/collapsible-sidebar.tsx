@@ -114,11 +114,7 @@ export function CollapsibleSidebar({ user, logout }: SidebarProps) {
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-slate-700">
-            {!isCollapsed ? (
-              <Logo size="sm" showText={true} href="/" />
-            ) : (
-              <Logo size="sm" showText={false} href="/" />
-            )}
+            <Logo size="sm" href="/" />
             
             {/* Desktop Controls */}
             <div className="hidden md:flex items-center space-x-1">

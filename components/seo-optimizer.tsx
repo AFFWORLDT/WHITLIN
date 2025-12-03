@@ -13,9 +13,9 @@ interface SEOProps {
 }
 
 export function SEOOptimizer({
-  title = "Whitlin - Professional Hair Care",
-  description = "Luxury professional hair care products with keratin and hyaluronic acid. Transform your hair with our premium treatment systems.",
-  keywords = ["hair care", "keratin", "professional", "luxury", "beauty"],
+  title = "Whitlin - Trusted Linen Excellence Since 1984",
+  description = "Trusted Linen Excellence Since 1984. Discover premium-quality linen crafted with care and expertise. From luxurious duvets, bed sheets, and duvet covers to plush towels and more — Whitlin has been delivering comfort, style, and durability for over four decades around the globe.",
+  keywords = ["hospitality linen", "bed linen", "bath linen", "hotel linen", "luxury sheets", "cotton sheets", "Egyptian cotton"],
   image = "/hero.png",
   url = "https://whitlin.com",
   type = "website",
@@ -90,10 +90,18 @@ export const generateOrganizationStructuredData = () => ({
   "name": "Whitlin",
   "url": "https://whitlin.com",
   "logo": "https://whitlin.com/whitelin-logo.png",
-  "description": "Professional hair care products with keratin and hyaluronic acid",
+  "description": "Trusted Linen Excellence Since 1984. Premium-quality linen crafted with care and expertise. From luxurious duvets, bed sheets, and duvet covers to plush towels and more — delivering comfort, style, and durability for over four decades around the globe.",
+  "foundingDate": "1984",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "WHITLIN (1st Floor), 231 Al Ittihad Rd, Al Qusais, Al Nahda 1",
+    "addressLocality": "Dubai",
+    "addressCountry": "AE"
+  },
   "contactPoint": {
     "@type": "ContactPoint",
-    "telephone": "+971-45-754-785",
+    "telephone": "+971-54-438-9849",
+    "email": "info@whitlin.com",
     "contactType": "customer service"
   }
 })

@@ -99,7 +99,7 @@ export const Sidebar = memo(function Sidebar({ isOpen, onToggle }: SidebarProps)
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b border-slate-700">
-            <Logo size="md" showText={true} href="/" className="text-white" />
+            <Logo size="md" href="/" className="text-white" />
             
             {/* Mobile Close Button */}
             <Button 

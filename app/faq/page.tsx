@@ -6,6 +6,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { ScrollAnimate } from "@/components/scroll-animate"
+import { useScrollAnimation } from "@/hooks/use-scroll-animation"
 import { 
   HelpCircle, 
   ChevronDown, 
@@ -24,120 +26,63 @@ interface FAQItem {
 }
 
 const faqData: FAQItem[] = [
-  // Product Questions
   {
     id: "1",
-    question: "What makes Whitlin products different from other hair care brands?",
-    answer: "Whitlin products are professional-grade formulations that combine salon-quality ingredients with advanced keratin technology. Our products are developed by cosmetic chemists and hair care experts, ensuring maximum effectiveness and safety. Unlike consumer-grade products, ours deliver salon-quality results in the comfort of your home.",
-    category: "Products"
+    question: "Branding is simply a more efficient way to sell things?",
+    answer: "Lorem ipsum dolor sit amet, consectetur a elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus musbulum ultricies aliquam convallis. Maecenas ut tellus mi. Proin tincidunt, lectus eu volutpat mattis, ante metus lacinia tellus, vitae condimentum nulla enim bibendum nibh. Praesent turpis risus, interdum nec venenatis id, pretium sit amet purus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aliquam eu lorem nibh. Mauris ex dolor, rutrum in odio vel, suscipit ultrices nunc. Cras ipsum dolor, eleifend et nisl vel, tempor molestie nibh. In hac habitasse platea dictumst. Proin nec blandit ligula.",
+    category: "General"
   },
   {
     id: "2",
-    question: "Are your products safe for all hair types?",
-    answer: "Yes, our products are formulated to be safe for all hair types including straight, wavy, curly, and coily hair. They are also safe for color-treated, chemically processed, and natural hair. All products are dermatologist tested and free from harmful chemicals like sulfates, parabens, and formaldehyde.",
-    category: "Products"
+    question: "It's better to be first in the mind than to be first in the marketplace?",
+    answer: "Lorem ipsum dolor sit amet, consectetur a elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus musbulum ultricies aliquam convallis. Maecenas ut tellus mi. Proin tincidunt, lectus eu volutpat mattis, ante metus lacini.",
+    category: "General"
   },
   {
     id: "3",
-    question: "How often should I use Whitlin treatments?",
-    answer: "The frequency depends on the specific product and your hair's needs. Keratin treatments typically last 2-3 months with proper care. Hair repair treatments can be used weekly or as needed. Always follow the product instructions and consult with a hair care professional if you have specific concerns.",
-    category: "Products"
+    question: "Marketing is a company's ultimate objective?",
+    answer: "Lorem ipsum dolor sit amet, consectetur a elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus musbulum ultricies aliquam convallis. Maecenas ut tellus mi. Proin tincidunt, lectus eu volutpat mattis, ante metus lacinia tellus, vitae condimentum nulla enim bibendum nibh. Praesent turpis risus, interdum nec venenatis id, pretium sit amet purus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aliquam eu lorem nibh. Mauris ex dolor, rutrum in odio vel, suscipit ultrices nunc. Cras ipsum dolor, eleifend et nisl vel, tempor molestie nibh. In hac habitasse platea dictumst. Proin nec blandit ligula.",
+    category: "General"
   },
   {
     id: "4",
-    question: "Can I use Whitlin products if I have color-treated hair?",
-    answer: "Absolutely! Our products are specifically formulated to be safe for color-treated hair. In fact, our Color Protection collection is designed to help maintain vibrant color and prevent fading. We recommend using sulfate-free products and avoiding heat styling immediately after coloring.",
-    category: "Products"
+    question: "Positioning is what you do to the mind of the prospect?",
+    answer: "Lorem ipsum dolor sit amet, consectetur a elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus musbulum ultricies aliquam convallis. Maecenas ut tellus mi. Proin tincidunt, lectus eu volutpat mattis, ante metus lacinia tellus, vitae condimentum nulla enim bibendum nibh. Praesent turpis risus, interdum nec venenatis id, pretium sit amet purus. Interdum et malesuada fames ac ante.",
+    category: "General"
   },
-
-  // Order & Shipping
   {
     id: "5",
-    question: "How long does shipping take?",
-    answer: "Standard shipping takes 2-3 business days within UAE and is free on orders over AED 200. Express shipping (next day) is available for AED 25, and same-day delivery is available for AED 50 in Dubai. Processing time is 1-2 business days for all orders.",
-    category: "Shipping"
+    question: "Branding is simply a more efficient way to sell things?",
+    answer: "Lorem ipsum dolor sit amet, consectetur a elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus musbulum ultricies aliquam convallis. Maecenas ut tellus mi. Proin tincidunt, lectus eu volutpat mattis, ante metus lacinia tellus, vitae condimentum nulla enim bibendum nibh. Praesent turpis risus, interdum nec venenatis id, pretium sit amet purus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aliquam eu lorem nibh. Mauris ex dolor, rutrum in odio vel, suscipit ultrices nunc. Cras ipsum dolor, eleifend et nisl vel, tempor molestie nibh. In hac habitasse platea dictumst. Proin nec blandit ligula.",
+    category: "General"
   },
   {
     id: "6",
-    question: "Do you ship internationally?",
-    answer: "Currently, we ship throughout the United Arab Emirates. International shipping to GCC countries is coming soon! Sign up for our newsletter to be notified when international shipping becomes available.",
-    category: "Shipping"
+    question: "It's better to be first in the mind than to be first in the marketplace?",
+    answer: "Lorem ipsum dolor sit amet, consectetur a elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus musbulum ultricies aliquam convallis. Maecenas ut tellus mi. Proin tincidunt, lectus eu volutpat mattis, ante metus lacini.",
+    category: "General"
   },
   {
     id: "7",
-    question: "Can I track my order?",
-    answer: "Yes! Once your order ships, you'll receive a tracking number via email. You can also track your order by logging into your account and viewing your order history. Real-time tracking is available for all shipping methods.",
-    category: "Shipping"
+    question: "Marketing is a company's ultimate objective?",
+    answer: "Lorem ipsum dolor sit amet, consectetur a elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus musbulum ultricies aliquam convallis. Maecenas ut tellus mi. Proin tincidunt, lectus eu volutpat mattis, ante metus lacinia tellus, vitae condimentum nulla enim bibendum nibh. Praesent turpis risus, interdum nec venenatis id, pretium sit amet purus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aliquam eu lorem nibh. Mauris ex dolor, rutrum in odio vel, suscipit ultrices nunc. Cras ipsum dolor, eleifend et nisl vel, tempor molestie nibh. In hac habitasse platea dictumst. Proin nec blandit ligula.",
+    category: "General"
   },
   {
     id: "8",
-    question: "What if my package is damaged or lost?",
-    answer: "All packages are insured. If your package arrives damaged or is lost in transit, please contact us immediately at info@whitlin.com or call +971 45 754 785. We'll arrange for a replacement or refund at no cost to you.",
-    category: "Shipping"
+    question: "Positioning is what you do to the mind of the prospect?",
+    answer: "Lorem ipsum dolor sit amet, consectetur a elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus musbulum ultricies aliquam convallis. Maecenas ut tellus mi. Proin tincidunt, lectus eu volutpat mattis, ante metus lacinia tellus, vitae condimentum nulla enim bibendum nibh. Praesent turpis risus, interdum nec venenatis id, pretium sit amet purus. Interdum et malesuada fames ac ante.",
+    category: "General"
   },
-
-  // Returns & Exchanges
   {
     id: "9",
-    question: "What is your return policy?",
-    answer: "We offer a 30-day money-back guarantee on all products. You can return unopened or gently used products within 30 days of delivery. We provide free return shipping labels and process refunds within 5-7 business days of receiving your return.",
-    category: "Returns"
-  },
-  {
-    id: "10",
-    question: "How do I return a product?",
-    answer: "Contact our customer service team at info@whitlin.com or call +971 45 754 785 to initiate your return. We'll email you a prepaid return shipping label and return authorization number. Package your items securely and drop off at any authorized shipping location.",
-    category: "Returns"
-  },
-  {
-    id: "11",
-    question: "Can I exchange a product for a different one?",
-    answer: "Yes! We offer free exchanges within 30 days. Contact us to initiate an exchange, return the original item using our free return label, and we'll ship your new item once we receive the return. You'll only pay the price difference if applicable.",
-    category: "Returns"
-  },
-
-  // Account & Billing
-  {
-    id: "12",
-    question: "How do I create an account?",
-    answer: "Creating an account is easy! Click the 'Sign Up' button in the top right corner, enter your email and create a password. You can also create an account during checkout. Having an account allows you to track orders, save favorites, and access exclusive offers.",
-    category: "Account"
-  },
-  {
-    id: "13",
-    question: "What payment methods do you accept?",
-    answer: "We accept all major credit cards (Visa, MasterCard, American Express, Discover), PayPal, Apple Pay, Google Pay, and Shop Pay. All payments are processed securely through encrypted connections.",
-    category: "Account"
-  },
-  {
-    id: "14",
-    question: "Can I change my order after placing it?",
-    answer: "You can modify your order within 2 hours of placing it by contacting our customer service team. After 2 hours, you'll need to cancel the order and place a new one. We'll do our best to accommodate changes if the order hasn't been processed yet.",
-    category: "Account"
-  },
-
-  // Technical Support
-  {
-    id: "15",
-    question: "How do I contact customer support?",
-    answer: "You can reach our customer support team via email at info@whitlin.com, phone at +971 45 754 785, or through our contact form. Our team is available Sunday-Thursday 9 AM-6 PM GST and Friday 10 AM-4 PM GST.",
-    category: "Support"
-  },
-  {
-    id: "16",
-    question: "Do you offer personalized hair care advice?",
-    answer: "Yes! Our customer service team includes hair care professionals who can provide personalized advice based on your hair type, concerns, and goals. Contact us with your questions and we'll help you find the perfect products for your needs.",
-    category: "Support"
-  },
-  {
-    id: "17",
-    question: "What if I'm not satisfied with my purchase?",
-    answer: "Your satisfaction is our priority! If you're not completely happy with your purchase, contact us within 30 days and we'll work with you to resolve the issue. This may include a refund, exchange, or store credit depending on your preference.",
-    category: "Support"
+    question: "It's better to be first in the mind than to be first in the marketplace?",
+    answer: "Lorem ipsum dolor sit amet, consectetur a elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus musbulum ultricies aliquam convallis. Maecenas ut tellus mi. Proin tincidunt, lectus eu volutpat mattis, ante metus lacini.",
+    category: "General"
   }
 ]
 
-const categories = ["All", "Products", "Shipping", "Returns", "Account", "Support"]
+const categories = ["All", "General"]
 
 export default function FAQPage() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -159,12 +104,14 @@ export default function FAQPage() {
     )
   }
 
+  const { ref: heroRef, animate: heroAnimate } = useScrollAnimation('animate-fade-in-up', { threshold: 0.1 });
+
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen page-entrance">
       
       <main>
         {/* Hero Section */}
-        <section className="bg-gradient-to-br from-amber-50 to-orange-50 py-20">
+        <section ref={heroRef} className={`bg-gradient-to-br from-amber-50 to-orange-50 py-20 ${heroAnimate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} transition-all duration-700`}>
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
               <Badge className="mb-4 bg-amber-100 text-amber-800 hover:bg-amber-200">
@@ -240,8 +187,9 @@ export default function FAQPage() {
                 </Card>
               ) : (
                 <div className="space-y-4">
-                  {filteredFAQs.map((faq) => (
-                    <Card key={faq.id} className="hover:shadow-md transition-shadow">
+                  {filteredFAQs.map((faq, index) => (
+                    <ScrollAnimate key={faq.id} animation="fade-in-up" delay={index * 0.05}>
+                      <Card className="hover:shadow-md transition-shadow hover-lift">
                       <CardContent className="p-0">
                         <button
                           onClick={() => toggleExpanded(faq.id)}
@@ -274,6 +222,7 @@ export default function FAQPage() {
                         )}
                       </CardContent>
                     </Card>
+                    </ScrollAnimate>
                   ))}
                 </div>
               )}
@@ -295,7 +244,8 @@ export default function FAQPage() {
               </div>
 
               <div className="grid md:grid-cols-3 gap-8">
-                <Card className="p-8 text-center hover:shadow-lg transition-shadow">
+                <ScrollAnimate animation="scale-in" delay={0.1}>
+                  <Card className="p-8 text-center hover:shadow-lg transition-shadow hover-lift">
                   <CardContent className="p-0">
                     <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
                       <MessageCircle className="w-8 h-8 text-amber-600" />
