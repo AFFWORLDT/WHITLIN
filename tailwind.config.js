@@ -19,6 +19,8 @@ module.exports = {
         sans: ['var(--font-geist-sans)', 'system-ui', 'sans-serif'],
         serif: ['Playfair Display', 'serif'],
         mono: ['var(--font-geist-mono)', 'monospace'],
+        optima: ['Optima', 'Poppins', 'sans-serif'],
+        poppins: ['Poppins', 'sans-serif'],
       },
       spacing: {
         '18': '4.5rem',

@@ -197,6 +197,7 @@ img[src*="cloudinary.com"] {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-serif: "Playfair Display", serif;
+  --font-optima: "Optima", var(--font-poppins, "Poppins"), sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -259,6 +260,19 @@ img[src*="cloudinary.com"] {
   /* Added luxury typography classes */
   .font-serif {
     font-family: var(--font-serif);
+  }
+
+  .font-optima {
+    font-family: var(--font-optima);
+  }
+
+  /* Hero heading style with Optima font */
+  .hero-heading {
+    font-family: "Optima", var(--font-poppins), sans-serif;
+    font-weight: 700;
+    font-size: 48px;
+    line-height: normal;
+    color: rgb(255, 255, 255);
   }
 
   .text-balance {

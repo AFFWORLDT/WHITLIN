@@ -235,22 +235,14 @@ export function HeroSlider() {
         <div className="relative z-10 h-full flex items-center">
           <div className="container mx-auto px-3 sm:px-4 md:px-6">
             <div className="max-w-5xl text-center mx-auto">
-              {/* Enhanced Title with Gradient Text - Mobile Responsive */}
-              <h1 className={`font-serif text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-3 sm:mb-4 md:mb-6 text-balance transition-all duration-700 transform ${
+              {/* Enhanced Title with Optima Font - Mobile Responsive */}
+              <h1 className={`font-optima text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-[48px] xl:text-[48px] mb-3 sm:mb-4 md:mb-6 text-balance transition-all duration-700 transform leading-normal ${
                 isTransitioning ? 'opacity-0 translate-y-8 scale-95' : 'opacity-100 translate-y-0 scale-100'
-              } ${
-                currentSlideData.theme === 'dark' 
-                  ? 'text-white drop-shadow-2xl' 
-                  : 'text-gray-900 drop-shadow-lg'
-              }`}>
-                <span className="block leading-tight mb-2">
+              } text-white drop-shadow-2xl`} style={{ fontWeight: 700 }}>
+                <span className="block leading-normal mb-2">
                   {currentSlideData.title}
                 </span>
-                <span className={`block text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold leading-tight ${
-                  currentSlideData.theme === 'dark' 
-                    ? 'text-white/90' 
-                    : 'text-gray-800'
-                }`}>
+                <span className="block font-optima text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-normal text-white/90" style={{ fontWeight: 700 }}>
                   {currentSlideData.subtitle}
                 </span>
               </h1>
@@ -261,7 +253,7 @@ export function HeroSlider() {
               } ${
                 currentSlideData.theme === 'dark' 
                   ? 'text-white/90 drop-shadow-lg' 
-                  : 'text-gray-700 drop-shadow-sm'
+                  : 'text-white/90 drop-shadow-lg'
               }`}>
                 {currentSlideData.description}
               </p>

@@ -26,48 +26,44 @@ export const Header = memo(function Header() {
   }, [logout])
 
   return (
-    <header className="sticky top-0 z-50 bg-black text-white backdrop-blur-md supports-[backdrop-filter]:bg-black/95 border-b border-gray-800 transition-all duration-300 shadow-sm hover:shadow-md">
+    <header className="sticky top-0 z-50 bg-white text-gray-900 backdrop-blur-md supports-[backdrop-filter]:bg-white/95 border-b border-gray-200 transition-all duration-300 shadow-sm hover:shadow-md">
       <div className="container mx-auto px-3 sm:px-4">
-        <div className="flex items-center justify-between h-16 sm:h-18 md:h-20 animate-fade-in">
-          {/* Logo - Responsive */}
-          <div className="mt-5 sm:mt-8 md:mt-10 lg:mt-17">
-            <div className="scale-110 sm:scale-125 md:scale-150 lg:scale-[1.75] xl:scale-[2] origin-left">
-              <Logo size="md" href="/" />
-            </div>
-          </div>
+        <div className="flex items-center justify-between h-16 sm:h-18 md:h-20">
+          {/* Logo */}
+          <Logo size="md" showText={true} href="/" />
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
-            <Link href="/" className="text-white hover:text-primary transition-colors font-medium">
+            <Link href="/" className="text-gray-900 hover:text-primary transition-colors font-medium font-optima">
               {t('nav.home', 'Home')}
             </Link>
-            <Link href="/products" className="text-white hover:text-primary transition-colors font-medium">
+            <Link href="/products" className="text-gray-900 hover:text-primary transition-colors font-medium font-optima">
               {t('nav.products')}
             </Link>
-            <Link href="/showcase" className="text-white hover:text-primary transition-colors font-semibold">
+            <Link href="/showcase" className="text-gray-900 hover:text-primary transition-colors font-semibold font-optima">
               {t('nav.premium')}
             </Link>
-            <Link href="/collections" className="text-white hover:text-primary transition-colors font-medium">
+            <Link href="/collections" className="text-gray-900 hover:text-primary transition-colors font-medium font-optima">
               {t('nav.collections')}
             </Link>
-            <Link href="/about" className="text-white hover:text-primary transition-colors font-medium">
+            <Link href="/about" className="text-gray-900 hover:text-primary transition-colors font-medium font-optima">
               {t('nav.about')}
             </Link>
-            <Link href="/contact" className="text-white hover:text-primary transition-colors font-medium">
+            <Link href="/contact" className="text-gray-900 hover:text-primary transition-colors font-medium font-optima">
               {t('nav.contact')}
             </Link>
           </nav>
 
           {/* Right Actions - Mobile Optimized */}
           <div className="flex items-center space-x-2 sm:space-x-3 md:space-x-4">
-            <Button variant="ghost" size="icon" className="hidden sm:flex p-2">
+            <Button variant="ghost" size="icon" className="hidden sm:flex p-2 text-gray-900 hover:text-primary">
               <Search className="h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
 
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="p-2">
+                  <Button variant="ghost" size="icon" className="p-2 text-gray-900 hover:text-primary">
                     <User className="h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -92,14 +88,14 @@ export const Header = memo(function Header() {
               </DropdownMenu>
             ) : (
               <Link href="/login">
-                <Button variant="ghost" size="icon" className="p-2">
+                <Button variant="ghost" size="icon" className="p-2 text-gray-900 hover:text-primary">
                   <User className="h-4 w-4 sm:h-5 sm:w-5" />
                 </Button>
               </Link>
             )}
 
             <Link href="/cart">
-              <Button variant="ghost" size="icon" className="relative p-2">
+              <Button variant="ghost" size="icon" className="relative p-2 text-gray-900 hover:text-primary">
                 <ShoppingBag className="h-4 w-4 sm:h-5 sm:w-5" />
                 {state.itemCount > 0 && (
                   <Badge className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 flex items-center justify-center p-0 text-xs bg-primary text-primary-foreground">
@@ -110,7 +106,7 @@ export const Header = memo(function Header() {
             </Link>
 
             {/* Mobile Menu Button */}
-            <Button variant="ghost" size="icon" className="lg:hidden p-2" onClick={toggleMenu}>
+            <Button variant="ghost" size="icon" className="lg:hidden p-2 text-gray-900 hover:text-primary" onClick={toggleMenu}>
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </Button>
           </div>
@@ -118,83 +114,83 @@ export const Header = memo(function Header() {
 
         {/* Mobile Navigation - Enhanced */}
         {isMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-border bg-background/95 backdrop-blur max-h-[calc(100vh-80px)] overflow-y-auto">
+          <div className="lg:hidden py-4 border-t border-gray-200 bg-white max-h-[calc(100vh-80px)] overflow-y-auto">
             <nav className="flex flex-col space-y-1 px-3">
               <Link 
                 href="/" 
-                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                className="text-gray-900 hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-gray-50 text-base font-medium font-optima"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t('nav.home', 'Home')}
               </Link>
               <Link 
                 href="/products" 
-                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                className="text-gray-900 hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-gray-50 text-base font-medium font-optima"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t('nav.products')}
               </Link>
               <Link 
                 href="/showcase" 
-                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium font-semibold"
+                className="text-gray-900 hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-gray-50 text-base font-medium font-semibold font-optima"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t('nav.premium')}
               </Link>
               <Link 
                 href="/collections" 
-                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                className="text-gray-900 hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-gray-50 text-base font-medium font-optima"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t('nav.collections')}
               </Link>
               <Link 
                 href="/about" 
-                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                className="text-gray-900 hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-gray-50 text-base font-medium font-optima"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t('nav.about')}
               </Link>
               <Link 
                 href="/contact" 
-                className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                className="text-gray-900 hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-gray-50 text-base font-medium font-optima"
                 onClick={() => setIsMenuOpen(false)}
               >
                 {t('nav.contact')}
               </Link>
               
               {/* Mobile Search */}
-              <div className="pt-2 border-t border-border">
-                <Button variant="ghost" className="w-full justify-start text-foreground hover:text-primary py-2 px-3">
+              <div className="pt-2 border-t border-gray-200">
+                <Button variant="ghost" className="w-full justify-start text-gray-900 hover:text-primary py-2 px-3">
                   <Search className="h-4 w-4 mr-3" />
                   Search Products
                 </Button>
               </div>
               
               {/* User Actions */}
-              <div className="pt-2 border-t border-border">
+              <div className="pt-2 border-t border-gray-200">
                 {user ? (
                   <>
-                    <div className="px-3 py-2 text-sm text-muted-foreground">
+                    <div className="px-3 py-2 text-sm text-gray-600">
                       Welcome, {user.name}
                     </div>
                     <Link 
                       href="/account" 
-                      className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                      className="text-gray-900 hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-gray-50 text-base font-medium"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       My Account
                     </Link>
                     <Link 
                       href="/orders" 
-                      className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                      className="text-gray-900 hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-gray-50 text-base font-medium"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Order History
                     </Link>
                     <Link 
                       href="/wishlist" 
-                      className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                      className="text-gray-900 hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-gray-50 text-base font-medium"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Wishlist
@@ -202,7 +198,7 @@ export const Header = memo(function Header() {
                     {user?.role === "admin" && (
                       <Link 
                         href="/admin" 
-                        className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                        className="text-gray-900 hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-gray-50 text-base font-medium"
                         onClick={() => setIsMenuOpen(false)}
                       >
                         Admin Panel
@@ -222,14 +218,14 @@ export const Header = memo(function Header() {
                   <>
                     <Link 
                       href="/login" 
-                      className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                      className="text-gray-900 hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-gray-50 text-base font-medium"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Sign In
                     </Link>
                     <Link 
                       href="/signup" 
-                      className="text-foreground hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-muted/50 text-base font-medium"
+                      className="text-gray-900 hover:text-primary transition-colors py-2 px-3 rounded-md hover:bg-gray-50 text-base font-medium"
                       onClick={() => setIsMenuOpen(false)}
                     >
                       Sign Up
