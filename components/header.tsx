@@ -30,7 +30,9 @@ export const Header = memo(function Header() {
       <div className="container mx-auto px-3 sm:px-4">
         <div className="flex items-center justify-between h-16 sm:h-18 md:h-20">
           {/* Logo */}
-          <Logo size="md" showText={true} href="/" />
+          <div className="flex items-center">
+            <Logo size="md" showText={true} href="/" />
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-6 xl:space-x-8">
