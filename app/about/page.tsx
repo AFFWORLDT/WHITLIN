@@ -104,34 +104,34 @@ export default function AboutPage() {
                 </ScrollAnimate>
                 <ScrollAnimate animation="fade-in-up" delay={0.2}>
                   <div className="relative">
-                    <div className="bg-gradient-to-br from-[#f8f6f3] to-[#f0ebe4] rounded-2xl p-8 border border-[#e5e5e5]">
-                      <div className="grid grid-cols-2 gap-6">
-                        <Card className="bg-white/90 backdrop-blur-sm border border-[#e5e5e5]">
-                          <CardContent className="p-6 text-center">
-                            <Award className="w-12 h-12 text-[#e1d7c6] mx-auto mb-4" />
-                            <h3 className="font-bold text-lg mb-2 text-[#262626]">Award Winning</h3>
-                            <p className="text-sm text-[#404040]">Premium Hospitality Linen</p>
+                    <div className="bg-gradient-to-br from-[#f8f6f3] to-[#f0ebe4] rounded-2xl p-4 sm:p-6 md:p-8 border border-[#e5e5e5]">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 items-stretch">
+                        <Card className="h-full flex flex-col bg-white/90 backdrop-blur-sm border border-[#e5e5e5]">
+                          <CardContent className="p-4 sm:p-6 text-center flex flex-col flex-grow">
+                            <Award className="w-10 h-10 sm:w-12 sm:h-12 text-[#262626] mx-auto mb-3 sm:mb-4" />
+                            <h3 className="font-bold text-base sm:text-lg mb-2 text-[#262626]">Award Winning</h3>
+                            <p className="text-xs sm:text-sm text-[#404040] flex-grow">Premium Hospitality Linen</p>
                           </CardContent>
                         </Card>
-                        <Card className="bg-white/90 backdrop-blur-sm border border-[#e5e5e5]">
-                          <CardContent className="p-6 text-center">
-                            <Users className="w-12 h-12 text-[#e1d7c6] mx-auto mb-4" />
-                            <h3 className="font-bold text-lg mb-2 text-[#262626]">7,000+</h3>
-                            <p className="text-sm text-[#404040]">Clients Worldwide</p>
+                        <Card className="h-full flex flex-col bg-white/90 backdrop-blur-sm border border-[#e5e5e5]">
+                          <CardContent className="p-4 sm:p-6 text-center flex flex-col flex-grow">
+                            <Users className="w-10 h-10 sm:w-12 sm:h-12 text-[#262626] mx-auto mb-3 sm:mb-4" />
+                            <h3 className="font-bold text-base sm:text-lg mb-2 text-[#262626]">7,000+</h3>
+                            <p className="text-xs sm:text-sm text-[#404040] flex-grow">Clients Worldwide</p>
                           </CardContent>
                         </Card>
-                        <Card className="bg-white/90 backdrop-blur-sm border border-[#e5e5e5]">
-                          <CardContent className="p-6 text-center">
-                            <Star className="w-12 h-12 text-[#e1d7c6] mx-auto mb-4" />
-                            <h3 className="font-bold text-lg mb-2 text-[#262626]">4.9/5</h3>
-                            <p className="text-sm text-[#404040]">Customer Rating</p>
+                        <Card className="h-full flex flex-col bg-white/90 backdrop-blur-sm border border-[#e5e5e5]">
+                          <CardContent className="p-4 sm:p-6 text-center flex flex-col flex-grow">
+                            <Star className="w-10 h-10 sm:w-12 sm:h-12 text-[#262626] mx-auto mb-3 sm:mb-4" />
+                            <h3 className="font-bold text-base sm:text-lg mb-2 text-[#262626]">4.9/5</h3>
+                            <p className="text-xs sm:text-sm text-[#404040] flex-grow">Customer Rating</p>
                           </CardContent>
                         </Card>
-                        <Card className="bg-white/80 backdrop-blur-sm">
-                          <CardContent className="p-6 text-center">
-                            <Shield className="w-12 h-12 text-[#e1d7c6] mx-auto mb-4" />
-                            <h3 className="font-bold text-lg mb-2 text-[#262626]">100%</h3>
-                            <p className="text-sm text-[#404040]">Satisfaction Guarantee</p>
+                        <Card className="h-full flex flex-col bg-white/90 backdrop-blur-sm border border-[#e5e5e5]">
+                          <CardContent className="p-4 sm:p-6 text-center flex flex-col flex-grow">
+                            <Shield className="w-10 h-10 sm:w-12 sm:h-12 text-[#262626] mx-auto mb-3 sm:mb-4" />
+                            <h3 className="font-bold text-base sm:text-lg mb-2 text-[#262626]">100%</h3>
+                            <p className="text-xs sm:text-sm text-[#404040] flex-grow">Satisfaction Guarantee</p>
                           </CardContent>
                         </Card>
                       </div>
