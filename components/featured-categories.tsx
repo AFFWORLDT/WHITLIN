@@ -36,20 +36,20 @@ const categories = [
 
 export function FeaturedCategories() {
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-gray-50 via-white to-gray-50 relative overflow-hidden">
+    <section className="py-16 md:py-24 bg-white relative overflow-hidden">
       {/* Decorative elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(212,175,55,0.04),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(163,154,140,0.06),transparent_50%)]" />
       
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <ScrollAnimate animation="fade-in-up">
           <div className="text-center mb-12 md:mb-16">
             <div className="inline-block mb-4">
-              <span className="text-primary text-sm font-semibold uppercase tracking-wider">Explore Collections</span>
+              <span className="text-[#e1d7c6] text-sm font-semibold uppercase tracking-wider">Explore Collections</span>
             </div>
-            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-[#1a1a1a]">
               Featured Products
             </h2>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-[#404040] max-w-3xl mx-auto leading-relaxed">
               Discover our premium hospitality linen collections designed for luxury and comfort
             </p>
           </div>

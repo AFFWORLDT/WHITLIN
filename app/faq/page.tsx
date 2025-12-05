@@ -114,15 +114,15 @@ export default function FAQPage() {
         <section ref={heroRef} className={`bg-gradient-to-br from-amber-50 to-orange-50 py-20 ${heroAnimate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} transition-all duration-700`}>
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <Badge className="mb-4 bg-amber-100 text-amber-800 hover:bg-amber-200">
+              <Badge className="mb-4 bg-[#e1d7c6] text-[#171717] hover:bg-[#d4c7b3] font-semibold">
                 <HelpCircle className="w-4 h-4 mr-2" />
                 Frequently Asked Questions
               </Badge>
-              <h1 className="text-5xl font-bold text-gray-900 mb-6">
+              <h1 className="text-5xl font-bold text-[#262626] mb-6">
                 Find Answers to 
-                <span className="text-amber-600"> Your Questions</span>
+                <span className="text-[#e1d7c6]"> Your Questions</span>
               </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              <p className="text-xl text-[#404040] mb-8 leading-relaxed">
                 Get quick answers to common questions about our products, shipping, returns, and more. 
                 Can't find what you're looking for? Contact our support team.
               </p>
@@ -136,7 +136,7 @@ export default function FAQPage() {
             <div className="max-w-4xl mx-auto">
               <div className="flex flex-col md:flex-row gap-4 mb-8">
                 <div className="relative flex-1">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#737373] w-5 h-5" />
                   <Input
                     placeholder="Search FAQs..."
                     value={searchTerm}
@@ -151,7 +151,7 @@ export default function FAQPage() {
                       variant={selectedCategory === category ? "default" : "outline"}
                       size="sm"
                       onClick={() => setSelectedCategory(category)}
-                      className={selectedCategory === category ? "bg-amber-600 hover:bg-amber-700" : ""}
+                      className={selectedCategory === category ? "bg-[#e1d7c6] hover:bg-[#d4c7b3] text-[#262626]" : ""}
                     >
                       {category}
                     </Button>
@@ -163,15 +163,15 @@ export default function FAQPage() {
         </section>
 
         {/* FAQ Items */}
-        <section className="py-20 bg-gray-50">
+        <section className="py-20 bg-[#fafafa]">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               {filteredFAQs.length === 0 ? (
                 <Card className="p-8 text-center">
                   <CardContent className="p-0">
-                    <HelpCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">No FAQs Found</h3>
-                    <p className="text-gray-600 mb-6">
+                    <HelpCircle className="w-16 h-16 text-[#737373] mx-auto mb-4" />
+                    <h3 className="text-xl font-bold text-[#262626] mb-2">No FAQs Found</h3>
+                    <p className="text-[#404040] mb-6">
                       We couldn't find any FAQs matching your search. Try different keywords or browse all categories.
                     </p>
                     <Button 
@@ -179,7 +179,7 @@ export default function FAQPage() {
                         setSearchTerm("")
                         setSelectedCategory("All")
                       }}
-                      className="bg-amber-600 hover:bg-amber-700"
+                      className="bg-[#e1d7c6] hover:bg-[#d4c7b3] text-[#262626]"
                     >
                       Clear Filters
                     </Button>
@@ -193,7 +193,7 @@ export default function FAQPage() {
                       <CardContent className="p-0">
                         <button
                           onClick={() => toggleExpanded(faq.id)}
-                          className="w-full p-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                          className="w-full p-6 text-left flex items-center justify-between hover:bg-[#fafafa] transition-colors"
                         >
                           <div className="flex-1">
                             <div className="flex items-center gap-3 mb-2">
@@ -201,14 +201,14 @@ export default function FAQPage() {
                                 {faq.category}
                               </Badge>
                             </div>
-                            <h3 className="text-lg font-semibold text-gray-900">
+                            <h3 className="text-lg font-semibold text-[#262626]">
                               {faq.question}
                             </h3>
                           </div>
                           {expandedItems.includes(faq.id) ? (
-                            <ChevronUp className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                            <ChevronUp className="w-5 h-5 text-[#737373] flex-shrink-0" />
                           ) : (
-                            <ChevronDown className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                            <ChevronDown className="w-5 h-5 text-[#737373] flex-shrink-0" />
                           )}
                         </button>
                         {expandedItems.includes(faq.id) && (
@@ -235,10 +235,10 @@ export default function FAQPage() {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                <h2 className="text-4xl font-bold text-[#262626] mb-6">
                   Still Have Questions?
                 </h2>
-                <p className="text-xl text-gray-600">
+                <p className="text-xl text-[#404040]">
                   Our customer support team is here to help you
                 </p>
               </div>
@@ -248,13 +248,13 @@ export default function FAQPage() {
                   <Card className="p-8 text-center hover:shadow-lg transition-shadow hover-lift">
                   <CardContent className="p-0">
                     <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <MessageCircle className="w-8 h-8 text-amber-600" />
+                      <MessageCircle className="w-8 h-8 text-[#e1d7c6]" />
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Live Chat</h3>
-                    <p className="text-gray-600 mb-6">
+                    <h3 className="text-2xl font-bold text-[#262626] mb-4">Live Chat</h3>
+                    <p className="text-[#404040] mb-6">
                       Chat with our support team in real-time for instant help
                     </p>
-                    <Button className="bg-amber-600 hover:bg-amber-700">
+                    <Button className="bg-[#e1d7c6] hover:bg-[#d4c7b3] text-[#262626]">
                       Start Chat
                     </Button>
                   </CardContent>
@@ -263,13 +263,13 @@ export default function FAQPage() {
                 <Card className="p-8 text-center hover:shadow-lg transition-shadow">
                   <CardContent className="p-0">
                     <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <Mail className="w-8 h-8 text-amber-600" />
+                      <Mail className="w-8 h-8 text-[#e1d7c6]" />
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Email Support</h3>
-                    <p className="text-gray-600 mb-6">
+                    <h3 className="text-2xl font-bold text-[#262626] mb-4">Email Support</h3>
+                    <p className="text-[#404040] mb-6">
                       Send us an email and we'll respond within 24 hours
                     </p>
-                    <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-50">
+                    <Button variant="outline" className="border-amber-600 text-[#e1d7c6] hover:bg-amber-50">
                       Send Email
                     </Button>
                   </CardContent>
@@ -278,13 +278,13 @@ export default function FAQPage() {
                 <Card className="p-8 text-center hover:shadow-lg transition-shadow">
                   <CardContent className="p-0">
                     <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <Phone className="w-8 h-8 text-amber-600" />
+                      <Phone className="w-8 h-8 text-[#e1d7c6]" />
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Phone Support</h3>
-                    <p className="text-gray-600 mb-6">
+                    <h3 className="text-2xl font-bold text-[#262626] mb-4">Phone Support</h3>
+                    <p className="text-[#404040] mb-6">
                       Call us directly for immediate assistance
                     </p>
-                    <Button variant="outline" className="border-amber-600 text-amber-600 hover:bg-amber-50">
+                    <Button variant="outline" className="border-amber-600 text-[#e1d7c6] hover:bg-amber-50">
                       Call Now
                     </Button>
                   </CardContent>

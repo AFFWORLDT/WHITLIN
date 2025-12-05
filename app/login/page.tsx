@@ -11,6 +11,7 @@ import { Separator } from "@/components/ui/separator"
 import { Eye, EyeOff, Loader2 } from "lucide-react"
 import { toast } from "sonner"
 import { useAuth } from "@/lib/auth-context"
+import { ScrollAnimate } from "@/components/scroll-animate"
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -97,14 +98,15 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div className="text-center">
-          <h1 className="text-3xl font-serif font-bold text-gray-900">Whitlin</h1>
-          <p className="mt-2 text-sm text-gray-600">Sign in to your account</p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 page-fade">
+      <ScrollAnimate animation="fade-in-up-scale" delay={100}>
+        <div className="max-w-md w-full space-y-8">
+          <div className="text-center">
+            <h1 className="text-3xl font-serif font-bold text-gray-900">Whitlin</h1>
+            <p className="mt-2 text-sm text-gray-600">Sign in to your account</p>
+          </div>
 
-        <Card>
+          <Card className="hover-shadow-premium smooth-color-transition">
           <CardHeader>
             <CardTitle>Sign In</CardTitle>
             <CardDescription>
@@ -173,7 +175,7 @@ export default function LoginPage() {
 
               <Button
                 type="submit"
-                className="w-full"
+                className="w-full bg-[#e1d7c6] hover:bg-[#d4c7b3] text-[#1a1a1a] smooth-color-transition button-press"
                 disabled={loading}
               >
                 {loading ? (
@@ -198,6 +200,7 @@ export default function LoginPage() {
           </CardContent>
         </Card>
       </div>
+      </ScrollAnimate>
     </div>
   )
 }

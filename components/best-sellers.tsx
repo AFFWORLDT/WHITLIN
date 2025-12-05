@@ -43,23 +43,23 @@ export function BestSellers() {
   }
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-white via-gray-50/50 to-white relative overflow-hidden">
+    <section className="py-16 md:py-24 bg-white relative overflow-hidden">
       {/* Decorative background elements */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(212,175,55,0.05),transparent_50%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(212,175,55,0.03),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(225,215,198,0.08),transparent_50%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(225,215,198,0.05),transparent_50%)]" />
       
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <ScrollAnimate animation="fade-in-up">
           <div className="text-center mb-12 md:mb-16">
             <div className="inline-block mb-4">
-              <Badge className="bg-primary/10 text-primary border-primary/20 px-4 py-1 text-sm font-medium">
+              <Badge className="bg-[#e1d7c6]/20 text-[#1a1a1a] border-[#e1d7c6]/40 px-4 py-1 text-sm font-medium">
                 Featured Products
               </Badge>
             </div>
-            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-[#1a1a1a]">
               Best Sellers
             </h2>
-            <p className="text-gray-600 text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
+            <p className="text-[#404040] text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
               Our most loved products from every collection, trusted by hotels and hospitality professionals worldwide
             </p>
           </div>
@@ -67,7 +67,7 @@ export function BestSellers() {
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <Loader2 className="h-8 w-8 animate-spin text-[#e1d7c6]" />
           </div>
         ) : error ? (
           <div className="text-center text-destructive py-10">
@@ -97,22 +97,22 @@ export function BestSellers() {
                   
                   return (
                     <CarouselItem key={productId} className="pl-2 md:pl-4 basis-full xs:basis-1/2 sm:basis-1/2 md:basis-1/3 lg:basis-1/4">
-                      <Card className="group hover:shadow-2xl transition-all duration-500 overflow-hidden border-border/50 hover-lift relative bg-white h-full">
-                        <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                      <Card className="group hover-shadow-premium smooth-color-transition overflow-hidden border-[#e5e5e5] hover-lift relative bg-white h-full">
+                        <div className="absolute inset-0 bg-gradient-to-br from-[#e1d7c6]/0 via-[#e1d7c6]/0 to-[#e1d7c6]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <Link href={`/products/${productId}`}>
                           <div className="relative aspect-square overflow-hidden cursor-pointer">
                             <MobileProductGridImage
                               src={product.image || product.images?.[0] || "/placeholder.jpg"}
                               alt={product.name}
-                              className="group-hover:scale-110 transition-transform duration-700 ease-out"
+                              className="group-hover:scale-110 transition-transform duration-700 ease-out hover-scale-smooth"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                             {badge && (
-                              <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground shadow-lg group-hover:scale-110 transition-transform duration-300 z-10">
+                              <Badge className="absolute top-3 left-3 bg-[#e1d7c6] text-[#1a1a1a] shadow-lg group-hover:scale-110 transition-transform duration-300 z-10">
                                 {badge}
                               </Badge>
                             )}
-                            <div className="absolute top-3 right-3 bg-black/80 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-xs font-medium border border-white/10">
+                            <div className="absolute top-3 right-3 bg-[#929292]/90 backdrop-blur-md text-white px-3 py-1.5 rounded-full text-xs font-medium border border-white/10">
                               {size}
                             </div>
                           </div>
@@ -131,35 +131,35 @@ export function BestSellers() {
                                 style={{ transitionDelay: `${i * 50}ms` }}
                               />
                             ))}
-                            <span className="text-sm text-gray-600 ml-1 font-medium">
+                            <span className="text-sm text-[#404040] ml-1 font-medium">
                               ({product.rating?.toFixed(1) || '4.8'})
                             </span>
                           </div>
 
                           <Link href={`/products/${productId}`}>
-                            <h3 className="font-serif text-lg font-semibold mb-2 text-balance hover:text-primary transition-colors cursor-pointer line-clamp-2 min-h-[3.5rem]">
+                            <h3 className="font-serif text-lg font-semibold mb-2 text-balance hover:text-[#e1d7c6] transition-colors cursor-pointer line-clamp-2 min-h-[3.5rem] text-[#1a1a1a]">
                               {product.name}
                             </h3>
                           </Link>
-                          <p className="text-xs text-primary font-semibold mb-2 uppercase tracking-wide">
+                          <p className="text-xs text-[#e1d7c6] font-semibold mb-2 uppercase tracking-wide">
                             {product.category?.name || 'General'} Range
                           </p>
-                          <p className="text-sm text-gray-600 mb-4 text-pretty line-clamp-2 min-h-[2.5rem]">
+                          <p className="text-sm text-[#404040] mb-4 text-pretty line-clamp-2 min-h-[2.5rem]">
                             {product.description}
                           </p>
 
-                          <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                          <div className="flex items-center justify-between pt-4 border-t border-[#e5e5e5]">
                             <div className="flex flex-col">
-                              <span className="text-2xl font-bold text-gray-900">AED {product.price}</span>
+                              <span className="text-2xl font-bold text-[#1a1a1a]">AED {product.price}</span>
                               {product.originalPrice && product.originalPrice > product.price && (
-                                <span className="text-xs text-gray-500 line-through">
+                                <span className="text-xs text-[#737373] line-through">
                                   AED {product.originalPrice}
                                 </span>
                               )}
                             </div>
                             <Button
                               size="sm"
-                              className="bg-primary hover:bg-primary/90 text-primary-foreground transition-all duration-300 hover:scale-105 hover:shadow-xl shadow-lg"
+                              className="bg-[#e1d7c6] hover:bg-[#d4c7b3] text-[#1a1a1a] transition-all duration-300 hover:scale-105 hover:shadow-xl shadow-lg font-semibold"
                               onClick={() => handleAddToCart(product)}
                             >
                               <ShoppingCart className="h-4 w-4 mr-1" />
@@ -172,8 +172,8 @@ export function BestSellers() {
                   )
                 })}
               </CarouselContent>
-              <CarouselPrevious className="hidden md:flex -left-12 bg-white/90 backdrop-blur-sm border-2 border-gray-200 hover:border-primary shadow-lg hover:shadow-xl" />
-              <CarouselNext className="hidden md:flex -right-12 bg-white/90 backdrop-blur-sm border-2 border-gray-200 hover:border-primary shadow-lg hover:shadow-xl" />
+              <CarouselPrevious className="hidden md:flex -left-12 bg-white/90 backdrop-blur-sm border-2 border-[#e5e5e5] hover:border-[#e1d7c6] shadow-lg hover:shadow-xl" />
+              <CarouselNext className="hidden md:flex -right-12 bg-white/90 backdrop-blur-sm border-2 border-[#e5e5e5] hover:border-[#e1d7c6] shadow-lg hover:shadow-xl" />
             </Carousel>
           </div>
         )}

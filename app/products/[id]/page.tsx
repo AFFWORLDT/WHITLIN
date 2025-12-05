@@ -12,6 +12,7 @@ import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
 import { Footer } from "@/components/footer"
 import { UniversalProductImage, UniversalProductThumbnail } from "@/components/ui/universal-image"
+import { ScrollAnimate } from "@/components/scroll-animate"
 
 interface Product {
   _id: string
@@ -237,7 +238,7 @@ export default function ProductDetailsPage() {
     return (
       <div className="min-h-screen">
         <div className="flex justify-center items-center h-64">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#e1d7c6]" />
         </div>
         <Footer />
       </div>
@@ -266,7 +267,7 @@ export default function ProductDetailsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 md:gap-12">
           {/* Product Images */}
           <div className="space-y-3 sm:space-y-4">
-            <div className="relative aspect-square overflow-hidden rounded-lg bg-gray-100">
+            <div className="relative aspect-square overflow-hidden rounded-lg bg-[#fafafa]">
               {product.images && product.images.length > 0 ? (
                 <UniversalProductImage
                   src={product.images[selectedImage] || product.images[0]}
@@ -275,10 +276,10 @@ export default function ProductDetailsPage() {
                   quality={85}
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                <div className="w-full h-full flex items-center justify-center bg-[#fafafa]">
                   <div className="text-center">
-                    <div className="text-4xl sm:text-6xl text-gray-400 mb-2">📦</div>
-                    <p className="text-sm sm:text-base text-gray-500">No image available</p>
+                    <div className="text-4xl sm:text-6xl text-[#737373] mb-2">📦</div>
+                    <p className="text-sm sm:text-base text-[#404040]">No image available</p>
                   </div>
                 </div>
               )}
@@ -313,7 +314,7 @@ export default function ProductDetailsPage() {
           <div className="space-y-4 sm:space-y-6">
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-3">
-                <Badge variant="outline" className="text-primary border-primary text-xs sm:text-sm">
+                <Badge variant="outline" className="text-[#e1d7c6] border-[#e1d7c6] text-xs sm:text-sm">
                   {product.category.name}
                 </Badge>
                 <Badge className="bg-green-100 text-green-800 text-xs sm:text-sm">In Stock</Badge>
@@ -326,7 +327,7 @@ export default function ProductDetailsPage() {
                   <Star
                     key={i}
                     className={`h-4 w-4 sm:h-5 sm:w-5 ${
-                      i < 4 ? "fill-primary text-primary" : "text-muted-foreground"
+                      i < 4 ? "fill-[#e1d7c6] text-[#e1d7c6]" : "text-[#737373]"
                     }`}
                   />
                 ))}
@@ -404,7 +405,7 @@ export default function ProductDetailsPage() {
                 </div>
                 <Button
                   onClick={handleAddToCart}
-                  className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground text-sm sm:text-base h-10 sm:h-auto"
+                  className="flex-1 bg-[#e1d7c6] hover:bg-[#d4c7b3] text-[#1a1a1a] text-sm sm:text-base h-10 sm:h-auto font-semibold"
                 >
                   <ShoppingCart className="h-4 w-4 mr-2" />
                   Add to Cart
@@ -446,21 +447,21 @@ export default function ProductDetailsPage() {
 
             <div className="space-y-4">
               <div className="flex items-center gap-3">
-                <Truck className="h-5 w-5 text-primary" />
+                <Truck className="h-5 w-5 text-[#e1d7c6]" />
                 <div>
                   <p className="font-medium">Free Shipping</p>
                   <p className="text-sm text-muted-foreground">On orders over AED 200</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Shield className="h-5 w-5 text-primary" />
+                <Shield className="h-5 w-5 text-[#e1d7c6]" />
                 <div>
                   <p className="font-medium">Secure Payment</p>
                   <p className="text-sm text-muted-foreground">100% secure checkout</p>
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <RotateCcw className="h-5 w-5 text-primary" />
+                <RotateCcw className="h-5 w-5 text-[#e1d7c6]" />
                 <div>
                   <p className="font-medium">Easy Returns</p>
                   <p className="text-sm text-muted-foreground">30-day return policy</p>

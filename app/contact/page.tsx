@@ -86,15 +86,15 @@ export default function ContactPage() {
         <section ref={heroRef} className={`bg-gradient-to-br from-amber-50 to-orange-50 py-20 ${heroAnimate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} transition-all duration-700`}>
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <Badge className="mb-4 bg-amber-100 text-amber-800 hover:bg-amber-200">
+              <Badge className="mb-4 bg-[#e1d7c6] text-[#171717] hover:bg-[#d4c7b3] font-semibold">
                 <MessageCircle className="w-4 h-4 mr-2" />
                 Get in Touch
               </Badge>
-              <h1 className="text-5xl font-bold text-gray-900 mb-6">
+              <h1 className="text-5xl font-bold text-[#262626] mb-6">
                 We'd Love to 
-                <span className="text-amber-600"> Hear from You</span>
+                <span className="text-[#e1d7c6]"> Hear from You</span>
               </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              <p className="text-xl text-[#404040] mb-8 leading-relaxed">
                 Have questions about our hospitality linen products? Need help with your order? 
                 Our customer support team is here to help you every step of the way.
               </p>
@@ -106,20 +106,20 @@ export default function ContactPage() {
         <section className="py-20 bg-white">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
-              <div className="grid lg:grid-cols-3 gap-8 mb-16">
+              <div className="grid lg:grid-cols-3 gap-8 mb-16 items-stretch">
                 <ScrollAnimate animation="scale-in" delay={0.1}>
-                  <Card className="text-center p-8 hover:shadow-lg transition-shadow hover-lift">
-                    <CardContent className="p-0">
-                      <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <Mail className="w-8 h-8 text-amber-600" />
+                  <Card className="h-full flex flex-col text-center p-8 hover:shadow-lg transition-shadow hover-lift">
+                    <CardContent className="p-0 flex flex-col flex-grow">
+                      <div className="w-16 h-16 bg-[#e1d7c6] rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Mail className="w-8 h-8 text-[#262626]" />
                       </div>
-                      <h3 className="text-2xl font-bold text-gray-900 mb-4">Email Us</h3>
-                      <p className="text-gray-600 mb-4">
+                      <h3 className="text-2xl font-bold text-[#262626] mb-4">Email Us</h3>
+                      <p className="text-[#404040] mb-4 flex-grow">
                         Send us an email and we'll respond within 24 hours
                       </p>
                       <a 
                         href="mailto:info@whitlin.com" 
-                        className="text-amber-600 font-medium hover:text-amber-700"
+                        className="text-[#e1d7c6] font-medium hover:text-[#d4c7b3]"
                       >
                         info@whitlin.com
                       </a>
@@ -128,25 +128,25 @@ export default function ContactPage() {
                 </ScrollAnimate>
 
                 <ScrollAnimate animation="scale-in" delay={0.2}>
-                  <Card className="text-center p-8 hover:shadow-lg transition-shadow">
-                    <CardContent className="p-0">
-                      <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <Phone className="w-8 h-8 text-amber-600" />
+                  <Card className="h-full flex flex-col text-center p-8 hover:shadow-lg transition-shadow">
+                    <CardContent className="p-0 flex flex-col flex-grow">
+                      <div className="w-16 h-16 bg-[#e1d7c6] rounded-full flex items-center justify-center mx-auto mb-6">
+                        <Phone className="w-8 h-8 text-[#262626]" />
                       </div>
-                      <h3 className="text-2xl font-bold text-gray-900 mb-4">Call Us</h3>
-                      <p className="text-gray-600 mb-4">
+                      <h3 className="text-2xl font-bold text-[#262626] mb-4">Call Us</h3>
+                      <p className="text-[#404040] mb-4 flex-grow">
                         Speak directly with our customer support team
                       </p>
                       <div className="space-y-1">
                         <a 
                           href="tel:+971544389849" 
-                          className="block text-amber-600 font-medium hover:text-amber-700"
+                          className="block text-[#e1d7c6] font-medium hover:text-[#d4c7b3]"
                         >
                           +971 54 438 9849
                         </a>
                         <a 
                           href="tel:+971503961541" 
-                          className="block text-amber-600 font-medium hover:text-amber-700"
+                          className="block text-[#e1d7c6] font-medium hover:text-[#d4c7b3]"
                         >
                           +971 50 396 1541
                         </a>
@@ -156,28 +156,21 @@ export default function ContactPage() {
                 </ScrollAnimate>
 
                 <ScrollAnimate animation="scale-in" delay={0.3}>
-                  <Card className="text-center p-8 hover:shadow-lg transition-shadow">
-                    <CardContent className="p-0">
-                      <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                        <MapPin className="w-8 h-8 text-amber-600" />
+                  <Card className="h-full flex flex-col text-center p-8 hover:shadow-lg transition-shadow">
+                    <CardContent className="p-0 flex flex-col flex-grow">
+                      <div className="w-16 h-16 bg-[#e1d7c6] rounded-full flex items-center justify-center mx-auto mb-6">
+                        <MapPin className="w-8 h-8 text-[#262626]" />
                       </div>
-                      <h3 className="text-2xl font-bold text-gray-900 mb-4">Visit Us</h3>
-                      <p className="text-gray-600 mb-4">
+                      <h3 className="text-2xl font-bold text-[#262626] mb-4">Visit Us</h3>
+                      <p className="text-[#404040] mb-4 flex-grow">
                         Our headquarters and customer service center
                       </p>
-                      <address className="text-amber-600 font-medium not-italic">
+                      <address className="text-[#e1d7c6] font-medium not-italic">
                         WHITLIN (1st Floor)<br />
                         231 Al Ittihad Rd<br />
                         Al Qusais, Al Nahda 1<br />
                         Dubai, United Arab Emirates
                       </address>
-                      <div className="mt-4 pt-4 border-t border-gray-200">
-                        <p className="text-sm text-gray-600 mb-2 font-semibold">Factory:</p>
-                        <address className="text-amber-600 font-medium not-italic text-sm">
-                          3044, N.H.B.C Panipat 132103<br />
-                          Harayana, India
-                        </address>
-                      </div>
                     </CardContent>
                   </Card>
                 </ScrollAnimate>
@@ -188,10 +181,10 @@ export default function ContactPage() {
                 <ScrollAnimate animation="slide-in-left" delay={0.1}>
                   <Card className="p-8 hover-lift">
                   <CardHeader>
-                    <CardTitle className="text-3xl font-bold text-gray-900">
+                    <CardTitle className="text-3xl font-bold text-[#262626]">
                       Send us a Message
                     </CardTitle>
-                    <p className="text-gray-600">
+                    <p className="text-[#404040]">
                       Fill out the form below and we'll get back to you as soon as possible.
                     </p>
                   </CardHeader>
@@ -290,8 +283,8 @@ export default function ContactPage() {
                   <div className="space-y-8">
                   <Card className="p-8">
                     <CardHeader>
-                      <CardTitle className="text-2xl font-bold text-gray-900 flex items-center">
-                        <Clock className="w-6 h-6 mr-3 text-amber-600" />
+                      <CardTitle className="text-2xl font-bold text-[#262626] flex items-center">
+                        <Clock className="w-6 h-6 mr-3 text-[#e1d7c6]" />
                         Business Hours
                       </CardTitle>
                     </CardHeader>
@@ -299,15 +292,15 @@ export default function ContactPage() {
                       <div className="space-y-4">
                         <div className="flex justify-between items-center py-2 border-b border-gray-100">
                           <span className="font-medium text-gray-700">Sunday - Thursday</span>
-                          <span className="text-gray-600">9:00 AM - 6:00 PM GST</span>
+                          <span className="text-[#404040]">9:00 AM - 6:00 PM GST</span>
                         </div>
                         <div className="flex justify-between items-center py-2 border-b border-gray-100">
                           <span className="font-medium text-gray-700">Friday</span>
-                          <span className="text-gray-600">10:00 AM - 4:00 PM GST</span>
+                          <span className="text-[#404040]">10:00 AM - 4:00 PM GST</span>
                         </div>
                         <div className="flex justify-between items-center py-2">
                           <span className="font-medium text-gray-700">Saturday</span>
-                          <span className="text-gray-600">Closed</span>
+                          <span className="text-[#404040]">Closed</span>
                         </div>
                       </div>
                     </CardContent>
@@ -315,10 +308,10 @@ export default function ContactPage() {
 
                   <Card className="p-8">
                     <CardHeader>
-                      <CardTitle className="text-2xl font-bold text-gray-900">
+                      <CardTitle className="text-2xl font-bold text-[#262626]">
                         Follow Us
                       </CardTitle>
-                      <p className="text-gray-600">
+                      <p className="text-[#404040]">
                         Stay connected and get the latest updates
                       </p>
                     </CardHeader>
@@ -354,10 +347,10 @@ export default function ContactPage() {
 
                   <Card className="p-8 bg-gradient-to-br from-amber-50 to-orange-50">
                     <CardContent className="p-0">
-                      <h3 className="text-xl font-bold text-gray-900 mb-4">
+                      <h3 className="text-xl font-bold text-[#262626] mb-4">
                         Need Immediate Help?
                       </h3>
-                      <p className="text-gray-600 mb-6">
+                      <p className="text-[#404040] mb-6">
                         For urgent inquiries or order issues, please call our customer service line.
                       </p>
                       <Button className="w-full bg-amber-600 hover:bg-amber-700">
@@ -378,25 +371,25 @@ export default function ContactPage() {
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto">
               <div className="text-center mb-16">
-                <Badge className="mb-4 bg-amber-100 text-amber-800">
+                <Badge className="mb-4 bg-[#e1d7c6] text-[#171717] font-semibold">
                   Quick Answers
                 </Badge>
-                <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                <h2 className="text-4xl font-bold text-[#262626] mb-6">
                   Frequently Asked Questions
                 </h2>
-                <p className="text-xl text-gray-600">
+                <p className="text-xl text-[#404040]">
                   Find quick answers to common questions
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid grid-cols-1 gap-8 items-stretch max-w-3xl mx-auto">
                 <ScrollAnimate animation="fade-in-up" delay={0.1}>
-                  <Card className="p-6 hover-lift">
-                    <CardContent className="p-0">
-                      <h3 className="text-lg font-bold text-gray-900 mb-3">
+                  <Card className="h-full flex flex-col p-6 hover-lift">
+                    <CardContent className="p-0 flex flex-col flex-grow">
+                      <h3 className="text-lg font-bold text-[#262626] mb-3">
                         Branding is simply a more efficient way to sell things?
                       </h3>
-                      <p className="text-gray-600">
+                      <p className="text-[#404040] flex-grow">
                         Lorem ipsum dolor sit amet, consectetur a elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus musbulum ultricies aliquam convallis. Maecenas ut tellus mi. Proin tincidunt, lectus eu volutpat mattis, ante metus lacinia tellus, vitae condimentum nulla enim bibendum nibh. Praesent turpis risus, interdum nec venenatis id, pretium sit amet purus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aliquam eu lorem nibh. Mauris ex dolor, rutrum in odio vel, suscipit ultrices nunc. Cras ipsum dolor, eleifend et nisl vel, tempor molestie nibh. In hac habitasse platea dictumst. Proin nec blandit ligula.
                       </p>
                     </CardContent>
@@ -404,12 +397,12 @@ export default function ContactPage() {
                 </ScrollAnimate>
 
                 <ScrollAnimate animation="fade-in-up" delay={0.2}>
-                  <Card className="p-6">
-                    <CardContent className="p-0">
-                      <h3 className="text-lg font-bold text-gray-900 mb-3">
+                  <Card className="h-full flex flex-col p-6">
+                    <CardContent className="p-0 flex flex-col flex-grow">
+                      <h3 className="text-lg font-bold text-[#262626] mb-3">
                         It's better to be first in the mind than to be first in the marketplace?
                       </h3>
-                      <p className="text-gray-600">
+                      <p className="text-[#404040] flex-grow">
                         Lorem ipsum dolor sit amet, consectetur a elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus musbulum ultricies aliquam convallis. Maecenas ut tellus mi. Proin tincidunt, lectus eu volutpat mattis, ante metus lacini.
                       </p>
                     </CardContent>
@@ -417,12 +410,12 @@ export default function ContactPage() {
                 </ScrollAnimate>
 
                 <ScrollAnimate animation="fade-in-up" delay={0.3}>
-                  <Card className="p-6">
-                    <CardContent className="p-0">
-                      <h3 className="text-lg font-bold text-gray-900 mb-3">
+                  <Card className="h-full flex flex-col p-6">
+                    <CardContent className="p-0 flex flex-col flex-grow">
+                      <h3 className="text-lg font-bold text-[#262626] mb-3">
                         Marketing is a company's ultimate objective?
                       </h3>
-                      <p className="text-gray-600">
+                      <p className="text-[#404040] flex-grow">
                         Lorem ipsum dolor sit amet, consectetur a elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus musbulum ultricies aliquam convallis. Maecenas ut tellus mi. Proin tincidunt, lectus eu volutpat mattis, ante metus lacinia tellus, vitae condimentum nulla enim bibendum nibh. Praesent turpis risus, interdum nec venenatis id, pretium sit amet purus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Aliquam eu lorem nibh. Mauris ex dolor, rutrum in odio vel, suscipit ultrices nunc. Cras ipsum dolor, eleifend et nisl vel, tempor molestie nibh. In hac habitasse platea dictumst. Proin nec blandit ligula.
                       </p>
                     </CardContent>
@@ -430,12 +423,12 @@ export default function ContactPage() {
                 </ScrollAnimate>
 
                 <ScrollAnimate animation="fade-in-up" delay={0.4}>
-                  <Card className="p-6">
-                    <CardContent className="p-0">
-                      <h3 className="text-lg font-bold text-gray-900 mb-3">
+                  <Card className="h-full flex flex-col p-6">
+                    <CardContent className="p-0 flex flex-col flex-grow">
+                      <h3 className="text-lg font-bold text-[#262626] mb-3">
                         Positioning is what you do to the mind of the prospect?
                       </h3>
-                      <p className="text-gray-600">
+                      <p className="text-[#404040] flex-grow">
                         Lorem ipsum dolor sit amet, consectetur a elit. In ut ullamcorper leo, eget euismod orci. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus musbulum ultricies aliquam convallis. Maecenas ut tellus mi. Proin tincidunt, lectus eu volutpat mattis, ante metus lacinia tellus, vitae condimentum nulla enim bibendum nibh. Praesent turpis risus, interdum nec venenatis id, pretium sit amet purus. Interdum et malesuada fames ac ante.
                       </p>
                     </CardContent>

@@ -155,15 +155,15 @@ export function LuxuryShowcase() {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-100">
+    <div className="min-h-screen bg-white">
       {/* Collections Grid */}
       <section id="collections" className="py-12 sm:py-16 md:py-20 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-8 sm:mb-12 md:mb-16">
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-gray-900 mb-4 sm:mb-6">
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-[#1a1a1a] mb-4 sm:mb-6">
               Luxury Collections
             </h2>
-            <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto px-4">
+            <p className="text-base sm:text-lg md:text-xl text-[#404040] max-w-3xl mx-auto px-4">
               Each collection is meticulously crafted with premium ingredients and cutting-edge technology
             </p>
           </div>
@@ -172,7 +172,7 @@ export function LuxuryShowcase() {
             {luxuryCategories.map((category) => (
               <Card 
                 key={category.id}
-                className="group hover:shadow-2xl transition-all duration-500 overflow-hidden border border-gray-200 bg-white/95 backdrop-blur-sm h-auto sm:h-[520px] flex flex-col rounded-xl shadow-lg hover:shadow-2xl"
+                className="group hover:shadow-2xl transition-all duration-500 overflow-hidden border border-[#e5e5e5] bg-white h-auto sm:h-[520px] flex flex-col rounded-xl shadow-lg hover:shadow-2xl"
               >
                 <div className={`relative h-48 sm:h-56 md:h-64 ${category.color} overflow-hidden flex-shrink-0 w-full`}>
                   <MobileProductGridImage
@@ -184,7 +184,7 @@ export function LuxuryShowcase() {
                   
                   {/* Premium Badge */}
                   {category.premium && (
-                    <Badge className="absolute top-4 right-4 bg-yellow-500 text-black font-bold px-3 py-1">
+                    <Badge className="absolute top-4 right-4 bg-[#e1d7c6] text-[#1a1a1a] font-bold px-3 py-1">
                       <Crown className="w-3 h-3 mr-1" />
                       PREMIUM
                     </Badge>
@@ -197,10 +197,10 @@ export function LuxuryShowcase() {
                 </div>
 
                 <CardContent className="p-4 sm:p-6 flex flex-col flex-grow min-h-0">
-                  <h3 className="font-serif text-lg sm:text-xl font-bold text-gray-900 mb-2 sm:mb-3 line-clamp-1 h-7 sm:h-8 flex items-center">
+                  <h3 className="font-serif text-lg sm:text-xl font-bold text-[#1a1a1a] mb-2 sm:mb-3 line-clamp-1 h-7 sm:h-8 flex items-center">
                     {category.name}
                   </h3>
-                  <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 line-clamp-3 h-14 sm:h-16 flex items-start">
+                  <p className="text-sm sm:text-base text-[#404040] mb-3 sm:mb-4 line-clamp-3 h-14 sm:h-16 flex items-start">
                     {category.description}
                   </p>
                   
@@ -210,7 +210,7 @@ export function LuxuryShowcase() {
                       <Badge 
                         key={index}
                         variant="secondary"
-                        className="text-xs bg-gray-100 text-gray-700"
+                        className="text-xs bg-[#fafafa] text-[#404040]"
                       >
                         {feature}
                       </Badge>
@@ -220,7 +220,7 @@ export function LuxuryShowcase() {
                   <div className="mt-auto">
                     <Link href={`/collections/${category.id === 'green' ? 'kg-green' : category.id}`}>
                       <Button 
-                        className="w-full bg-gradient-to-r from-gray-900 to-gray-800 hover:from-gray-800 hover:to-gray-700 text-white font-semibold"
+                        className="w-full bg-[#e1d7c6] hover:bg-[#d4c7b3] text-[#1a1a1a] font-semibold"
                       >
                         Explore Collection
                         <ChevronRight className="w-4 h-4 ml-2" />
@@ -246,7 +246,7 @@ export function LuxuryShowcase() {
             >
               ×
             </Button>
-            <div className="aspect-video bg-gray-900 rounded-lg flex items-center justify-center">
+            <div className="aspect-video bg-[#1a1a1a] rounded-lg flex items-center justify-center">
               <div className="text-center text-white">
                 <Play className="w-16 h-16 mx-auto mb-4 opacity-50" />
                 <p className="text-lg">Video Player Placeholder</p>

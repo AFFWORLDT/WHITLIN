@@ -19,6 +19,7 @@ import {
 import { toast } from "sonner"
 import Link from "next/link"
 import Image from "next/image"
+import { ScrollAnimate } from "@/components/scroll-animate"
 
 interface WishlistItem {
   id: string
@@ -147,12 +148,13 @@ export default function WishlistPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background page-fade">
       
       <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="mb-8">
+          <ScrollAnimate animation="fade-in-up-scale" delay={100}>
+            <div className="mb-8">
             <div className="flex items-center gap-4 mb-4">
               <Link href="/account">
                 <Button variant="outline" size="sm">
@@ -171,13 +173,15 @@ export default function WishlistPage() {
                 {wishlistItems.length} item{wishlistItems.length !== 1 ? 's' : ''} in your wishlist
               </p>
             </div>
+          </ScrollAnimate>
           </div>
 
           {/* Wishlist Items */}
           {wishlistItems.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {wishlistItems.map((item) => (
-                <Card key={item.id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden">
+              {wishlistItems.map((item, index) => (
+                <ScrollAnimate key={item.id} animation="card-entrance" delay={index * 50}>
+                  <Card className="group hover-shadow-premium smooth-color-transition overflow-hidden hover-lift">
                   <div className="relative">
                     <div className="aspect-square relative overflow-hidden">
                       <Image
@@ -255,6 +259,7 @@ export default function WishlistPage() {
                     </div>
                   </CardContent>
                 </Card>
+                </ScrollAnimate>
               ))}
             </div>
           ) : (

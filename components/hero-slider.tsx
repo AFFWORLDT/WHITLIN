@@ -238,11 +238,11 @@ export function HeroSlider() {
               {/* Enhanced Title with Optima Font - Mobile Responsive */}
               <h1 className={`font-optima text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-[48px] xl:text-[48px] mb-3 sm:mb-4 md:mb-6 text-balance transition-all duration-700 transform leading-normal ${
                 isTransitioning ? 'opacity-0 translate-y-8 scale-95' : 'opacity-100 translate-y-0 scale-100'
-              } text-white drop-shadow-2xl`} style={{ fontWeight: 700 }}>
+              } text-black drop-shadow-2xl`} style={{ fontWeight: 700 }}>
                 <span className="block leading-normal mb-2">
                   {currentSlideData.title}
                 </span>
-                <span className="block font-optima text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-normal text-white/90" style={{ fontWeight: 700 }}>
+                <span className="block font-optima text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl leading-normal text-black/90" style={{ fontWeight: 700 }}>
                   {currentSlideData.subtitle}
                 </span>
               </h1>
@@ -252,8 +252,8 @@ export function HeroSlider() {
                 isTransitioning ? 'opacity-0 translate-y-6 scale-95' : 'opacity-100 translate-y-0 scale-100'
               } ${
                 currentSlideData.theme === 'dark' 
-                  ? 'text-white/90 drop-shadow-lg' 
-                  : 'text-white/90 drop-shadow-lg'
+                  ? 'text-black/90 drop-shadow-lg' 
+                  : 'text-black/90 drop-shadow-lg'
               }`}>
                 {currentSlideData.description}
               </p>
@@ -267,8 +267,8 @@ export function HeroSlider() {
                     size="lg" 
                     className={`font-bold px-8 sm:px-10 md:px-12 py-4 sm:py-5 md:py-6 text-base sm:text-lg md:text-xl transition-all duration-300 w-full sm:w-auto hover:scale-110 active:scale-95 shadow-2xl hover:shadow-3xl touch-manipulation rounded-none hover-glow ${
                       currentSlideData.theme === 'dark'
-                        ? 'bg-primary hover:bg-primary/90 text-primary-foreground border-2 border-primary'
-                        : 'bg-gray-900 hover:bg-gray-800 text-white border-2 border-gray-900'
+                        ? 'bg-[#e1d7c6] hover:bg-[#d4c7b3] text-[#1a1a1a] border-2 border-[#e1d7c6]'
+                        : 'bg-[#e1d7c6] hover:bg-[#d4c7b3] text-[#1a1a1a] border-2 border-[#e1d7c6]'
                     }`}
                   >
                     {currentSlideData.primaryButton.text}
@@ -280,8 +280,8 @@ export function HeroSlider() {
                     variant="outline"
                     className={`border-2 font-bold px-8 sm:px-10 md:px-12 py-4 sm:py-5 md:py-6 text-base sm:text-lg md:text-xl transition-all duration-300 w-full sm:w-auto hover:scale-110 active:scale-95 backdrop-blur-sm touch-manipulation rounded-none ${
                       currentSlideData.theme === 'dark'
-                        ? 'border-white text-white hover:bg-white hover:text-gray-900 bg-transparent hover:shadow-lg'
-                        : 'border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white bg-white/90 hover:shadow-lg'
+                        ? 'border-white text-white hover:bg-white hover:text-[#1a1a1a] bg-transparent hover:shadow-lg'
+                        : 'border-[#929292] text-[#929292] hover:bg-[#929292] hover:text-white bg-white/90 hover:shadow-lg'
                     }`}
                   >
                     {currentSlideData.secondaryButton.text}

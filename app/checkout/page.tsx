@@ -14,6 +14,7 @@ import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
 import { Footer } from "@/components/footer"
 import Link from "next/link"
+import { ScrollAnimate } from "@/components/scroll-animate"
 
 export default function CheckoutPage() {
   const { state } = useCart()
@@ -154,7 +155,7 @@ export default function CheckoutPage() {
     return (
       <div className="min-h-screen">
         <div className="flex justify-center items-center h-64">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <Loader2 className="h-8 w-8 animate-spin text-[#e1d7c6]" />
         </div>
         <Footer />
       </div>
@@ -364,7 +365,7 @@ export default function CheckoutPage() {
                   
                   <Button
                     type="submit"
-                    className="w-full bg-primary hover:bg-primary/90 text-primary-foreground"
+                    className="w-full bg-[#e1d7c6] hover:bg-[#e1d7c6]/90 text-[#e1d7c6]-foreground"
                     disabled={loading}
                   >
                     {loading ? (

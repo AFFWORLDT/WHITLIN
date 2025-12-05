@@ -229,12 +229,12 @@ export default function GuestCheckoutPage() {
 
   if (orderSuccess && orderData) {
     return (
-      <div className="min-h-screen bg-gray-50 py-4 sm:py-6 md:py-8">
+      <div className="min-h-screen bg-white py-4 sm:py-6 md:py-8">
         <div className="container mx-auto px-3 sm:px-4 max-w-4xl">
           <div className="text-center mb-6 sm:mb-8">
             <CheckCircle className="w-12 h-12 sm:w-16 sm:h-16 text-green-500 mx-auto mb-3 sm:mb-4" />
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Order Placed Successfully!</h1>
-            <p className="text-sm sm:text-base text-gray-600">Your order has been confirmed and account created</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#1a1a1a] mb-2">Order Placed Successfully!</h1>
+            <p className="text-sm sm:text-base text-[#404040]">Your order has been confirmed and account created</p>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 md:gap-8">
@@ -247,19 +247,19 @@ export default function GuestCheckoutPage() {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Order Number:</span>
+                  <span className="text-[#404040]">Order Number:</span>
                   <span className="font-semibold">{orderData.orderNumber}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Total Amount:</span>
+                  <span className="text-[#404040]">Total Amount:</span>
                   <span className="font-semibold">AED {orderData.totalAmount.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Payment Method:</span>
+                  <span className="text-[#404040]">Payment Method:</span>
                   <span className="font-semibold capitalize">{orderData.paymentMethod}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-gray-600">Status:</span>
+                  <span className="text-[#404040]">Status:</span>
                   <Badge className="bg-yellow-100 text-yellow-800">Processing</Badge>
                 </div>
               </CardContent>
@@ -280,10 +280,10 @@ export default function GuestCheckoutPage() {
                   </p>
                 </div>
                 <div className="space-y-2">
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-[#404040]">
                     <strong>Email:</strong> {orderData.email}
                   </p>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-[#404040]">
                     <strong>Password:</strong> Check your email for the generated password
                   </p>
                 </div>
@@ -311,7 +311,7 @@ export default function GuestCheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-4 sm:py-6 md:py-8">
+    <div className="min-h-screen bg-white py-4 sm:py-6 md:py-8">
       <div className="container mx-auto px-3 sm:px-4 max-w-6xl">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
           <Button
@@ -324,8 +324,8 @@ export default function GuestCheckoutPage() {
             Back to Cart
           </Button>
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Guest Checkout</h1>
-            <p className="text-sm sm:text-base text-gray-600 mt-1">Complete your order without creating an account</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-[#1a1a1a]">Guest Checkout</h1>
+            <p className="text-sm sm:text-base text-[#404040] mt-1">Complete your order without creating an account</p>
           </div>
         </div>
 
@@ -463,7 +463,7 @@ export default function GuestCheckoutPage() {
               </CardHeader>
               <CardContent className="p-4 sm:p-6">
                 <div className="space-y-3">
-                  <label className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-gray-50">
+                  <label className="flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-white">
                     <input
                       type="radio"
                       name="paymentMethod"
@@ -474,7 +474,7 @@ export default function GuestCheckoutPage() {
                     />
                     <div>
                       <div className="font-medium">Cash on Delivery (COD)</div>
-                      <div className="text-sm text-gray-500">Pay when your order arrives</div>
+                      <div className="text-sm text-[#737373]">Pay when your order arrives</div>
                     </div>
                   </label>
                 </div>
@@ -494,16 +494,16 @@ export default function GuestCheckoutPage() {
               <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6">
                 {(state.items || []).map((item) => (
                   <div key={item.id} className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <div className="w-12 h-12 bg-[#fafafa] rounded-lg flex items-center justify-center">
                       {item.image ? (
                         <img src={item.image} alt={item.name} className="w-full h-full object-cover rounded-lg" />
                       ) : (
-                        <Package className="w-6 h-6 text-gray-400" />
+                        <Package className="w-6 h-6 text-[#737373]" />
                       )}
                     </div>
                     <div className="flex-1">
                       <h4 className="font-medium text-sm">{item.name}</h4>
-                      <p className="text-gray-500 text-sm">Qty: {item.quantity}</p>
+                      <p className="text-[#737373] text-sm">Qty: {item.quantity}</p>
                     </div>
                     <div className="font-medium">AED {(item.price * item.quantity).toFixed(2)}</div>
                   </div>

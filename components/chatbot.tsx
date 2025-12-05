@@ -138,7 +138,7 @@ export function Chatbot() {
       {/* Chatbot Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 bg-primary hover:bg-primary/90 text-white rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 ${
+        className={`fixed bottom-6 right-6 z-50 w-14 h-14 bg-[#e1d7c6] hover:bg-[#d4c7b3] text-[#1a1a1a] rounded-full shadow-2xl flex items-center justify-center smooth-color-transition hover-scale-smooth button-press ${
           isOpen ? 'hidden' : 'animate-bounce'
         }`}
         aria-label="Open chatbot"
@@ -148,7 +148,7 @@ export function Chatbot() {
 
       {/* Chatbot Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-2rem)] h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col animate-scale-in border border-gray-200">
+        <div className="fixed bottom-6 right-6 z-50 w-96 max-w-[calc(100vw-2rem)] h-[600px] bg-white rounded-2xl shadow-2xl flex flex-col animate-scale-in border border-gray-200 hover-shadow-premium">
           {/* Header */}
           <div className="bg-gradient-to-r from-primary to-primary/80 text-white p-4 rounded-t-2xl flex items-center justify-between">
             <div className="flex items-center space-x-3">

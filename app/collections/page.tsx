@@ -115,18 +115,18 @@ export default function CollectionsPage() {
       
       <main>
         {/* Hero Section */}
-        <section ref={heroRef} className={`bg-gradient-to-br from-amber-50 to-orange-50 py-20 ${heroAnimate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} transition-all duration-700`}>
+        <section ref={heroRef} className={`bg-gradient-to-br from-[#f8f6f3] to-[#f0ebe4] py-20 ${heroAnimate ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'} transition-all duration-700`}>
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center">
-              <Badge className="mb-4 bg-amber-100 text-amber-800 hover:bg-amber-200">
+              <Badge className="mb-4 bg-[#e1d7c6] text-[#171717] hover:bg-[#d4c7b3] font-semibold">
                 <Crown className="w-4 h-4 mr-2" />
                 Our Collections
               </Badge>
-              <h1 className="text-5xl font-bold text-gray-900 mb-6">
+              <h1 className="text-5xl font-bold text-[#262626] mb-6">
                 Discover Our 
-                <span className="text-amber-600"> Premium Collections</span>
+                <span className="text-[#e1d7c6]"> Premium Collections</span>
               </h1>
-              <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              <p className="text-xl text-[#404040] mb-8 leading-relaxed">
                 Each collection is carefully curated for hospitality excellence, 
                 featuring premium organic cotton and Egyptian cotton linens for hotels, resorts, and serviced residences.
               </p>
@@ -139,10 +139,10 @@ export default function CollectionsPage() {
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                <h2 className="text-4xl font-bold text-[#262626] mb-6">
                   Featured Collections
                 </h2>
-                <p className="text-xl text-gray-600">
+                <p className="text-xl text-[#404040]">
                   Our most popular and trusted hospitality linen collections
                 </p>
               </div>
@@ -160,11 +160,11 @@ export default function CollectionsPage() {
                             <div className={`w-20 h-20 bg-gradient-to-br ${collection.gradient} rounded-full flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
                               <IconComponent className="w-10 h-10 text-white" />
                             </div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                            <h3 className="text-2xl font-bold text-[#262626] mb-2">
                               {collection.name}
                             </h3>
                             {collection.badge && (
-                              <Badge className={`bg-gradient-to-r ${collection.gradient} text-white border-0`}>
+                              <Badge className="bg-[#e1d7c6] text-[#171717] border-0 font-semibold">
                                 {collection.badge}
                               </Badge>
                             )}
@@ -172,15 +172,15 @@ export default function CollectionsPage() {
                         </div>
                       </div>
                       <CardContent className="p-8">
-                        <p className="text-gray-600 mb-6 leading-relaxed">
+                        <p className="text-[#404040] mb-6 leading-relaxed">
                           {collection.description}
                         </p>
                         <div className="flex items-center justify-between">
-                          <span className="text-sm text-gray-500">
+                          <span className="text-sm text-[#737373]">
                             {collection.productCount} products
                           </span>
                           <Link href={`/products?category=${collection.id}`}>
-                            <Button className="bg-amber-600 hover:bg-amber-700 group-hover:translate-x-1 transition-transform">
+                            <Button className="bg-[#e1d7c6] hover:bg-[#d4c7b3] text-[#262626] group-hover:translate-x-1 transition-transform">
                               Explore Collection
                               <ArrowRight className="w-4 h-4 ml-2" />
                             </Button>
@@ -197,14 +197,14 @@ export default function CollectionsPage() {
         </section>
 
         {/* All Collections Grid */}
-        <section className="py-20 bg-gray-50">
+        <section className="py-20 bg-[#fafafa]">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                <h2 className="text-4xl font-bold text-[#262626] mb-6">
                   All Collections
                 </h2>
-                <p className="text-xl text-gray-600">
+                <p className="text-xl text-[#404040]">
                   Browse our complete range of premium hospitality linen collections
                 </p>
               </div>
@@ -222,7 +222,7 @@ export default function CollectionsPage() {
                             <div className={`w-16 h-16 bg-gradient-to-br ${collection.gradient} rounded-full flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform`}>
                               <IconComponent className="w-8 h-8 text-white" />
                             </div>
-                            <h3 className="text-xl font-bold text-gray-900">
+                            <h3 className="text-xl font-bold text-[#262626]">
                               {collection.name}
                             </h3>
                             {collection.badge && (
@@ -234,15 +234,15 @@ export default function CollectionsPage() {
                         </div>
                       </div>
                       <CardContent className="p-6">
-                        <p className="text-gray-600 mb-4 text-sm leading-relaxed">
+                        <p className="text-[#404040] mb-4 text-sm leading-relaxed">
                           {collection.description}
                         </p>
                         <div className="flex items-center justify-between">
-                          <span className="text-xs text-gray-500">
+                          <span className="text-xs text-[#737373]">
                             {collection.productCount} products
                           </span>
                           <Link href={`/products?category=${collection.id}`}>
-                            <Button size="sm" className="bg-amber-600 hover:bg-amber-700">
+                            <Button size="sm" className="bg-[#e1d7c6] hover:bg-[#d4c7b3] text-[#262626]">
                               View Products
                               <ArrowRight className="w-3 h-3 ml-1" />
                             </Button>
@@ -263,10 +263,10 @@ export default function CollectionsPage() {
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-16">
-                <h2 className="text-4xl font-bold text-gray-900 mb-6">
+                <h2 className="text-4xl font-bold text-[#262626] mb-6">
                   Why Choose Our Collections?
                 </h2>
-                <p className="text-xl text-gray-600">
+                <p className="text-xl text-[#404040]">
                   Each collection is designed to meet the demanding standards of the hospitality industry
                 </p>
               </div>
@@ -278,8 +278,8 @@ export default function CollectionsPage() {
                     <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
                       <Crown className="w-8 h-8 text-amber-600" />
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Hospitality Grade</h3>
-                    <p className="text-gray-600 leading-relaxed">
+                    <h3 className="text-2xl font-bold text-[#262626] mb-4">Hospitality Grade</h3>
+                    <p className="text-[#404040] leading-relaxed">
                       Premium quality linens that meet the demanding standards of top-tier hotels, resorts, and serviced residences.
                     </p>
                   </CardContent>
@@ -292,8 +292,8 @@ export default function CollectionsPage() {
                     <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
                       <Shield className="w-8 h-8 text-amber-600" />
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Premium Materials</h3>
-                    <p className="text-gray-600 leading-relaxed">
+                    <h3 className="text-2xl font-bold text-[#262626] mb-4">Premium Materials</h3>
+                    <p className="text-[#404040] leading-relaxed">
                       Crafted from 100% organic, long staple cotton for bed linen and 100% Egyptian cotton for bath linen.
                     </p>
                   </CardContent>
@@ -306,8 +306,8 @@ export default function CollectionsPage() {
                     <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
                       <Heart className="w-8 h-8 text-amber-600" />
                     </div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-4">Five-Star Experience</h3>
-                    <p className="text-gray-600 leading-relaxed">
+                    <h3 className="text-2xl font-bold text-[#262626] mb-4">Five-Star Experience</h3>
+                    <p className="text-[#404040] leading-relaxed">
                       Deliver exceptional guest experiences with soft, breathable, durable, and elegant linens.
                     </p>
                   </CardContent>

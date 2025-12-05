@@ -14,6 +14,7 @@ import { Loading, ProductSkeleton } from "@/components/ui/loading"
 import { UniversalProductGridImage } from "@/components/ui/universal-image"
 import { emergencyImageFix } from "@/lib/emergency-image-fix"
 import { fixCloudinaryImages } from "@/lib/cloudinary-image-fix"
+import { ScrollAnimate } from "@/components/scroll-animate"
 
 interface Product {
   _id: string
@@ -232,18 +233,20 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen page-entrance">
-      
+    <div className="min-h-screen page-fade">
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-6 md:py-8">
-        <div className="mb-4 sm:mb-6 md:mb-8">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 md:mb-4">All Products</h1>
-          <p className="text-sm sm:text-base text-muted-foreground">
-            Discover our complete range of premium hospitality linen products
-          </p>
-        </div>
+        <ScrollAnimate animation="fade-in-up-scale" delay={100}>
+          <div className="mb-4 sm:mb-6 md:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3 md:mb-4">All Products</h1>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Discover our complete range of premium hospitality linen products
+            </p>
+          </div>
+        </ScrollAnimate>
 
         {/* Filters and Search */}
-        <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
+        <ScrollAnimate animation="slide-in-top" delay={200}>
+          <div className="flex flex-col gap-3 sm:gap-4 mb-6 sm:mb-8">
           <div className="w-full">
             <div className="relative">
               <Input
@@ -302,7 +305,8 @@ export default function ProductsPage() {
               </Button>
             </div>
           </div>
-        </div>
+          </div>
+        </ScrollAnimate>
 
         {/* Products Grid/List */}
         {products.length === 0 ? (
@@ -318,9 +322,14 @@ export default function ProductsPage() {
                 : "space-y-3 sm:space-y-4"
             }>
               {products.map((product, index) => (
-                <Card key={product._id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden border-border/50">
+                <ScrollAnimate 
+                  key={product._id} 
+                  animation="card-entrance" 
+                  delay={index * 50}
+                >
+                  <Card className="group hover-lift hover-shadow-premium smooth-color-transition overflow-hidden border-border/50">
                   <Link href={`/products/${product._id}`}>
-                     <div className="relative aspect-square overflow-hidden cursor-pointer bg-gray-100" data-product-image={product.images?.[0]}>
+                     <div className="relative aspect-square overflow-hidden cursor-pointer bg-[#fafafa]" data-product-image={product.images?.[0]}>
                        {product.images && product.images.length > 0 ? (
                          <UniversalProductGridImage
                            src={product.images[0]}
@@ -329,17 +338,17 @@ export default function ProductsPage() {
                            index={index}
                          />
                        ) : (
-                         <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                         <div className="w-full h-full flex items-center justify-center bg-[#fafafa]">
                            <div className="text-center">
-                             <div className="text-2xl sm:text-4xl text-gray-400 mb-1 sm:mb-2">📦</div>
-                             <p className="text-gray-500 text-xs sm:text-sm">No image</p>
+                             <div className="text-2xl sm:text-4xl text-[#737373] mb-1 sm:mb-2">📦</div>
+                             <p className="text-[#737373] text-xs sm:text-sm">No image</p>
                            </div>
                          </div>
                        )}
-                      <Badge className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-primary text-primary-foreground text-xs px-1.5 py-0.5 sm:px-2 sm:py-1">
+                      <Badge className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-[#e1d7c6] text-[#171717] text-xs px-1.5 py-0.5 sm:px-2 sm:py-1 font-semibold">
                         {getProductBadge(product)}
                       </Badge>
-                      <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-black/70 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-xs font-medium">
+                      <div className="absolute top-2 right-2 sm:top-3 sm:right-3 bg-[#929292]/90 text-white px-1.5 py-0.5 sm:px-2 sm:py-1 rounded text-xs font-medium">
                         {getProductSize(product)}
                       </div>
                     </div>
@@ -359,11 +368,11 @@ export default function ProductsPage() {
                     </div>
 
                     <Link href={`/products/${product._id}`}>
-                      <h3 className="font-serif text-base sm:text-lg font-semibold mb-1 text-balance hover:text-primary transition-colors cursor-pointer line-clamp-2">
+                      <h3 className="font-serif text-base sm:text-lg font-semibold mb-1 text-balance hover:text-[#e1d7c6] transition-colors cursor-pointer line-clamp-2">
                         {product.name}
                       </h3>
                     </Link>
-                    <p className="text-xs text-primary font-medium mb-1">{product.category.name} Range</p>
+                    <p className="text-xs text-[#e1d7c6] font-medium mb-1">{product.category.name} Range</p>
                     <p className="text-xs text-muted-foreground mb-1">SKU: {product.sku || 'N/A'}</p>
                     <p className="text-xs sm:text-sm text-muted-foreground mb-2 sm:mb-3 text-pretty line-clamp-2">
                       {product.description}
@@ -378,7 +387,7 @@ export default function ProductsPage() {
                       </div>
                       <Button
                         size="sm"
-                        className="bg-primary hover:bg-primary/90 text-primary-foreground w-full sm:w-auto text-xs sm:text-sm"
+                        className="bg-[#e1d7c6] hover:bg-[#d4c7b3] text-[#171717] w-full sm:w-auto text-xs sm:text-sm font-semibold button-press smooth-color-transition"
                         onClick={() => handleAddToCart(product)}
                       >
                         <ShoppingCart className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
@@ -388,12 +397,14 @@ export default function ProductsPage() {
                     </div>
                   </CardContent>
                 </Card>
+                </ScrollAnimate>
               ))}
             </div>
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="mt-6 sm:mt-8 space-y-4">
+              <ScrollAnimate animation="fade-in" delay={300}>
+                <div className="mt-6 sm:mt-8 space-y-4">
                 {/* Page Info and Items Per Page - Mobile */}
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
                   <div className="text-xs sm:text-sm text-muted-foreground">
@@ -505,12 +516,15 @@ export default function ProductsPage() {
                   </div>
                 </div>
               </div>
+              </ScrollAnimate>
             )}
           </>
         )}
       </main>
 
-      <Footer />
+      <ScrollAnimate animation="fade-in" delay={400}>
+        <Footer />
+      </ScrollAnimate>
     </div>
   )
 }

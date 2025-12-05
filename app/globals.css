@@ -120,40 +120,69 @@ img[src*="cloudinary.com"] {
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated color tokens to match Whitlin luxury brand design */
-  --background: oklch(1 0 0); /* Pure white */
-  --foreground: oklch(0 0 0); /* Pure black */
-  --card: oklch(0.97 0 0); /* Light grey for product cards */
-  --card-foreground: oklch(0 0 0); /* Black text on cards */
-  --popover: oklch(1 0 0); /* White for modal backgrounds */
-  --popover-foreground: oklch(0 0 0); /* Black text in popovers */
-  --primary: oklch(0.85 0.15 85); /* Luxury gold for primary actions */
-  --primary-foreground: oklch(0 0 0); /* Black text on gold buttons */
-  --secondary: oklch(0.75 0.02 0); /* Silver for secondary elements */
-  --secondary-foreground: oklch(0 0 0); /* Black text on secondary */
-  --muted: oklch(0.97 0 0); /* Muted light grey backgrounds */
-  --muted-foreground: oklch(0.4 0 0); /* Dark grey for muted text */
-  --accent: oklch(0.85 0.15 85); /* Gold for accents and highlights */
-  --accent-foreground: oklch(0 0 0); /* Black text on accents */
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(1 0 0);
-  --border: oklch(0.75 0.02 0); /* Silver borders */
-  --input: oklch(1 0 0); /* White input fields */
-  --ring: oklch(0.85 0.15 85); /* Gold focus rings */
-  --chart-1: oklch(0.85 0.15 85); /* Gold for charts */
-  --chart-2: oklch(0.75 0.02 0); /* Silver for charts */
-  --chart-3: oklch(0 0 0); /* Black for charts */
-  --chart-4: oklch(0.97 0 0); /* Light grey for charts */
-  --chart-5: oklch(1 0 0); /* White for charts */
-  --radius: 0.5rem; /* Softer rounded corners */
-  --sidebar: oklch(1 0 0);
-  --sidebar-foreground: oklch(0 0 0);
-  --sidebar-primary: oklch(0.85 0.15 85);
-  --sidebar-primary-foreground: oklch(0 0 0);
-  --sidebar-accent: oklch(0.75 0.02 0);
-  --sidebar-accent-foreground: oklch(0 0 0);
-  --sidebar-border: oklch(0.75 0.02 0);
-  --sidebar-ring: oklch(0.85 0.15 85);
+  /* Premium E-commerce Color Scheme with #e1d7c6 and white */
+  /* Base Colors: #e1d7c6 (beige), white */
+  
+  /* Primary Beige Shades */
+  --beige-50: #f8f6f3;   /* Lightest beige for backgrounds */
+  --beige-100: #f0ebe4;  /* Very light beige */
+  --beige-200: #e1d7c6;  /* Base beige (primary) */
+  --beige-300: #d4c7b3;  /* Medium beige for hover */
+  --beige-400: #c5b59f;  /* Darker beige */
+  --beige-500: #b8a68c;  /* Dark beige */
+  
+  /* Gray Shades */
+  --gray-50: #fafafa;    /* Lightest gray */
+  --gray-100: #f5f5f5;   /* Very light gray */
+  --gray-200: #e5e5e5;   /* Light gray for borders */
+  --gray-300: #d4d4d4;   /* Medium light gray */
+  --gray-400: #929292;   /* Base gray (secondary) */
+  --gray-500: #737373;   /* Medium gray */
+  --gray-600: #525252;   /* Dark gray for text */
+  --gray-700: #404040;   /* Darker gray */
+  --gray-800: #262626;   /* Very dark gray */
+  --gray-900: #171717;   /* Almost black */
+  
+  /* Theme Variables */
+  --background: #ffffff;
+  --foreground: #1a1a1a; /* Very dark text for excellent readability - WCAG AAA compliant */
+  --card: #ffffff;
+  --card-foreground: #1a1a1a;
+  --popover: #ffffff;
+  --popover-foreground: #1a1a1a;
+  --primary: #e1d7c6; /* Base beige */
+  --primary-foreground: #1a1a1a; /* Very dark text on beige for maximum readability */
+  --primary-hover: #d4c7b3; /* Darker beige on hover */
+  --primary-hover-foreground: #1a1a1a; /* Dark text on hover */
+  --secondary: #929292; /* Base gray */
+  --secondary-foreground: #ffffff; /* White text on gray */
+  --secondary-hover: #737373; /* Darker gray on hover */
+  --muted: #fafafa; /* Very light gray background */
+  --muted-foreground: #404040; /* Darker gray text for better readability - WCAG AA compliant */
+  --accent: #e1d7c6;
+  --accent-foreground: #1a1a1a;
+  --destructive: #dc2626;
+  --destructive-foreground: #ffffff;
+  --border: #e5e5e5; /* Light gray borders */
+  --border-hover: #d4d4d4; /* Slightly darker on hover */
+  --input: #ffffff;
+  --input-border: #e5e5e5;
+  --input-focus: #e1d7c6;
+  --ring: #e1d7c6;
+  --chart-1: #e1d7c6;
+  --chart-2: #929292;
+  --chart-3: #1a1a1a;
+  --chart-4: #f5f5f5;
+  --chart-5: #ffffff;
+  --radius: 0.5rem;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #e1d7c6;
+  --sidebar-primary-foreground: #1a1a1a;
+  --sidebar-accent: #fafafa;
+  --sidebar-accent-foreground: #1a1a1a;
+  --sidebar-border: #e5e5e5;
+  --sidebar-ring: #e1d7c6;
 }
 
 .dark {
@@ -807,6 +836,334 @@ html {
   animation: text-reveal 0.8s ease-out forwards;
 }
 
+/* Premium Animation Enhancements */
+
+/* Fade in from bottom with scale */
+@keyframes fadeInUpScale {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.fade-in-up-scale {
+  animation: fadeInUpScale 0.8s ease-out forwards;
+}
+
+/* Slide in from top */
+@keyframes slideInTop {
+  0% {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in-top {
+  animation: slideInTop 0.8s ease-out forwards;
+}
+
+/* Rotate and fade in */
+@keyframes rotateFadeIn {
+  0% {
+    opacity: 0;
+    transform: rotate(-5deg) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0deg) scale(1);
+  }
+}
+
+.rotate-fade-in {
+  animation: rotateFadeIn 0.8s ease-out forwards;
+}
+
+/* Zoom in with blur */
+@keyframes zoomInBlur {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+    filter: blur(10px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+.zoom-in-blur {
+  animation: zoomInBlur 1s ease-out forwards;
+}
+
+/* Premium card entrance */
+@keyframes cardEntrance {
+  0% {
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    filter: blur(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.card-entrance {
+  animation: cardEntrance 0.6s ease-out forwards;
+}
+
+/* Text slide reveal */
+@keyframes textSlideReveal {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+    clip-path: inset(0 100% 0 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+.text-slide-reveal {
+  animation: textSlideReveal 0.8s ease-out forwards;
+}
+
+/* Image parallax effect */
+.parallax-container {
+  overflow: hidden;
+  position: relative;
+}
+
+.parallax-element {
+  transition: transform 0.3s ease-out;
+  will-change: transform;
+}
+
+/* Smooth scale on hover */
+.hover-scale-smooth {
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-scale-smooth:hover {
+  transform: scale(1.05);
+}
+
+/* Premium glow effect */
+@keyframes premiumGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(225, 215, 198, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 40px rgba(225, 215, 198, 0.6);
+  }
+}
+
+.premium-glow {
+  animation: premiumGlow 3s ease-in-out infinite;
+}
+
+/* Button press effect */
+@keyframes buttonPress {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.button-press:active {
+  animation: buttonPress 0.2s ease-out;
+}
+
+/* Stagger children animation */
+.stagger-container > * {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.stagger-container > *:nth-child(1) { animation-delay: 0.1s; }
+.stagger-container > *:nth-child(2) { animation-delay: 0.2s; }
+.stagger-container > *:nth-child(3) { animation-delay: 0.3s; }
+.stagger-container > *:nth-child(4) { animation-delay: 0.4s; }
+.stagger-container > *:nth-child(5) { animation-delay: 0.5s; }
+.stagger-container > *:nth-child(6) { animation-delay: 0.6s; }
+.stagger-container > *:nth-child(7) { animation-delay: 0.7s; }
+.stagger-container > *:nth-child(8) { animation-delay: 0.8s; }
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Magnetic hover effect */
+.magnetic-hover {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Smooth border animation */
+@keyframes borderGlow {
+  0%, 100% {
+    border-color: rgba(225, 215, 198, 0.3);
+  }
+  50% {
+    border-color: rgba(225, 215, 198, 0.8);
+  }
+}
+
+.border-glow {
+  animation: borderGlow 2s ease-in-out infinite;
+}
+
+/* Premium shimmer on images */
+@keyframes imageShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.image-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  background-size: 200% 100%;
+  animation: imageShimmer 2s infinite;
+}
+
+/* Smooth page fade */
+@keyframes pageFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.page-fade {
+  animation: pageFade 0.5s ease-out;
+}
+
+/* Bounce in subtle */
+@keyframes bounceInSubtle {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(20px);
+  }
+  50% {
+    transform: scale(1.05) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.bounce-in-subtle {
+  animation: bounceInSubtle 0.8s ease-out forwards;
+}
+
+/* Rotate on hover */
+.rotate-on-hover {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.rotate-on-hover:hover {
+  transform: rotate(5deg);
+}
+
+/* Premium shadow on hover */
+.hover-shadow-premium {
+  transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.hover-shadow-premium:hover {
+  box-shadow: 0 20px 60px rgba(225, 215, 198, 0.3);
+}
+
+/* Smooth color transition */
+.smooth-color-transition {
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Enhanced button animations */
+button, .btn {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:hover, .btn:hover {
+  transform: translateY(-2px);
+}
+
+button:active, .btn:active {
+  transform: translateY(0);
+}
+
+/* Card entrance with stagger */
+.card-grid {
+  display: grid;
+}
+
+.card-grid > * {
+  animation: cardEntrance 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.card-grid > *:nth-child(1) { animation-delay: 0.1s; }
+.card-grid > *:nth-child(2) { animation-delay: 0.2s; }
+.card-grid > *:nth-child(3) { animation-delay: 0.3s; }
+.card-grid > *:nth-child(4) { animation-delay: 0.4s; }
+.card-grid > *:nth-child(5) { animation-delay: 0.5s; }
+.card-grid > *:nth-child(6) { animation-delay: 0.6s; }
+
+/* Smooth image loading */
+img {
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+
+img:hover {
+  transform: scale(1.02);
+}
+
+/* Link hover effects */
+a {
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+a:hover {
+  transform: translateX(2px);
+}
+
+/* Input focus animations */
+input:focus, textarea:focus, select:focus {
+  transform: scale(1.01);
+  transition: transform 0.2s ease;
+}
+
 /* Reduced motion support */
 @media (prefers-reduced-motion: reduce) {
   *,
@@ -825,8 +1182,16 @@ html {
   .fade-in,
   .slide-in-left,
   .slide-in-right,
-  .scale-in {
+  .scale-in,
+  .fade-in-up-scale,
+  .slide-in-top,
+  .rotate-fade-in,
+  .zoom-in-blur,
+  .card-entrance,
+  .text-slide-reveal,
+  .bounce-in-subtle {
     opacity: 1;
     transform: none;
+    filter: none;
   }
 }

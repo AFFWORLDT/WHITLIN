@@ -71,10 +71,10 @@ export function LeadCapturePopup({ onClose }: LeadCapturePopupProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
-      <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 animate-scale-in">
+      <div className="relative bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 animate-bounce-in-subtle hover-shadow-premium">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors z-10"
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 smooth-color-transition hover-scale-smooth button-press z-10"
         >
           <X className="w-6 h-6" />
         </button>

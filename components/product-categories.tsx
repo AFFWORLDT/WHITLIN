@@ -141,20 +141,20 @@ export function ProductCategories() {
   }
 
   return (
-    <section className="py-16 md:py-24 bg-gradient-to-b from-white via-gray-50/50 to-white relative overflow-hidden">
+    <section className="py-16 md:py-24 bg-white relative overflow-hidden">
       {/* Decorative background */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(212,175,55,0.02),transparent_70%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(225,215,198,0.05),transparent_70%)]" />
       
       <div className="container mx-auto px-4 sm:px-6 relative z-10">
         <ScrollAnimate animation="fade-in-up">
           <div className="text-center mb-12 md:mb-16">
             <div className="inline-block mb-4">
-              <span className="text-primary text-sm font-semibold uppercase tracking-wider">Complete Range</span>
+              <span className="text-[#e1d7c6] text-sm font-semibold uppercase tracking-wider">Complete Range</span>
             </div>
-            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-4 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+            <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold mb-4 text-[#1a1a1a]">
               Our Product Collections
             </h2>
-            <p className="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-[#404040] max-w-3xl mx-auto leading-relaxed">
               Discover our complete range of premium hospitality linen, from bed linen to bath linen, each designed for luxury and comfort
             </p>
           </div>
@@ -162,8 +162,8 @@ export function ProductCategories() {
 
         {loading ? (
           <div className="flex flex-col justify-center items-center h-64">
-            <Loader2 className="h-8 w-8 animate-spin text-primary mb-4" />
-            <p className="text-muted-foreground text-sm">Loading categories...</p>
+            <Loader2 className="h-8 w-8 animate-spin text-[#e1d7c6] mb-4" />
+            <p className="text-[#404040] text-sm">Loading categories...</p>
           </div>
         ) : error ? (
           <div className="text-center text-destructive py-10">
@@ -233,7 +233,7 @@ export function ProductCategories() {
                 delay={index * 100}
               >
                 <Link href={`/products?category=${category.slug}`}>
-                  <Card className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-border/50 overflow-hidden hover-lift rounded-2xl bg-white h-full">
+                  <Card className="group hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border-[#e5e5e5] overflow-hidden hover-lift rounded-2xl bg-white h-full">
                     <div className="relative h-56 overflow-hidden">
                       <Image
                         src={getCategoryImage(category, index)}
@@ -251,12 +251,12 @@ export function ProductCategories() {
                       <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     </div>
                     <CardContent className="p-6 bg-white">
-                      <h3 className="font-serif text-xl md:text-2xl font-bold mb-3 group-hover:text-primary transition-colors text-balance">
+                      <h3 className="font-serif text-xl md:text-2xl font-bold mb-3 group-hover:text-[#e1d7c6] transition-colors text-balance">
                         {category.name}
                       </h3>
-                      <p className="text-gray-600 text-sm md:text-base text-pretty leading-relaxed line-clamp-3">{category.description}</p>
-                      <div className="mt-4 pt-4 border-t border-gray-100">
-                        <span className="text-xs text-primary font-semibold uppercase tracking-wider group-hover:tracking-widest transition-all duration-300">
+                      <p className="text-[#404040] text-sm md:text-base text-pretty leading-relaxed line-clamp-3">{category.description}</p>
+                      <div className="mt-4 pt-4 border-t border-[#e5e5e5]">
+                        <span className="text-xs text-[#e1d7c6] font-semibold uppercase tracking-wider group-hover:tracking-widest transition-all duration-300">
                           Explore Collection →
                         </span>
                       </div>

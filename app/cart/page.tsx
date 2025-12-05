@@ -17,6 +17,7 @@ import { useAuth } from "@/lib/auth-context"
 import { toast } from "sonner"
 import { Footer } from "@/components/footer"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
+import { ScrollAnimate } from "@/components/scroll-animate"
 
 interface ShippingAddress {
   name: string
@@ -816,35 +817,40 @@ export default function CartPage() {
 
   if (state.items.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <div className="container mx-auto px-4 py-8">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="mb-8">
-              <ShoppingBag className="h-16 w-16 sm:h-24 sm:w-24 text-gray-400 mx-auto mb-4" />
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Your Cart is Empty</h1>
-              <p className="text-sm sm:text-base text-gray-600 mb-6 sm:mb-8 px-4">
-                Looks like you haven't added any items to your cart yet.
-              </p>
-              <Link href="/products">
-                <Button size="lg" className="bg-yellow-500 hover:bg-yellow-600 text-white w-full sm:w-auto">
-                  <ShoppingBag className="h-5 w-5 mr-2" />
-                  Continue Shopping
-                </Button>
-              </Link>
+      <div className="min-h-screen bg-white page-fade">
+        <ScrollAnimate animation="bounce-in-subtle" delay={100}>
+          <div className="container mx-auto px-4 py-8">
+            <div className="max-w-2xl mx-auto text-center">
+              <div className="mb-8">
+                <ShoppingBag className="h-16 w-16 sm:h-24 sm:w-24 text-[#737373] mx-auto mb-4" />
+                <h1 className="text-2xl sm:text-3xl font-bold text-[#262626] mb-2">Your Cart is Empty</h1>
+                <p className="text-sm sm:text-base text-[#525252] mb-6 sm:mb-8 px-4">
+                  Looks like you haven't added any items to your cart yet.
+                </p>
+                <Link href="/products">
+                  <Button size="lg" className="bg-[#e1d7c6] hover:bg-[#d4c7b3] text-[#1a1a1a] w-full sm:w-auto button-press smooth-color-transition">
+                    <ShoppingBag className="h-5 w-5 mr-2" />
+                    Continue Shopping
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
-        </div>
-        <Footer />
+        </ScrollAnimate>
+        <ScrollAnimate animation="fade-in" delay={300}>
+          <Footer />
+        </ScrollAnimate>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 page-fade">
       <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-8">
         <div className="max-w-6xl mx-auto">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
+          <ScrollAnimate animation="fade-in-up-scale" delay={100}>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 sm:mb-8">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
               <Link href="/products" className="w-full sm:w-auto">
                 <Button variant="outline" size="sm" className="w-full sm:w-auto">
@@ -852,7 +858,7 @@ export default function CartPage() {
                   Continue Shopping
                 </Button>
               </Link>
-              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Shopping Cart</h1>
+              <h1 className="text-2xl sm:text-3xl font-bold text-[#262626]">Shopping Cart</h1>
             </div>
             <Button 
               variant="outline" 
@@ -863,6 +869,7 @@ export default function CartPage() {
               Clear Cart
             </Button>
           </div>
+          </ScrollAnimate>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {/* Cart Items */}
@@ -888,7 +895,7 @@ export default function CartPage() {
                       
                       <div className="flex-1 min-w-0 w-full sm:w-auto">
                         <div className="flex items-start justify-between gap-2 mb-2">
-                          <h3 className="font-medium text-gray-900 text-sm sm:text-base flex-1">{item.name}</h3>
+                          <h3 className="font-medium text-[#262626] text-sm sm:text-base flex-1">{item.name}</h3>
                           <Button
                             variant="ghost"
                             size="sm"
@@ -898,7 +905,7 @@ export default function CartPage() {
                             <Trash2 className="h-4 w-4" />
                           </Button>
                         </div>
-                        <p className="text-sm text-gray-500 mb-3">AED {item.price}</p>
+                        <p className="text-sm text-[#929292] mb-3">AED {item.price}</p>
                         <div className="flex items-center justify-between sm:justify-start gap-4">
                           <div className="flex items-center space-x-2">
                             <Button
@@ -922,7 +929,7 @@ export default function CartPage() {
                             </Button>
                           </div>
                           <div className="sm:hidden">
-                            <p className="font-medium text-gray-900 text-lg">
+                            <p className="font-medium text-[#262626] text-lg">
                               AED {(item.price * item.quantity).toFixed(2)}
                             </p>
                           </div>
@@ -930,7 +937,7 @@ export default function CartPage() {
                       </div>
                       
                       <div className="hidden sm:flex flex-col items-end justify-between text-right w-24">
-                        <p className="font-medium text-gray-900">
+                        <p className="font-medium text-[#262626]">
                           AED {(item.price * item.quantity).toFixed(2)}
                         </p>
                         <Button
@@ -1020,7 +1027,7 @@ export default function CartPage() {
                               <span className="w-full border-t" />
                             </div>
                             <div className="relative flex justify-center text-xs uppercase">
-                              <span className="bg-white px-2 text-gray-500">or</span>
+                              <span className="bg-white px-2 text-[#929292]">or</span>
                             </div>
                           </div>
                           
@@ -1048,7 +1055,7 @@ export default function CartPage() {
                           </Button>
                           
                           <div className="text-center">
-                            <p className="text-xs sm:text-sm text-gray-500 mb-2 px-2">
+                            <p className="text-xs sm:text-sm text-[#929292] mb-2 px-2">
                               No account needed • We'll create one for you
                             </p>
                           </div>
@@ -1058,7 +1065,7 @@ export default function CartPage() {
                               <span className="w-full border-t" />
                             </div>
                             <div className="relative flex justify-center text-xs uppercase">
-                              <span className="bg-white px-2 text-gray-500">or</span>
+                              <span className="bg-white px-2 text-[#929292]">or</span>
                             </div>
                           </div>
                           
@@ -1074,12 +1081,12 @@ export default function CartPage() {
                       )}
                       
                       {/* Trust Signals */}
-                      <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
-                        <div className="flex items-center justify-center p-2 bg-gray-50 rounded">
+                      <div className="grid grid-cols-2 gap-2 text-xs text-[#525252]">
+                        <div className="flex items-center justify-center p-2 bg-[#fafafa] rounded">
                           <Shield className="h-3 w-3 mr-1 flex-shrink-0" />
                           <span className="truncate">Secure</span>
                         </div>
-                        <div className="flex items-center justify-center p-2 bg-gray-50 rounded">
+                        <div className="flex items-center justify-center p-2 bg-[#fafafa] rounded">
                           <Clock className="h-3 w-3 mr-1 flex-shrink-0" />
                           <span className="truncate">Fast Delivery</span>
                         </div>
@@ -1094,7 +1101,7 @@ export default function CartPage() {
                             <span>Processing Order...</span>
                             <span>{orderProgress}%</span>
                           </div>
-                          <div className="w-full bg-gray-200 rounded-full h-2">
+                          <div className="w-full bg-[#e5e5e5] rounded-full h-2">
                             <div 
                               className="bg-gradient-to-r from-green-500 to-blue-500 h-2 rounded-full transition-all duration-300"
                               style={{ width: `${orderProgress}%` }}
@@ -1130,13 +1137,13 @@ export default function CartPage() {
                           <span className="w-full border-t" />
                         </div>
                         <div className="relative flex justify-center text-xs uppercase">
-                          <span className="bg-white px-2 text-gray-500">or</span>
+                          <span className="bg-white px-2 text-[#929292]">or</span>
                         </div>
                       </div>
                       
                       <div className="text-center">
                         <Truck className="h-8 w-8 text-yellow-500 mx-auto mb-2" />
-                        <p className="text-sm text-gray-600">Cash on Delivery Available</p>
+                        <p className="text-sm text-[#525252]">Cash on Delivery Available</p>
                       </div>
                       
                       <Button 
@@ -1205,10 +1212,10 @@ export default function CartPage() {
                           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                             <div className="flex-1 min-w-0">
                               <div className="font-medium text-sm sm:text-base">{address.name}</div>
-                              <div className="text-xs sm:text-sm text-gray-600 break-words">
+                              <div className="text-xs sm:text-sm text-[#525252] break-words">
                                 {address.address}, {address.city}, {address.state} {address.zipCode}
                               </div>
-                              <div className="text-xs text-gray-500">{address.country}</div>
+                              <div className="text-xs text-[#929292]">{address.country}</div>
                             </div>
                             <div className="flex items-center gap-2 flex-shrink-0">
                               {address.isDefault && (
@@ -1325,10 +1332,10 @@ export default function CartPage() {
                     </div>
 
                     {/* Save Address Option */}
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 bg-gray-50 rounded-lg">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 bg-[#fafafa] rounded-lg">
                       <div className="flex-1">
                         <div className="font-medium text-sm">Save this address</div>
-                        <div className="text-xs text-gray-600">Save for future orders</div>
+                        <div className="text-xs text-[#525252]">Save for future orders</div>
                       </div>
                       <Button
                         variant="outline"
